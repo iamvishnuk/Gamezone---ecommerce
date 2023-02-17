@@ -1,0 +1,83 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>Add Product</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">Add Product</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add product</h5>
+                        <!-- General Form Elements -->
+                        <form action="/admin/add_products" method="post" enctype="multipart/form-data">
+                            <div class="row mb-3">
+                                <labe for="" class="col-sm-2 col-form-label">Name</labe>
+                                <div class="col-sm-10">
+                                    <input type="text" name="productName" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Brand</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="brand">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Category</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" aria-label="Default select example" name="category">
+                                        <option selected>Select the category</option>
+                                        <% categoryData.forEach(element=> { %>
+                                            <option>
+                                                <%= element.categoryName %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Price</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" name="price">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Stock</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" name="stock">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Description</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" style="height: 100px" name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Image Upload</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" multiple type="file" id="formFile" name="productImage">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </main>
+
+
+
+            <%- include("../layout/admin/footer.ejs") %>

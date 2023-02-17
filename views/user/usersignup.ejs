@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/admin_login.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="login-box">
+        <p>Signup</p>
+        <form action="/usersignup" method="post">
+            <div class="user-box">
+                <input required="" name="firstName" type="text">
+                <label>First name</label>
+            </div>
+            <div class="user-box">
+                <input required="" name="lname" type="text">
+                <label>Last name</label>
+            </div>
+            <div class="user-box">
+                <input required="" name="username" type="text">
+                <label>Username</label>
+            </div>
+            <div class="user-box">
+                <input required="" name="email" type="text">
+                <% if (typeof error !== 'undefined') { %>
+                    <label for="" style="color: red;"><%= error %></label>
+                <% }else{ %>
+                    <label>Email</label>
+                <% } %>
+            </div>
+            <div class="user-box">
+                <input required="" name="password" type="password">
+                <label>Password</label>
+            </div>
+            <div class="user-box">
+                <input required="" name="phone" type="string">
+                <label>Phone</label>
+            </div>
+            <button class="admin_login_btn" type="submit">
+                <a>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Signup
+                </a>
+            </button>
+        </form>
+        <p>Already have account <a href="/userlogin" class="a2">Login!</a></p>
+    </div>
+</body>
+</html>

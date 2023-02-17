@@ -1,0 +1,117 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>View Products</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">View Products</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Products</h5>
+
+                        <!-- Table with hoverable rows -->
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Number</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Actions</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% allProducts.forEach((element,index)=> { %>
+                                    <tr>
+
+                                        <td>
+                                            <%= index+1 %>
+                                        </td>
+                                        <td>
+                                            <img src="/product_images/<%= element.images[0] %> " alt=""
+                                                style="width: 50px; height: 50px;">
+                                        </td>
+                                        <td>
+                                            <%= element.product_name %>
+                                        </td>
+                                        <td>
+                                            <%= element.category %>
+                                        </td>
+                                        <td>
+                                            <%= element.stock %>
+                                        </td>
+                                        <td>
+                                            <%= element.price %>
+                                        </td>
+                                        <td>
+                                            <!-- <a href="/admin/deleteProduct/"> -->
+                                                <button type="button" class="btn btn-danger" onclick="validate('<%= element._id %>')">Delete</button>
+                                            <!-- </a> -->
+                                            <% if(element.list===true){ %>
+                                                <a href="/admin/unlistproduct/<%= element._id %>">
+                                                    <button type="button" class="btn btn-warning">Unlist</button>
+                                                </a>
+                                            <% } else{ %>
+                                                <a href="/admin/listproduct/<%= element._id %>">
+                                                    <button type="button" class="btn btn-warning">List</button>
+                                                </a>
+                                            <% } %>
+                                            <a href="/admin/editProductPage/<%= element._id %>">
+                                                <button type="button" class="btn btn-primary">Edit</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                        <!-- End Table with hoverable rows -->
+
+                    </div>
+                </div>
+            </main>
+
+            <script>
+                function validate(categoryId) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        $.ajax({
+                            url: '/admin/deleteProduct/' + categoryId,
+                            method: 'get',
+                            success: (response) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: 'Your file has been deleted.',
+                                        icon: 'success',
+                                        showConfirmButton: false
+                                    })
+                                    setTimeout(() => {
+                                        location.reload()
+                                    }, 1000);
+                                }
+                            }
+                        })
+                    })
+                }
+            </script>
+
+
+
+            <%- include("../layout/admin/footer.ejs") %>

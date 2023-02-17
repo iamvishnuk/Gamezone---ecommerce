@@ -1,0 +1,51 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>Category</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">Category</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add category</h5>
+                        <!-- General Form Elements -->
+                        <form action="/admin/addcategory" method="post">
+                            <div class="row mb-3">
+                                <labe for="" class="col-sm-2 col-form-label">Category Name</labe>
+                                <div class="col-sm-10">
+                                    <input type="text" name="categoryName" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Description</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="description">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <div class="col-sm-10">
+                                    <% if(typeof errorMessage !=='undefined' ){ %>
+                                        <div class="alert alert-danger" role="alert">
+                                            <%= errorMessage %>
+                                        </div>
+                                    <% } %>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </main>
+
+
+
+            <%- include("../layout/admin/footer.ejs") %>

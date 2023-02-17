@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/admin_login.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div style="width: 100vh;">
+        <div class="login-box">
+            <p>User Login</p>
+            <form action="/userlogin" method="post">
+                <div class="user-box">
+                    <input required="" name="username" type="text">
+                    <label>Username</label>
+                </div>
+                <div class="user-box">
+                    <input required="" name="password" type="password">
+                    <label>Password</label>
+                </div>
+                <button class="admin_login_btn" type="submit">
+                    <a>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        Login
+                    </a>
+                </button>
+            </form>
+            <p>Don't have an account? <a href="/usersignup" class="a2">Sign up!</a></p>
+            <% if (typeof message !== "undefined") { %>
+                <p style="color: red; font-size: 15px;"><%= message %></p>
+            <% } %>
+
+
+        </div>
+    </div>
+</body>
+
+</html>

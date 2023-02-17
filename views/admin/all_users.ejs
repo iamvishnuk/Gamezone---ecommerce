@@ -1,0 +1,77 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+            <main id="main" class="main">
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+
+                        <div class="filter">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="#">Today</a></li>
+                                <li><a class="dropdown-item" href="#">This Month</a></li>
+                                <li><a class="dropdown-item" href="#">This Year</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+
+                            <table class="table table-borderless datatable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Joined date</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% userDetails.forEach((element,index)=> { %>
+                                        <tr>
+
+                                            <td>
+                                                <%= index+1 %>
+                                            </td>
+                                            <td>
+                                                <%= element.firstName %>
+                                                    <%= element.lastName %>
+                                            </td>
+                                            <td>
+                                                <%= element.email %>
+                                            </td>
+                                            <td>
+                                                <%= element.phone %>
+                                            </td>
+                                            <td>
+                                                <%= element.date %>
+                                            </td>
+                                            <td>
+                                                <% if(element.blocked === true){ %>
+                                                    <a href="/admin/unblock/<%= element._id %>">
+                                                        <button type="button" class="btn btn-danger">Unblock</button>
+                                                    </a>
+                                                <% } else{ %>
+                                                    <a href="/admin/block/<%= element._id %>">
+                                                        <button type="button" class="btn btn-danger">Block</button>
+                                                    </a>
+                                                <% } %>
+                                            </td>
+
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+
+            <%- include("../layout/admin/footer.ejs") %>

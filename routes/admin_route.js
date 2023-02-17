@@ -41,7 +41,7 @@ admin_route.get('/viewproducts', adminAuth.isLogin, productController.viewProduc
 admin_route.get('/addproducts', adminAuth.isLogin, productController.addProducts)
 
 // admin insert products post method
-admin_route.post('/add_products', upload.array('productImage', 3), productController.insertProducts)
+admin_route.post('/addproducts', upload.array('productImage', 3), productController.insertProducts)
 
 //admin delete products
 admin_route.get('/deleteProduct/:id', productController.deleteProduct)

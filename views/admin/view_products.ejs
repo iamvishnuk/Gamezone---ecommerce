@@ -81,7 +81,7 @@
             </main>
 
             <script>
-                function validate(categoryId) {
+                function validate(proId) {
                     Swal.fire({
                         title: 'Are you sure?',
                         text: "You won't be able to revert this!",
@@ -91,11 +91,11 @@
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
-                        $.ajax({
-                            url: '/admin/deleteProduct/' + categoryId,
-                            method: 'get',
-                            success: (response) => {
-                                if (result.isConfirmed) {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/admin/deleteProduct/' + proId,
+                                method: 'get',
+                                success: (response) => {
                                     Swal.fire({
                                         title: 'Deleted!',
                                         text: 'Your file has been deleted.',
@@ -106,8 +106,8 @@
                                         location.reload()
                                     }, 1000);
                                 }
-                            }
-                        })
+                            })
+                        }
                     })
                 }
             </script>

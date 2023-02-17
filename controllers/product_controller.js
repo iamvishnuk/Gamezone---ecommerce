@@ -1,6 +1,8 @@
 const Product = require('../model/products_data')
 const Category = require('../model/category_data')
 
+let errorMessage = false
+
 
 
 //================= PRODUCTS =================
@@ -19,8 +21,9 @@ const viewProducts = async (req, res) => {
 //admin add products get function
 const addProducts = async (req, res) => {
     try {
-        const categoryData = await Category.find({})// for choosing category from the dropdown list
-        res.render("add_products", { categoryData: categoryData })
+        const categoryData = await Category.find({})
+        res.render("addproducts", { categoryData: categoryData, addError:errorMessage })
+        errorMessage = false
     } catch (error) {
         console.log(error.message);
     }
@@ -30,29 +33,35 @@ const addProducts = async (req, res) => {
 const insertProducts = async (req, res) => {
     try {
 
-        uploadedImage = req.files
-        const images = []
-        uploadedImage.forEach(element => {
-            images.push(element.filename)
-        });
-        console.log(images);
-
-        const products = new Product({
-            product_name: req.body.productName,
-            brand: req.body.brand,
-            category: req.body.category,
-            price: req.body.price,
-            stock: req.body.stock,
-            images: images,
-            description: req.body.description
-        })
-
-        const productData = await products.save();
-        console.log(productData);
-        if (productData) {
+        if (req.body.productName == "" || req.body.brand == "" || req.body.category == "" || req.body.price == "" || req.body.stock == "" || req.body.description == "") {
+            errorMessage = true
             res.redirect("/admin/addproducts")
         } else {
-            res.render("add_products", { addProductError: "product add failed" })
+
+            uploadedImage = req.files
+            const images = []
+            uploadedImage.forEach(element => {
+                images.push(element.filename)
+            });
+            console.log(images);
+
+            const products = new Product({
+                product_name: req.body.productName,
+                brand: req.body.brand,
+                category: req.body.category,
+                price: req.body.price,
+                stock: req.body.stock,
+                images: images,
+                description: req.body.description
+            })
+
+            const productData = await products.save()
+
+            if (productData) {
+                res.redirect("/admin/addproducts")
+            } else {
+                res.render("add_products", { addProductError: "product add failed" })
+            }
         }
 
 
@@ -155,7 +164,7 @@ const editProduct = async (req, res) => {
     }
 }
 
-module.exports ={
+module.exports = {
     viewProducts,
     addProducts,
     insertProducts,

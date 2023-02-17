@@ -1,7 +1,6 @@
 <%- include("../layout/admin/header.ejs") %>
     <%- include("../layout/admin/navbar.ejs") %>
         <%- include("../layout/admin/sidebar.ejs") %>
-
             <main id="main" class="main">
                 <div class="pagetitle">
                     <h1>Add Product</h1>
@@ -12,11 +11,16 @@
                         </ol>
                     </nav>
                 </div>
+                <% if (typeof addError !== true) { %>
+                    <div class="alert alert-danger" role="alert">
+                        All fiels are required 
+                    </div>
+                <% } %>
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Add product</h5>
                         <!-- General Form Elements -->
-                        <form action="/admin/add_products" method="post" enctype="multipart/form-data">
+                        <form id="add-product-form" action="" method="post" enctype="multipart/form-data">
                             <div class="row mb-3">
                                 <labe for="" class="col-sm-2 col-form-label">Name</labe>
                                 <div class="col-sm-10">
@@ -69,7 +73,8 @@
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label"></label>
                                 <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary"
+                                        onclick="return validate()">Submit</button>
                                 </div>
                             </div>
                         </form>
@@ -78,6 +83,24 @@
                 </div>
             </main>
 
+            <script>
+                // const form = document.querySelector('form');
+                // const submitButton = form.querySelector('button[type="submit"]');
+                // submitButton.addEventListener('click',(event)=>{
+                //     event.preventDefault()
+                //     Swal.fire({
+                //         position: 'top-end',
+                //         icon: 'success',
+                //         title: 'New product as added',
+                //         showConfirmButton: false,
+                //         timer: 1500
+                //     })
+                // })
+    
+
+
+            </script>
+            
 
 
             <%- include("../layout/admin/footer.ejs") %>

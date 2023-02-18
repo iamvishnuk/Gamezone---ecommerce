@@ -12,36 +12,43 @@
                             <table class="table-shopping-cart">
                                 <tr class="table_head">
                                     <th class="column-1">Product</th>
-                                    <th class="column-2"></th>
+                                    <th class="column-2">Name</th>
                                     <th class="column-3">Price</th>
                                     <th class="column-4">Quantity</th>
                                     <th class="column-5">Total</th>
                                 </tr>
+                                <% cartItems.cart.forEach(element=> { %>
 
-                                <tr class="table_row">
-                                    <td class="column-1">
-                                        <div class="how-itemcart1">
-                                            <img src="images/item-cart-04.jpg" alt="IMG">
-                                        </div>
-                                    </td>
-                                    <td class="column-2">Fresh Strawberries</td>
-                                    <td class="column-3">$ 36.00</td>
-                                    <td class="column-4">
-                                        <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                                <i class="fs-16 zmdi zmdi-minus"></i>
+                                    <tr class="table_row">
+                                        <td class="column-1">
+                                            <div class="how-itemcart1">
+                                                <img src="/product_images/<%= element.productId.images[0] %>" alt="IMG">
                                             </div>
+                                        </td>
+                                        <td class="column-2">
+                                            <%= element.productId.product_name %>
+                                        </td>
+                                        <td class="column-3">
+                                            Rs: <%= element.productId.price %>
+                                        </td>
+                                        <td class="column-4">
+                                            <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" onclick="incrementQuantity('<%= element.productId._id %>',-1)">
+                                                    <i class="fs-16 zmdi zmdi-minus"></i>
+                                                </div>
 
-                                            <input class="mtext-104 cl3 txt-center num-product" type="number"
-                                                name="num-product1" value="1">
+                                                <!-- <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                                    name="num-product1" value=""> -->
+                                                    <span id="<%= element.productId._id %>" class="mtext-104 cl3 txt-center num-product num-product1 p-t-10"><%= element.quantity %></span>
 
-                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                                <i class="fs-16 zmdi zmdi-plus"></i>
+                                                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" onclick="incrementQuantity('<%= element.productId._id %>',+1)">
+                                                    <i class="fs-16 zmdi zmdi-plus"></i>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="column-5">$ 36.00</td>
-                                </tr>
+                                        </td>
+                                        <td class="column-5"><%= element.productId.price %></td>
+                                    </tr>
+                                    <% }); %>
 
                             </table>
                         </div>
@@ -156,5 +163,23 @@
             </div>
         </div>
     </section>
+    <script>
+        function incrementQuantity(productId,count){
+            let quantity = parseInt(document.getElementById(productId).innerHTML)
+            count = parseInt(count)
+            $.ajax({
+                url:'/increment-quantity',
+                data:{
+                    productId:productId,
+                    count:count
+                },
+                method:'post',
+                success:(response)=>{
+                    document.getElementById(productId).innerHTML = quantity+count
+
+                }
+            })
+        }
+    </script>
 
     <%- include("../layout/user/user_footer.ejs") %>

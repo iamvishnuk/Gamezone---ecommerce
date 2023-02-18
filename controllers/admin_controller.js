@@ -1,7 +1,7 @@
 const admin = require('../model/admin_data');
 const Product = require('../model/products_data');
 const Category = require('../model/category_data');
-const Users = require('../model/user_date');
+const Users = require('../model/user_data');
 var mongoose = require('mongoose');
 const moment = require('moment')
 

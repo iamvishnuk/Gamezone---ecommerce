@@ -30,13 +30,28 @@ const userData = new mongoose.Schema({
         require: true,
         default: Date.now()
     },
-    blocked:{
+    blocked: {
         type: Boolean,
-        default:false
+        default: false
     },
-    cart:{
-        type: Array
+    cart: [{
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "product",
+            required: true,
+        },
+        quantity: {
+            type: Number,
+            default: 1
+        },
+        productTotalPrice: {
+            type: Number,
+        },
+    }],
+    cartTotalPrice:{
+        type:Number,
     }
+    
 })
 
 module.exports = mongoose.model('user', userData)

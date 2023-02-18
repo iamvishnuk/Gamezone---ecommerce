@@ -39,6 +39,9 @@ user_route.get("/cart",userController.getcart)
 // cart post method
 user_route.get("/addtocart/:id",userController.addToCart)
 
+// cart quantity increment post method
+user_route.post("/increment-quantity",userController.incrementQuantity)
+
 
 // user Logout 
 user_route.get('/userlogout',userAuth.userLogout)

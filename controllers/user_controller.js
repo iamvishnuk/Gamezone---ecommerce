@@ -1,5 +1,5 @@
 const Product = require("../model/products_data")
-const Users = require("../model/user_date")
+const Users = require("../model/user_data")
 require('dotenv').config()
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -7,7 +7,9 @@ const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
 const { ObjectId } = require("mongodb");
-var session;
+const { response } = require("express");
+const { LogContextImpl } = require("twilio/lib/rest/serverless/v1/service/environment/log");
+let session;
 
 
 //user login page
@@ -25,7 +27,7 @@ const doLogin = async (req, res) => {
         const userName = req.body.username
         const password = req.body.password
 
-        // console.log(userName, password)
+
 
         const userDetails = await Users.findOne({ username: userName })
         if (userDetails) {
@@ -102,7 +104,6 @@ const verifyOtp = async (req, res) => {
     try {
 
         const userData = req.session.user
-        console.log(userData);
 
         const otp = req.body.otp
         const verifyUserOtp = await client.verify.v2
@@ -188,13 +189,26 @@ const singleProductPage = async (req, res) => {
 
         if (req.session.user) {
 
-            const productId = req.params.id
+            const productID = req.params.id
             const user = req.session.user
-            // console.log(productId);
 
-            const productDetails = await Product.findOne({ _id: productId })
-            // console.log(productDetails);
-            res.render('singleproductpage', { productDetails: productDetails, user: user })
+            const productIdToCheck = productID
+
+            // check if the productId exists in the cart array
+            const productExists = user.cart.some((cartItem) => {
+                return cartItem.productId === productIdToCheck
+            });
+
+            if (productExists) {
+                console.log(`Product ${productIdToCheck} exists in cart`);
+                var exist = "Go to cart"
+            } else {
+                console.log(`Product ${productIdToCheck} does not exist in cart`);
+            }
+            
+            const productDetails = await Product.findOne({ _id: productID })
+
+            res.render('singleproductpage', { productDetails: productDetails, user: user, exist:exist })
 
         } else {
 
@@ -221,22 +235,17 @@ const getcart = async (req, res) => {
         if (req.session.user) {
 
             const user = req.session.user
+            const cartData = await Users.findOne({ _id: user._id },).populate('cart.productId').lean().exec()
 
-      
-            console.log(user)
+            console.log(cartData);
 
-
-
-
-            res.render('cart')
-
+            res.render('cart', { cartItems: cartData, user: user })
 
         } else {
 
             res.redirect('/userlogin')
 
         }
-
         res.render('cart')
 
     } catch (error) {
@@ -250,18 +259,17 @@ const addToCart = async (req, res) => {
 
         if (req.session.user) {
 
-            const userId = req.session.user
+            const user = req.session.user
             const proId = req.params.id
+            // console.log(user._id);
+            const productData = await Product.findOne({ _id: proId })
 
-            console.log(userId._id);
+            console.log(productData)
 
-            const productData = await Product.find({ _id: proId })
-
-            const cartUpdate = await Users.updateOne({ _id: userId._id }, { $push: { cart: { _id: new ObjectId, product: proId, quantity: 1 } } }).then((response) => {
-                console.log(response)
+            const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } }).then((response) => {                
                 res.redirect("/cart")
             })
-            console.log(productData)
+
 
         } else {
             res.redirect('/userlogin')
@@ -269,6 +277,30 @@ const addToCart = async (req, res) => {
 
     } catch (error) {
 
+    }
+}
+
+// cart quantity increment function
+const incrementQuantity = async (req, res)=>{
+    try {
+
+        if(req.session.user){
+
+            const user = req.session.user
+            const proId = req.body.productId
+            const count = req.body.count
+
+            const increment = await Users.updateOne(
+                {_id:user._id, "cart.productId":proId},
+                {$inc:{'cart.$.quantity':count}}
+            ).then((response)=>{
+                res.json(response)
+            })
+
+        }
+
+    } catch (error) {
+        console.log(error.message)
     }
 }
 
@@ -282,5 +314,6 @@ module.exports = {
     productsPage,
     singleProductPage,
     getcart,
-    addToCart
+    addToCart,
+    incrementQuantity
 }

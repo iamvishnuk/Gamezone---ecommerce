@@ -1944,7 +1944,7 @@ input.num-product::-webkit-inner-spin-button {
 .table-shopping-cart .column-5 {
   width: 172px;
   padding-right: 50px;
-  text-align: right;
+  text-align: center;
   font-size: 16px;
 }
 
@@ -2958,7 +2958,7 @@ input.num-product::-webkit-inner-spin-button {
   width: 60px;
   position: relative;
   margin-right: 20px;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .how-itemcart1 img {
@@ -2966,7 +2966,7 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .how-itemcart1::after {
-  content: '\e870';
+  /* content: '\e870'; */
   font-family: Linearicons-Free;
   font-size: 16px;
   display: -webkit-box;

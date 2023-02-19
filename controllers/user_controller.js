@@ -192,37 +192,25 @@ const singleProductPage = async (req, res) => {
             const productID = req.params.id
             const user = req.session.user
 
-            const productIdToCheck = productID
-
-            // check if the productId exists in the cart array
-            const productExists = user.cart.some((cartItem) => {
-                return cartItem.productId === productIdToCheck
-            });
-
-            if (productExists) {
-                console.log(`Product ${productIdToCheck} exists in cart`);
+            const cartCheck = await Users.findOne({_id:user._id,'cart.productId':productID}, {'productId.$':1})
+            if(cartCheck){
                 var exist = "Go to cart"
-            } else {
-                console.log(`Product ${productIdToCheck} does not exist in cart`);
             }
-            
+  
             const productDetails = await Product.findOne({ _id: productID })
+            console.log(productDetails);
 
-            res.render('singleproductpage', { productDetails: productDetails, user: user, exist:exist })
+            res.render('singleproductpage', { productDetails: productDetails, user: user, exist: exist })
 
         } else {
 
             const productId = req.params.id
             const user = req.session.user
-            console.log(productId);
 
             const productDetails = await Product.findOne({ _id: productId })
-            console.log(productDetails);
             res.render('singleproductpage', { productDetails: productDetails })
 
         }
-
-
 
     } catch (error) {
         console.log(error.message);
@@ -261,15 +249,12 @@ const addToCart = async (req, res) => {
 
             const user = req.session.user
             const proId = req.params.id
-            // console.log(user._id);
-            const productData = await Product.findOne({ _id: proId })
 
-            console.log(productData)
+            const productData = await Product.findOne({ _id: proId })
 
             const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } }).then((response) => {                
                 res.redirect("/cart")
             })
-
 
         } else {
             res.redirect('/userlogin')
@@ -304,6 +289,50 @@ const incrementQuantity = async (req, res)=>{
     }
 }
 
+// cart item remove function
+const removeCart = async (req, res)=>{
+    try {
+        const proId = req.params.id
+        const user = req.session.user
+        
+        console.log(proId);
+
+        const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response)=>{
+            res.redirect("/cart")
+        })
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// ==================== wishlist =================
+const getWishlist =async (req, res)=>{
+    try {
+        
+        if (req.session.user) {
+
+            res.render('wishlist')
+            
+        }else{
+
+            res.redirect('/userlogin')
+
+        }
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const postWishlist = async(req,res )=>{
+    try {
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
 module.exports = {
     userHome,
     userLogin,
@@ -315,5 +344,8 @@ module.exports = {
     singleProductPage,
     getcart,
     addToCart,
-    incrementQuantity
+    incrementQuantity,
+    removeCart,
+    getWishlist,
+    postWishlist,
 }

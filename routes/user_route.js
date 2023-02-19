@@ -33,7 +33,7 @@ user_route.get("/products",userController.productsPage)
 // single product paget get method
 user_route.get("/singleproductpage/:id",userController.singleProductPage)
 
-//cart get method ----------------------------------------------------------------
+//cart get method ========================================================
 user_route.get("/cart",userController.getcart)
 
 // cart post method
@@ -42,6 +42,14 @@ user_route.get("/addtocart/:id",userController.addToCart)
 // cart quantity increment post method
 user_route.post("/increment-quantity",userController.incrementQuantity)
 
+// remove cart item 
+user_route.get("/cart-remove/:id",userController.removeCart)
+
+// wishlist get method======================================
+user_route.get("/wishlist",userController.getWishlist)
+
+// wishlist post method
+user_route.post("/addtowishlist",userController.postWishlist)
 
 // user Logout 
 user_route.get('/userlogout',userAuth.userLogout)

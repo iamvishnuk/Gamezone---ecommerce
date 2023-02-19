@@ -50,7 +50,12 @@ const userData = new mongoose.Schema({
     }],
     cartTotalPrice:{
         type:Number,
-    }
+    },
+    wishlist:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"product"
+    }]
+        
     
 })
 

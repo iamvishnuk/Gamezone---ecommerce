@@ -16,32 +16,35 @@
                                     <th class="column-3">Price</th>
                                     <th class="column-5">Action</th>
                                 </tr>
+                                <% wishData.forEach(element=> { %>
 
-                                <tr class="table_row">
-                                    <td class="column-1">
-                                        <div class="how-itemcart1">
-                                            <img src="/product_images/" alt="IMG">
-                                        </div>
-                                    </td>
-                                    <td class="column-2">
-                                        <span>hai</span>
-                                    </td>
-                                    <td class="column-3">
-                                        Rs:
-                                    </td>
-                                    <td class="column-5">
-                                        <div class="p-1">
-                                            <button class="btn btn-danger">
-                                                <a href="/cart-remove" style="color: white;">Remove</a>
-                                            </button>
-                                        </div>
-                                        <div class="p-1">
-                                            <button class="btn btn-success">
-                                                <a href="/cart-remove" style="color: white;">Add to cart</a>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <tr class="table_row">
+                                        <td class="column-1">
+                                            <div class="how-itemcart1">
+                                                <img src="/product_images/<%= element.images[0] %>" alt="IMG">
+                                            </div>
+                                        </td>
+                                        <td class="column-2">
+                                            <span><%= element.product_name %></span>
+                                        </td>
+                                        <td class="column-3">
+                                            Rs:<%= element.price %>
+                                        </td>
+                                        <td class="column-5">
+                                            <div class="p-1">
+                                                <button class="btn btn-danger">
+                                                    <a href="/removeWishlist/<%= element._id %>" style="color: white;">Remove</a>
+                                                </button>
+                                            </div>
+                                            <div class="p-1">
+                                                <button class="btn btn-success">
+                                                    <a href="/addtocart/<%= element._id %>" style="color: white;">Add to cart</a>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <% }); %>
 
                             </table>
                         </div>

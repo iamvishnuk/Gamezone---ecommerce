@@ -1,7 +1,7 @@
 const Product = require('../model/products_data')
 const Category = require('../model/category_data')
 
-let errorMessage = false
+
 
 
 
@@ -22,8 +22,7 @@ const viewProducts = async (req, res) => {
 const addProducts = async (req, res) => {
     try {
         const categoryData = await Category.find({})
-        res.render("addproducts", { categoryData: categoryData, addError:errorMessage })
-        errorMessage = false
+        res.render("addproducts", { categoryData: categoryData })
     } catch (error) {
         console.log(error.message);
     }
@@ -33,36 +32,32 @@ const addProducts = async (req, res) => {
 const insertProducts = async (req, res) => {
     try {
 
-        if (req.body.productName == "" || req.body.brand == "" || req.body.category == "" || req.body.price == "" || req.body.stock == "" || req.body.description == "") {
-            errorMessage = true
+
+        uploadedImage = req.files
+        const images = []
+        uploadedImage.forEach(element => {
+            images.push(element.filename)
+        });
+        console.log(images);
+
+        const products = new Product({
+            product_name: req.body.productName,
+            brand: req.body.brand,
+            category: req.body.category,
+            price: req.body.price,
+            stock: req.body.stock,
+            images: images,
+            description: req.body.description
+        })
+
+        const productData = await products.save()
+
+        if (productData) {
             res.redirect("/admin/addproducts")
         } else {
-
-            uploadedImage = req.files
-            const images = []
-            uploadedImage.forEach(element => {
-                images.push(element.filename)
-            });
-            console.log(images);
-
-            const products = new Product({
-                product_name: req.body.productName,
-                brand: req.body.brand,
-                category: req.body.category,
-                price: req.body.price,
-                stock: req.body.stock,
-                images: images,
-                description: req.body.description
-            })
-
-            const productData = await products.save()
-
-            if (productData) {
-                res.redirect("/admin/addproducts")
-            } else {
-                res.render("add_products", { addProductError: "product add failed" })
-            }
+            res.render("add_products", { addProductError: "product add failed" })
         }
+
 
 
     } catch (error) {

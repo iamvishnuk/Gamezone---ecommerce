@@ -48,15 +48,16 @@ const userData = new mongoose.Schema({
             type: Number,
         },
     }],
-    cartTotalPrice:{
-        type:Number,
+    cartTotalPrice: {
+        type: Number,
     },
-    wishlist:[{
+    wishlist: [{
+
         type: mongoose.Schema.Types.ObjectId,
-        ref:"product"
+        ref: "product"
     }]
-        
-    
+
+
 })
 
 module.exports = mongoose.model('user', userData)

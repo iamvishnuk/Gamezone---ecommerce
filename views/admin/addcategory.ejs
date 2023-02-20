@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Add category</h5>
                         <!-- General Form Elements -->
-                        <form action="/admin/addcategory" method="post">
+                        <form id="add-category-form" action="/admin/addcategory" method="post">
                             <div class="row mb-3">
                                 <labe for="" class="col-sm-2 col-form-label">Category Name</labe>
                                 <div class="col-sm-10">
@@ -45,6 +45,38 @@
                     </div>
                 </div>
             </main>
+            <script>
+                const form = document.querySelector('form');
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.addEventListener('click', (event) => {
+                    event.preventDefault()
+                    if (validate()) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'New product as added',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((response) => {
+                            form.submit();
+                        })
+                    }
+                })
+                function validate() {
+                    // Get form inputs
+                    const categoryName = document.forms["add-category-form"]["categoryName"].value;
+                    const description = document.forms["add-category-form"]["description"].value;
+
+                    // Validate required fields
+                    if (categoryName === "" || description === "" ) {
+                        alert("Please fill in all required fields");
+                        return false;
+                    }
+                    // All validations passed
+                    return true;
+                }
+
+            </script>
 
 
 

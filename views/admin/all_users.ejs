@@ -1,6 +1,7 @@
 <%- include("../layout/admin/header.ejs") %>
     <%- include("../layout/admin/navbar.ejs") %>
         <%- include("../layout/admin/sidebar.ejs") %>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
             <main id="main" class="main">
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
@@ -18,7 +19,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+                            <h5 class="card-title">All Users</h5>
 
                             <table class="table table-borderless datatable">
                                 <thead>
@@ -48,9 +49,11 @@
                                             <td>
                                                 <%= element.phone %>
                                             </td>
-                                            <td>
-                                                <%= element.date %>
-                                            </td>
+                                            <% const date=element.date %>
+                                                <td>
+                                            
+                                                    <%= moment(date).format("MMM Do YY") %>
+                                                </td>
                                             <td>
                                                 <% if(element.blocked === true){ %>
                                                     <a href="/admin/unblock/<%= element._id %>">

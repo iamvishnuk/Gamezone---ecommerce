@@ -49,7 +49,10 @@ user_route.get("/cart-remove/:id",userController.removeCart)
 user_route.get("/wishlist",userController.getWishlist)
 
 // wishlist post method
-user_route.post("/addtowishlist",userController.postWishlist)
+user_route.post("/addtowishlist",userController.addToWishlist)
+
+// remove wishlist item
+user_route.get("/removeWishlist/:id",userController.removeFromwishlist)
 
 // user Logout 
 user_route.get('/userlogout',userAuth.userLogout)

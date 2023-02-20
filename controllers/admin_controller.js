@@ -168,7 +168,7 @@ const allUsers = async (req, res) => {
     try {
 
         const userDetails = await Users.find({})
-        res.render("all_users", { userDetails: userDetails })
+        res.render("all_users", { userDetails: userDetails, moment: moment })
 
     } catch (error) {
         console.log(error.message);

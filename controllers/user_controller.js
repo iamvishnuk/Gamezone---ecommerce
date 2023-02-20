@@ -147,18 +147,23 @@ const userHome = async (req, res) => {
     try {
         if (req.session.user) {
 
-
             const user = req.session.user
+            const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
+            const wish = wishlist[0].wishlist
 
-            // console.log(userData);
+            const wishdata = []
+            wish.forEach(element => {
+                wishdata.push(element.product_name)
+            });
+
             const product = await Product.find({ list: true }).limit(4)
-            // console.log(product);
-            res.render('user_home', { productData: product, user: user })
+            res.render('user_home', { productData: product, user: user, wishlist: wishdata })
+
         } else {
-            // console.log(userData);
-            const product = await Product.find({ list: true }).limit(4)
-            // console.log(product);
-            res.render('user_home', { productData: product })
+
+            const product = await Product.find({ list: true }).limit(4);
+            res.render('user_home', { productData: product, wishlist:"null"})
+
         }
 
     } catch (error) {
@@ -171,11 +176,20 @@ const productsPage = async (req, res) => {
     try {
         if (req.session.user) {
             const user = req.session.user
+
+            const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
+            const wish = wishlist[0].wishlist
+
+            const wishdata = []
+            wish.forEach(element => {
+                wishdata.push(element.product_name)
+            });
+
             const product = await Product.find({ list: true })
-            res.render('products_page', { productData: product, user: user })
+            res.render('products_page', { productData: product, user: user, wishlist: wishdata })
         } else {
             const product = await Product.find({ list: true })
-            res.render('products_page', { productData: product })
+            res.render('products_page', { productData: product, wishlist:'null' })
         }
 
     } catch (error) {
@@ -192,11 +206,11 @@ const singleProductPage = async (req, res) => {
             const productID = req.params.id
             const user = req.session.user
 
-            const cartCheck = await Users.findOne({_id:user._id,'cart.productId':productID}, {'productId.$':1})
-            if(cartCheck){
+            const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': productID }, { 'productId.$': 1 })
+            if (cartCheck) {
                 var exist = "Go to cart"
             }
-  
+
             const productDetails = await Product.findOne({ _id: productID })
             console.log(productDetails);
 
@@ -252,7 +266,7 @@ const addToCart = async (req, res) => {
 
             const productData = await Product.findOne({ _id: proId })
 
-            const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } }).then((response) => {                
+            const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } }).then((response) => {
                 res.redirect("/cart")
             })
 
@@ -266,21 +280,29 @@ const addToCart = async (req, res) => {
 }
 
 // cart quantity increment function
-const incrementQuantity = async (req, res)=>{
+const incrementQuantity = async (req, res) => {
     try {
 
-        if(req.session.user){
+        if (req.session.user) {
 
             const user = req.session.user
             const proId = req.body.productId
             const count = req.body.count
+            const pPrice = req.body.pPrice
 
             const increment = await Users.updateOne(
-                {_id:user._id, "cart.productId":proId},
-                {$inc:{'cart.$.quantity':count}}
-            ).then((response)=>{
-                res.json(response)
-            })
+                { _id: user._id, "cart.productId": proId },
+                { $inc: { 'cart.$.quantity': count } }
+            )
+            const cartItem = await Users.findOne({ _id: user._id, "cart.productId": proId }, { "cart.$": 1 })
+            const productTotal = pPrice * cartItem.cart[0].quantity
+
+            const pTotal = await Users.updateOne(
+                { _id: user._id, "cart.productId": proId },
+                { $set: { 'cart.$.productTotalPrice': productTotal } }
+            )
+            
+            res.json({ success: true, productTotal })
 
         }
 
@@ -290,46 +312,88 @@ const incrementQuantity = async (req, res)=>{
 }
 
 // cart item remove function
-const removeCart = async (req, res)=>{
+const removeCart = async (req, res) => {
     try {
         const proId = req.params.id
         const user = req.session.user
-        
+
         console.log(proId);
 
-        const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response)=>{
+        const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response) => {
             res.redirect("/cart")
         })
-        
+
     } catch (error) {
         console.log(error.message)
     }
 }
 
 // ==================== wishlist =================
-const getWishlist =async (req, res)=>{
+const getWishlist = async (req, res) => {
     try {
-        
+
         if (req.session.user) {
 
-            res.render('wishlist')
-            
-        }else{
+            const user = req.session.user
+            const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
+            const wishData = wishlist[0].wishlist
+
+
+            // const wishdata = []
+            // wish.forEach(eement => {
+            //     wishdata.push(element.product_name)
+            // });
+
+            res.render('wishlist',{wishData:wishData, user:user})
+
+        } else {
 
             res.redirect('/userlogin')
 
         }
-        
+
     } catch (error) {
         console.log(error.message)
     }
 }
 
-const postWishlist = async(req,res )=>{
+// add to wishlist post method
+const addToWishlist = async (req, res) => {
     try {
-        
+
+        if (req.session.user) {
+
+            const proId = req.body.productId
+            const user = req.session.user
+
+            const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { wishlist:  proId  } }).then((response) => {
+                res.json(response)
+            })
+
+        } else {
+
+            res.redirect('/userlogin')
+
+        }
+
     } catch (error) {
         console.log(error.message)
+    }
+}
+
+const removeFromwishlist = async( req,res )=>{
+    try {
+
+        const proId = req.params.id
+        const user = req.session.user
+
+        const cartUpdate = await Users.updateOne({ _id: user._id }, { $pull: { wishlist: proId } }).then(()=>{
+            res.redirect("/wishlist")
+        })
+
+        
+    } catch (error) {
+        console.log(error.message);
     }
 }
 
@@ -347,5 +411,6 @@ module.exports = {
     incrementQuantity,
     removeCart,
     getWishlist,
-    postWishlist,
+    addToWishlist,
+    removeFromwishlist
 }

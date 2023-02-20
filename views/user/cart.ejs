@@ -34,7 +34,7 @@
                                             <td class="column-4">
                                                 <div class="wrap-num-product flex-w m-l-auto m-r-0">
                                                     <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                                        onclick="incrementQuantity('<%= element.productId._id %>',-1)">
+                                                        onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',-1)">
                                                         <i class="fs-16 zmdi zmdi-minus"></i>
                                                     </div>
                                                     <span id="<%= element.productId._id %>"
@@ -43,13 +43,13 @@
                                                     </span>
 
                                                     <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-                                                        onclick="incrementQuantity('<%= element.productId._id %>',+1)">
+                                                        onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',+1)">
                                                         <i class="fs-16 zmdi zmdi-plus"></i>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="column-5">
-                                                <%= element.productId.price %>
+                                            <td class="column-5 <%= element.productId._id %>">
+                                                <%= element.productTotalPrice %>
                                             </td>
                                             <td class="column-5">
                                                
@@ -86,18 +86,21 @@
         </div>
     </section>
     <script>
-        function incrementQuantity(productId, count) {
+        function incrementQuantity(productId, pPrice, count) {
             let quantity = parseInt(document.getElementById(productId).innerHTML)
             count = parseInt(count)
             $.ajax({
                 url: '/increment-quantity',
                 data: {
                     productId: productId,
-                    count: count
+                    count: count,
+                    pPrice: pPrice
                 },
                 method: 'post',
                 success: (response) => {
+                    console.log(response)
                     document.getElementById(productId).innerHTML = quantity + count
+                    document.getElementsByClassName(productId)[0].innerHTML = response.productTotal
 
                 }
             })

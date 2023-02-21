@@ -69,9 +69,12 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="flex-c-m stext-101 cl2 size-119 p-lr-15 trans-04 m-tb-10">
-                                    Rs: <span>100000</span>
-                                </div>
+                                <% if (typeof total !== 'undefined') { %>
+                                    <div class="flex-c-m stext-101 cl2 size-119 p-lr-15 trans-04 m-tb-10">
+                                        Rs: <span id="total"><%= total %></span>
+                                    </div>
+                                    
+                                <% } %>
                                 <div
                                     class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
                                     Make Order
@@ -101,10 +104,29 @@
                     console.log(response)
                     document.getElementById(productId).innerHTML = quantity + count
                     document.getElementsByClassName(productId)[0].innerHTML = response.productTotal
+                    document.getElementById('total').innerHTML = response.cartTotal
+                    console.log(quantity);
+                    // if(quantity === 1){
+                    //     disableButton()
+                    // }else{
+                    //     enableButton()
+                    // }
+
+                    // function disableButton() {
+                    //     const button = document.querySelector('.btn-num-product-down');
+                    //     button.removeAttribute('onclick');
+                    // }
+                    // function enableButton() {
+                    //     const button = document.querySelector('.btn-num-product-down');
+                    //     button.setAttribute('onclick')
+                    // }
 
                 }
             })
         }
+
+
+
     </script>
 
     <%- include("../layout/user/user_footer.ejs") %>

@@ -30,7 +30,7 @@
                             <li>
                                 <a style="pointer-events: none;"><%= user.firstName %></a>
                                 <ul class="sub-menu">
-                                    <li><a href="index.html">My Account</a></li>
+                                    <li><a href="/userprofile">My Account</a></li>
                                     <li><a href="/userlogout">Logout</a></li>
                                 </ul>
                             </li>
@@ -109,7 +109,7 @@
     <div class="menu-mobile">
         <ul class="main-menu-m">
             <li>
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
                 <!-- <span class="arrow-main-menu-m">
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </span> -->
@@ -120,15 +120,25 @@
             </li>
 
             <li>
-                <a href="shoping-cart.html">Wishlist</a>
+                <a href="wishlist">Wishlist</a>
             </li>
 
             <li>
                 <a href="blog.html">Profile</a>
             </li>
-            <li>
-                <a href="/userlogin">Login</a>
-            </li>
+            <% if (typeof user !=='undefined' ) { %>
+                
+                <li>
+                    <a href="/userlogout">Logout</a>
+                </li>
+
+                <% }else{ %>
+
+                    <li>
+                        <a href="/userlogin">Login</a>
+                    </li>
+
+                <% } %>
     </div>
 
     <!-- Modal Search -->

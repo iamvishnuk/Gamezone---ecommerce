@@ -14,19 +14,19 @@
         <p>Signup</p>
         <form action="/usersignup" method="post">
             <div class="user-box">
-                <input required="" name="firstName" type="text">
+                <input name="firstName" type="text">
                 <label>First name</label>
             </div>
             <div class="user-box">
-                <input required="" name="lname" type="text">
+                <input name="lname" type="text">
                 <label>Last name</label>
             </div>
             <div class="user-box">
-                <input required="" name="username" type="text">
+                <input name="username" type="text">
                 <label>Username</label>
             </div>
             <div class="user-box">
-                <input required="" name="email" type="text">
+                <input name="email" type="text">
                 <% if (typeof error !== 'undefined') { %>
                     <label for="" style="color: red;"><%= error %></label>
                 <% }else{ %>
@@ -34,11 +34,11 @@
                 <% } %>
             </div>
             <div class="user-box">
-                <input required="" name="password" type="password">
+                <input name="password" type="password">
                 <label>Password</label>
             </div>
             <div class="user-box">
-                <input required="" name="phone" type="string">
+                <input name="phone" type="string">
                 <label>Phone</label>
             </div>
             <button class="admin_login_btn" type="submit">
@@ -53,5 +53,26 @@
         </form>
         <p>Already have account <a href="/userlogin" class="a2">Login!</a></p>
     </div>
+    <script>
+        const form = document.querySelector('form');
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const firstName = document.querySelector('[name="firstName"]').value;
+                const lastName = document.querySelector('[name="lname"]').value;
+                const username = document.querySelector('[name="username"]').value;
+                const email = document.querySelector('[name="email"]').value;
+                const password = document.querySelector('[name="password"]').value;
+                const phone = document.querySelector('[name="phone"]').value;
+
+                if(firstName === "" || lastName === "" || username === "" || email ==="" || password === "" || phone === ""){
+                    alert("all fields are required")
+                }
+
+                form.submit();
+
+            });
+
+    </script>
 </body>
 </html>

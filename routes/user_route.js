@@ -10,51 +10,54 @@ user_route.set('views', './views/user')
 
 
 // user home page
-user_route.get('/',userController.userHome)
+user_route.get('/', userController.userHome)
 
 // user get loogin page
-user_route.get("/userlogin",userAuth.isLogout,userController.userLogin)
+user_route.get("/userlogin", userAuth.isLogout, userController.userLogin)
 
 //user login post method
-user_route.post('/userlogin',userController.doLogin)
+user_route.post('/userlogin', userController.doLogin)
 
 //user get signup page
-user_route.get('/usersignup',userAuth.isLogout,userController.userSignup)
+user_route.get('/usersignup', userAuth.isLogout, userController.userSignup)
 
 // user signup page post 
-user_route.post('/usersignup',userController.verifyUser)
+user_route.post('/usersignup', userController.verifyUser)
 
 // verify user opt
-user_route.post('/userotp',userController.verifyOtp)
+user_route.post('/userotp', userController.verifyOtp)
 
 // product page get method
-user_route.get("/products",userController.productsPage)
+user_route.get("/products", userController.productsPage)
 
 // single product paget get method
-user_route.get("/singleproductpage/:id",userController.singleProductPage)
+user_route.get("/singleproductpage/:id", userController.singleProductPage)
 
 //cart get method ========================================================
-user_route.get("/cart",userController.getcart)
+user_route.get("/cart", userController.getcart)
 
 // cart post method
-user_route.get("/addtocart/:id",userController.addToCart)
+user_route.get("/addtocart/:id", userController.addToCart)
 
 // cart quantity increment post method
-user_route.post("/increment-quantity",userController.incrementQuantity)
+user_route.post("/increment-quantity", userController.incrementQuantity)
 
 // remove cart item 
-user_route.get("/cart-remove/:id",userController.removeCart)
+user_route.get("/cart-remove/:id", userController.removeCart)
 
 // wishlist get method======================================
-user_route.get("/wishlist",userController.getWishlist)
+user_route.get("/wishlist", userController.getWishlist)
 
 // wishlist post method
-user_route.post("/addtowishlist",userController.addToWishlist)
+user_route.post("/addtowishlist", userController.addToWishlist)
 
 // remove wishlist item
-user_route.get("/removeWishlist/:id",userController.removeFromwishlist)
+user_route.get("/removeWishlist/:id", userController.removeFromwishlist)
+
+// user profile page
+user_route.get("/userprofile", userController.getUserProfile)
 
 // user Logout 
-user_route.get('/userlogout',userAuth.userLogout)
+user_route.get('/userlogout', userAuth.userLogout)
 
 module.exports = user_route

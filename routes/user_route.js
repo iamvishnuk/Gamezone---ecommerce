@@ -57,7 +57,25 @@ user_route.get("/removeWishlist/:id", userController.removeFromwishlist)
 // user profile page
 user_route.get("/userprofile", userController.getUserProfile)
 
+// user profile edit 
+user_route.post("/edituserprofile",userController.editUserProfile)
+
+// view all addresses
+user_route.get("/manageaddress",userController.allAddressesPage)
+
+// add new address post 
+user_route.post("/add-address", userController.addAddress)
+
+// delete address 
+user_route.get("/delete-address/:id", userController.deleteAddress)
+
+
+
+
+
+
 // user Logout 
 user_route.get('/userlogout', userAuth.userLogout)
+
 
 module.exports = user_route

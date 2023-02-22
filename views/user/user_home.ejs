@@ -198,15 +198,10 @@
 
 
                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                        <% if(wishlist.includes(element.product_name)){ %>
-                                        <a href="" class="btn-addwish-b2 dis-block pos-relative">
-                                            <i id="<%= element._id %>" class="fa fa-heart" style="color: red;"></i>
-                                        </a>
-                                    <% }else{ %>
                                         <a href="" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" onclick="addTowishlist('<%= element._id %>')">
                                             <i id="<%= element._id %>" class="fa fa-heart" style="color: rgb(188, 181, 181);"></i>
                                         </a>
-                                    <% } %>
+                                    
                                     </div>
                                 </div>
                             </div>

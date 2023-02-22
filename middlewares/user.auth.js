@@ -2,7 +2,7 @@
 // while admin login
 const isLogin = async (req, res, next) => {
     try {
-        if (req.session.user) {
+        if (req.session.userId) {
             console.log("user logged in");
         }
         else {
@@ -17,7 +17,7 @@ const isLogin = async (req, res, next) => {
 // admin entering after closing the tab
 const isLogout = async (req, res, next) => {
     try {
-        if (req.session.user) {
+        if (req.session.userId) {
             console.log("user entering after closing the tab");
             res.redirect('/')
         }
@@ -31,7 +31,7 @@ const isLogout = async (req, res, next) => {
 
 const userLogout = async (req, res) => {
     try {
-        req.session.user = null
+        req.session.userId = null
         res.redirect("/")
         console.log("session destoryed");
     } catch (error) {

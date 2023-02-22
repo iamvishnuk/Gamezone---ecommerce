@@ -128,9 +128,6 @@ const editProduct = async (req, res) => {
         console.log("post edit product");
 
         const proId = req.params.id
-        // const proData = req.body
-        // const img = req.files
-        // console.log(proId,proData,img);
 
         uploadedImage = req.files
         const images = []

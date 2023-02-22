@@ -6,10 +6,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
-const { ObjectId } = require("mongodb");
 const { response } = require("express");
-const { LogContextImpl } = require("twilio/lib/rest/serverless/v1/service/environment/log");
-let session;
 
 
 //user login page
@@ -35,8 +32,8 @@ const doLogin = async (req, res) => {
                 bycrpt.compare(password, userDetails.password).then((status) => {
                     if (status) {
 
-                        session = req.session
-                        session.user = userDetails
+                        req.session.userId = userDetails._id
+                        console.log(req.session.userId)
 
                         res.redirect('/')
                     } else {
@@ -82,9 +79,8 @@ const verifyUser = async (req, res) => {
 
         } else {
 
-            // console.log(req.body);
-            const number = req.body.phone
-            req.session.user = req.body
+            req.session.userId = req.body
+            const number = req.session.userId.phone
             const otpResponse = await client.verify.v2
                 .services(serviceSid)
                 .verifications.create({
@@ -103,13 +99,14 @@ const verifyUser = async (req, res) => {
 const verifyOtp = async (req, res) => {
     try {
 
-        const userData = req.session.user
+        const number = req.session.userId.phone
+        const userData = req.session.userId
 
         const otp = req.body.otp
         const verifyUserOtp = await client.verify.v2
             .services(serviceSid)
             .verificationChecks.create({
-                to: `+91${userData.phone}`,
+                to: `+91${number}`,
                 code: otp,
             }).then(async (verifications) => {
                 if (verifications.status === "approved") {
@@ -125,6 +122,7 @@ const verifyOtp = async (req, res) => {
 
                     })
                     const userDetailsData = await userDetails.save()
+                    req.session.userId = userDetailsData._id
                     if (userDetailsData) {
                         res.redirect('/')
                     }
@@ -145,19 +143,13 @@ const verifyOtp = async (req, res) => {
 //user home page
 const userHome = async (req, res) => {
     try {
-        if (req.session.user) {
+        if (req.session.userId) {
 
-            const user = req.session.user
-            const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
-            const wish = wishlist[0].wishlist
-
-            const wishdata = []
-            wish.forEach(element => {
-                wishdata.push(element.product_name)
-            });
+            const userId = req.session.userId
+            const user = await Users.findOne({_id: userId})
 
             const product = await Product.find({ list: true }).limit(4)
-            res.render('user_home', { productData: product, user: user, wishlist: wishdata })
+            res.render('user_home', { productData: product, user: user})
 
         } else {
 
@@ -174,16 +166,18 @@ const userHome = async (req, res) => {
 //product page 
 const productsPage = async (req, res) => {
     try {
-        if (req.session.user) {
-            const user = req.session.user
+        if (req.session.userId) {
+
+            const userId = req.session.userId
+            const user = await Users.findOne({_id: userId})
 
             const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
             const wish = wishlist[0].wishlist
 
             const wishdata = []
-            wish.forEach(element => {
-                wishdata.push(element.product_name)
-            });
+            // wish.forEach(element => {
+            //     wishdata.push(element.product_name)
+            // });
 
             const product = await Product.find({ list: true })
             res.render('products_page', { productData: product, user: user, wishlist: wishdata })
@@ -201,10 +195,11 @@ const productsPage = async (req, res) => {
 const singleProductPage = async (req, res) => {
     try {
 
-        if (req.session.user) {
-
+        if (req.session.userId) {
+            
+            const userId = req.session.userId
+            const user = await Users.findOne({ userId: userId})
             const productID = req.params.id
-            const user = req.session.user
 
             const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': productID }, { 'productId.$': 1 })
             if (cartCheck) {
@@ -212,14 +207,12 @@ const singleProductPage = async (req, res) => {
             }
 
             const productDetails = await Product.findOne({ _id: productID })
-            // console.log(productDetails);
 
             res.render('singleproductpage', { productDetails: productDetails, user: user, exist: exist })
 
         } else {
 
             const productId = req.params.id
-            const user = req.session.user
 
             const productDetails = await Product.findOne({ _id: productId })
             res.render('singleproductpage', { productDetails: productDetails })
@@ -234,25 +227,27 @@ const singleProductPage = async (req, res) => {
 // cart get method
 const getcart = async (req, res) => {
     try {
-        if (req.session.user) {
+        if (req.session.userId) {
 
-            const user = req.session.user
-            const cartData = await Users.findOne({ _id: user._id },).populate('cart.productId').lean().exec()
+            const userId = req.session.userId
+            const user = await Users.findOne({ _id: userId })
 
-            // cart total 
+            const cartItems = await Users.findOne({ _id: user._id },).populate('cart.productId')
+
             const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
 
             const cartTotal = updatedCart.cart.reduce(
                 (total, item) => total + item.productTotalPrice, 0
             )
-            // console.log(cartTotal);
+            console.log(cartItems,"hilllllllllllllllllllllllllllllllll");
 
             const cartTotalPrice = await Users.updateOne(
                 { _id: user._id },
                 { cartTotalPrice: cartTotal }
             )
+            
 
-            res.render('cart', { cartItems: cartData, user: user, total: cartTotal })
+            res.render('cart', { cartItems: cartItems, user: user, total: cartTotal })
 
         } else {
 
@@ -270,36 +265,37 @@ const getcart = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
 
-        if (req.session.user) {
+        if (req.session.userId) {
 
-            const user = req.session.user
+            const userId = req.session.userId
             const proId = req.params.id
+            const user = await Users.findOne({_id: userId})
 
             const productData = await Product.findOne({ _id: proId })
 
             const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': proId }, { 'productId.$': 1 })
 
-            if(cartCheck){
+            if (cartCheck) {
                 res.redirect('/cart')
-            }else{
-                
+            } else {
+
                 const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } })
-    
+
                 // cart total price ==================================================
                 const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
-    
+
                 const cartTotal = updatedCart.cart.reduce(
                     (total, item) => total + item.productTotalPrice, 0
                 )
-    
+
                 const cartTotalPrice = await Users.updateOne(
                     { _id: user._id },
                     { cartTotalPrice: cartTotal }
                 )
                 //end of cart total price --------------------------------------------
-    
+
                 const cartData = await Users.findOne({ _id: user._id },).populate('cart.productId').lean().exec()
-    
+
                 res.render('cart', { cartItems: cartData, user: user, total: cartTotal })
             }
 
@@ -317,12 +313,14 @@ const addToCart = async (req, res) => {
 const incrementQuantity = async (req, res) => {
     try {
 
-        if (req.session.user) {
+        if (req.session.userId) {
 
-            const user = req.session.user
+            const userId = req.session.userId
             const proId = req.body.productId
             const count = req.body.count
             const pPrice = req.body.pPrice
+
+            const user = await Users.findOne({_id:userId})
 
             const increment = await Users.updateOne(
                 { _id: user._id, "cart.productId": proId },
@@ -339,10 +337,10 @@ const incrementQuantity = async (req, res) => {
             )
 
             // cart total---------------------------------------------------------
-            const updatedCart = await Users.findOne({_id: user._id},{cart:1})
+            const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
 
             const cartTotal = updatedCart.cart.reduce(
-                (total, item) => total + item.productTotalPrice,0
+                (total, item) => total + item.productTotalPrice, 0
             )
             console.log(cartTotal);
 
@@ -366,7 +364,8 @@ const incrementQuantity = async (req, res) => {
 const removeCart = async (req, res) => {
     try {
         const proId = req.params.id
-        const user = req.session.user
+        const userId = req.session.userId
+        const user = await Users.findOne({_id:userId})
 
         console.log(proId);
 
@@ -383,12 +382,12 @@ const removeCart = async (req, res) => {
 const getWishlist = async (req, res) => {
     try {
 
-        if (req.session.user) {
+        if (req.session.userId) {
 
-            const user = req.session.user
+            const userId = req.session.userId
+            const user = await Users.findOne({_id:userId})
             const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
             const wishData = wishlist[0].wishlist
-
 
             // const wishdata = []
             // wish.forEach(eement => {
@@ -412,10 +411,11 @@ const getWishlist = async (req, res) => {
 const addToWishlist = async (req, res) => {
     try {
 
-        if (req.session.user) {
+        if (req.session.userId) {
 
             const proId = req.body.productId
-            const user = req.session.user
+            const userId = req.session.userId
+            const user = await Users.findOne({_id:userId})
 
             const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { wishlist: proId } }).then((response) => {
                 res.json(response)
@@ -436,7 +436,8 @@ const removeFromwishlist = async (req, res) => {
     try {
 
         const proId = req.params.id
-        const user = req.session.user
+        const userId = req.session.userId
+        const user = await Users.findOne({_id:userId})
 
         const cartUpdate = await Users.updateOne({ _id: user._id }, { $pull: { wishlist: proId } }).then(() => {
             res.redirect("/wishlist")
@@ -448,14 +449,108 @@ const removeFromwishlist = async (req, res) => {
     }
 }
 
+
 // user profile +===========================================
-const getUserProfile = (req,res)=>{
+const getUserProfile = async (req, res) => {
     try {
 
-        res.render("userprofile")
+        if (req.session.userId) {
+
+            const userId = req.session.userId
+            const user = await Users.findOne({_id:userId})
+            const userDetails = await Users.findOne({ _id: user._id })
+            res.render("userprofile", { userDetails: userDetails, user: user })
+
+        } else {
+            res.redirect("/userlogin")
+        }
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// user profile edit 
+const editUserProfile = async (req, res)=>{
+    try {
+        
+        const userId = req.session.userId
+        const user = await Users.updateOne(
+            {_id:userId},
+            {
+                firsName: req.body.firstname,
+                lastName: req.body.lastname,
+                username: req.body.username,
+                email: req.body.email,
+                phone: req.body.phone
+            }
+        ).then(()=>{
+            res.redirect("/userprofile")
+        })
+        
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// view all addresses
+const allAddressesPage = async (req, res)=>{
+    try {
+
+        if (req.session.userId) {
+            
+            const userId = req.session.userId
+            const user = await Users.findOne({_id:userId})
+            const address = user.addresses
+
+            res.render("manageaddress",{user:user, address:address})
+            
+        }else{
+            res.redirect("/userlogin")
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+// add new address
+const addAddress = async (req, res)=>{
+    try {
+
+        const userId = req.session.userId
+        const user = await Users.findOne({id:userId})
+
+        const address = await Users.updateOne(
+            {_id:user._id},
+            {$push:{
+                addresses:{
+                        name: req.body.name,
+                        phoneNumber: req.body.phoneNumber,
+                        houseName: req.body.houseName,
+                        street: req.body.street,
+                        district: req.body.district,
+                        state: req.body.state,
+                        pincode: req.body.pincode
+                    }
+                }
+            }
+        ).then(()=>{
+            res.redirect("/manageaddress")
+        })
         
     } catch (error) {
         console.log(error.message)
+    }
+}
+
+// delete address 
+const deleteAddress = async (req,res)=>{
+    try {
+        
+    } catch (error) {
+        console.log(error.message);
     }
 }
 
@@ -476,5 +571,8 @@ module.exports = {
     addToWishlist,
     removeFromwishlist,
     getUserProfile,
-
+    editUserProfile,
+    allAddressesPage,
+    addAddress,
+    deleteAddress,
 }

@@ -92,7 +92,8 @@ const insertCategory = async (req, res) => {
 
             const category = new Category({
                 categoryName: req.body.categoryName,
-                description: req.body.description
+                description: req.body.description,
+                categoryImage: req.file.filename
             })
             const categoryData = await category.save();
             if (categoryData) {

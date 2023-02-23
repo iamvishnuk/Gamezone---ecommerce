@@ -2,17 +2,14 @@ const Product = require('../model/products_data')
 const Category = require('../model/category_data')
 
 
-
-
-
 //================= PRODUCTS =================
 // product page get function
 const viewProducts = async (req, res) => {
     try {
 
-        const allProducts = await Product.find({})
-
+        const allProducts = await Product.find({}).populate("category")
         res.render("view_products", { allProducts: allProducts })
+
     } catch (error) {
         console.log(error.message);
     }
@@ -38,7 +35,6 @@ const insertProducts = async (req, res) => {
         uploadedImage.forEach(element => {
             images.push(element.filename)
         });
-        console.log(images);
 
         const products = new Product({
             product_name: req.body.productName,
@@ -69,7 +65,6 @@ const insertProducts = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const productId = req.params.id
-        console.log(productId);
         await Product.deleteOne({ _id: productId })
         res.redirect('/admin/viewproducts')
     } catch (error) {
@@ -82,7 +77,6 @@ const unlistProduct = async (req, res) => {
     try {
 
         const proId = req.params.id
-        console.log(proId);
         await Product.updateOne({ _id: proId }, { list: false })
         res.redirect('/admin/viewproducts')
 
@@ -96,7 +90,6 @@ const listProduct = async (req, res) => {
     try {
 
         const proId = req.params.id
-        console.log(proId);
         await Product.updateOne({ _id: proId }, { list: true })
         res.redirect('/admin/viewproducts')
 
@@ -110,14 +103,16 @@ const editProductPage = async (req, res) => {
     try {
 
         const proId = req.params.id
-        // console.log(proId);
 
         const categoryData = await Category.find()
-        const productData = await Product.find({ _id: proId })
-        // console.log(productData)
+        const productData = await Product.findOne({ _id: proId }).populate('category')
 
+        console.log(productData.category.categoryName)
 
-        res.render('edit_product', { categoryData: categoryData, productData: productData })
+        // const categoryName = await Category.findOne({categoryName: productData.category.categoryName})
+        // console.log(categoryName+"hiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+    
+        res.render('edit_product', { categoryData: categoryData, productData: productData  })
 
     } catch (error) {
         console.log(error.message)
@@ -125,7 +120,6 @@ const editProductPage = async (req, res) => {
 }
 const editProduct = async (req, res) => {
     try {
-        console.log("post edit product");
 
         const proId = req.params.id
 

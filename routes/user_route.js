@@ -3,6 +3,7 @@ const user_route = express()
 const path = require('path')
 const userController = require('../controllers/user_controller')
 const userAuth = require("../middlewares/user.auth")
+const cartController = require('../controllers/cart_controller')
 
 
 user_route.set('view engine', 'ejs')
@@ -34,16 +35,16 @@ user_route.get("/products", userController.productsPage)
 user_route.get("/singleproductpage/:id", userController.singleProductPage)
 
 //cart get method ========================================================
-user_route.get("/cart", userController.getcart)
+user_route.get("/cart", cartController.getcart)
 
 // cart post method
-user_route.get("/addtocart/:id", userController.addToCart)
+user_route.get("/addtocart/:id", cartController.addToCart)
 
 // cart quantity increment post method
-user_route.post("/increment-quantity", userController.incrementQuantity)
+user_route.post("/increment-quantity", cartController.incrementQuantity)
 
 // remove cart item 
-user_route.get("/cart-remove/:id", userController.removeCart)
+user_route.get("/cart-remove/:id", cartController.removeCart)
 
 // wishlist get method======================================
 user_route.get("/wishlist", userController.getWishlist)

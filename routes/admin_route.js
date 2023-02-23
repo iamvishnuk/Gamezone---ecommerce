@@ -64,8 +64,8 @@ admin_route.get('/category', adminAuth.isLogin, adminController.viewCategory)
 // category get method
 admin_route.get("/addcategory", adminAuth.isLogin, adminController.addCategory)
 
-// add category post method------------------------------------------------------------------------------------------
-admin_route.post('/addcategory', adminController.insertCategory)
+// add category post method
+admin_route.post('/addcategory', upload.single("categoryImage"), adminController.insertCategory)
 
 // delete category
 admin_route.get("/delete_category/:id", adminController.deleteCategory)

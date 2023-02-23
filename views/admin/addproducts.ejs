@@ -39,7 +39,7 @@
                                     <select class="form-select" aria-label="Default select example" name="category">
                                         <option selected>Select the category</option>
                                         <% categoryData.forEach(element=> { %>
-                                            <option>
+                                            <option value="<%= element._id %>">
                                                 <%= element.categoryName %>
                                             </option>
                                             <% }); %>

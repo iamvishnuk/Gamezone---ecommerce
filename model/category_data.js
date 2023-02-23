@@ -9,6 +9,10 @@ const categoryData = new mongoose.Schema({
         type: String,
         require: true
     },
+    categoryImage:{
+        type: String,
+        require:true
+    },
     date: {
         type: Date,
         require: true,

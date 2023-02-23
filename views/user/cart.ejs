@@ -19,44 +19,45 @@
                                     <th class="column-5">Action</th>
                                 </tr>
                                 <% cartItems.cart.forEach(element=> { %>
-                                        <tr class="table_row">
-                                            <td class="column-1">
-                                                <div class="how-itemcart1">
-                                                    <img src="/product_images/<%= element.productId.images[0] %>" alt="IMG">
+                                    <tr class="table_row">
+                                        <td class="column-1">
+                                            <div class="how-itemcart1">
+                                                <img src="/product_images/<%= element.productId.images[0] %>" alt="IMG">
+                                            </div>
+                                        </td>
+                                        <td class="column-2">
+                                            <%= element.productId.product_name %>
+                                        </td>
+                                        <td class="column-3">
+                                            Rs: <%= element.productId.price %>
+                                        </td>
+                                        <td class="column-4">
+                                            <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
+                                                    onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',-1)">
+                                                    <i class="fs-16 zmdi zmdi-minus"></i>
                                                 </div>
-                                            </td>
-                                            <td class="column-2">
-                                                <%= element.productId.product_name %>
-                                            </td>
-                                            <td class="column-3">
-                                                Rs: <%= element.productId.price %>
-                                            </td>
-                                            <td class="column-4">
-                                                <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                                        onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',-1)">
-                                                        <i class="fs-16 zmdi zmdi-minus"></i>
-                                                    </div>
-                                                    <span id="<%= element.productId._id %>"
-                                                        class="mtext-104 cl3 txt-center num-product num-product1 p-t-10">
-                                                        <%= element.quantity %>
-                                                    </span>
+                                                <span id="<%= element.productId._id %>"
+                                                    class="mtext-104 cl3 txt-center num-product num-product1 p-t-10">
+                                                    <%= element.quantity %>
+                                                </span>
 
-                                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-                                                        onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',+1)">
-                                                        <i class="fs-16 zmdi zmdi-plus"></i>
-                                                    </div>
+                                                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
+                                                    onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',+1)">
+                                                    <i class="fs-16 zmdi zmdi-plus"></i>
                                                 </div>
-                                            </td>
-                                            <td class="column-5 <%= element.productId._id %>">
-                                                <%= element.productTotalPrice %>
-                                            </td>
-                                            <td class="column-5">
-                                               
-                                                    <a class="btn btn-warning" href="/cart-remove/<%= element.productId._id %>">Remove</a>
-                                                
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </td>
+                                        <td class="column-5 <%= element.productId._id %>">
+                                            <%= element.productTotalPrice %>
+                                        </td>
+                                        <td class="column-5">
+
+                                            <a class="btn btn-warning"
+                                                href="/cart-remove/<%= element.productId._id %>">Remove</a>
+
+                                        </td>
+                                    </tr>
                                     <% }); %>
 
                             </table>
@@ -69,16 +70,18 @@
                                 </div>
                             </div>
                             <div>
-                                <% if (typeof total !== 'undefined') { %>
+                                <% if (typeof total !=='undefined' ) { %>
                                     <div class="flex-c-m stext-101 cl2 size-119 p-lr-15 trans-04 m-tb-10">
-                                        Rs: <span id="total"><%= total %></span>
+                                        Rs: <span id="total">
+                                            <%= total %>
+                                        </span>
                                     </div>
-                                    
-                                <% } %>
-                                <div
-                                    class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-                                    Make Order
-                                </div>
+
+                                    <% } %>
+                                        <div
+                                            class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+                                            Make Order
+                                        </div>
                             </div>
                         </div>
                     </div>
@@ -106,7 +109,7 @@
                     document.getElementsByClassName(productId)[0].innerHTML = response.productTotal
                     document.getElementById('total').innerHTML = response.cartTotal
                     console.log(quantity);
-                
+
 
                 }
             })

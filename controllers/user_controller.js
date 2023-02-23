@@ -1,12 +1,13 @@
 const Product = require("../model/products_data")
 const Users = require("../model/user_data")
+const Category = require("../model/category_data")
 require('dotenv').config()
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
-const { response } = require("express");
+
 
 
 //user login page
@@ -146,15 +147,18 @@ const userHome = async (req, res) => {
         if (req.session.userId) {
 
             const userId = req.session.userId
-            const user = await Users.findOne({_id: userId})
+            const user = await Users.findOne({ _id: userId })
 
             const product = await Product.find({ list: true }).limit(4)
-            res.render('user_home', { productData: product, user: user})
+
+            const category = await Category.find({})
+            res.render('user_home', { productData: product, user: user, category: category })
 
         } else {
 
             const product = await Product.find({ list: true }).limit(4);
-            res.render('user_home', { productData: product, wishlist: "null" })
+            const category = await Category.find({})
+            res.render('user_home', { productData: product, wishlist: "null", category: category })
 
         }
 
@@ -169,7 +173,7 @@ const productsPage = async (req, res) => {
         if (req.session.userId) {
 
             const userId = req.session.userId
-            const user = await Users.findOne({_id: userId})
+            const user = await Users.findOne({ _id: userId })
 
             const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
             const wish = wishlist[0].wishlist
@@ -179,10 +183,11 @@ const productsPage = async (req, res) => {
             //     wishdata.push(element.product_name)
             // });
 
-            const product = await Product.find({ list: true })
+            const product = await Product.find({ list: true }).populate('category')
+            console.log(product)
             res.render('products_page', { productData: product, user: user, wishlist: wishdata })
         } else {
-            const product = await Product.find({ list: true })
+            const product = await Product.find({ list: true }).populate('category')
             res.render('products_page', { productData: product, wishlist: 'null' })
         }
 
@@ -196,9 +201,9 @@ const singleProductPage = async (req, res) => {
     try {
 
         if (req.session.userId) {
-            
+
             const userId = req.session.userId
-            const user = await Users.findOne({ userId: userId})
+            const user = await Users.findOne({ userId: userId })
             const productID = req.params.id
 
             const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': productID }, { 'productId.$': 1 })
@@ -225,158 +230,7 @@ const singleProductPage = async (req, res) => {
 }
 
 // cart get method
-const getcart = async (req, res) => {
-    try {
-        if (req.session.userId) {
 
-            const userId = req.session.userId
-            const user = await Users.findOne({ _id: userId })
-
-            const cartItems = await Users.findOne({ _id: user._id },).populate('cart.productId')
-
-            const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
-
-            const cartTotal = updatedCart.cart.reduce(
-                (total, item) => total + item.productTotalPrice, 0
-            )
-            // console.log(cartItems,"hilllllllllllllllllllllllllllllllll");
-
-            const cartTotalPrice = await Users.updateOne(
-                { _id: user._id },
-                { cartTotalPrice: cartTotal }
-            )
-            
-
-            res.render('cart', { cartItems: cartItems, user: user, total: cartTotal })
-
-        } else {
-
-            res.redirect('/userlogin')
-
-        }
-        res.render('cart')
-
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-// add to cart post function
-const addToCart = async (req, res) => {
-    try {
-
-        if (req.session.userId) {
-
-            const userId = req.session.userId
-            const proId = req.params.id
-            const user = await Users.findOne({_id: userId})
-
-            const productData = await Product.findOne({ _id: proId })
-
-            const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': proId }, { 'productId.$': 1 })
-
-            if (cartCheck) {
-                res.redirect('/cart')
-            } else {
-
-                const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } })
-
-                // cart total price ==================================================
-                const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
-
-                const cartTotal = updatedCart.cart.reduce(
-                    (total, item) => total + item.productTotalPrice, 0
-                )
-
-                const cartTotalPrice = await Users.updateOne(
-                    { _id: user._id },
-                    { cartTotalPrice: cartTotal }
-                )
-                //end of cart total price --------------------------------------------
-
-                const cartData = await Users.findOne({ _id: user._id },).populate('cart.productId').lean().exec()
-
-                res.render('cart', { cartItems: cartData, user: user, total: cartTotal })
-            }
-
-
-        } else {
-            res.redirect('/userlogin')
-        }
-
-    } catch (error) {
-
-    }
-}
-
-// cart quantity increment function
-const incrementQuantity = async (req, res) => {
-    try {
-
-        if (req.session.userId) {
-
-            const userId = req.session.userId
-            const proId = req.body.productId
-            const count = req.body.count
-            const pPrice = req.body.pPrice
-
-            const user = await Users.findOne({_id:userId})
-
-            const increment = await Users.updateOne(
-                { _id: user._id, "cart.productId": proId },
-                { $inc: { 'cart.$.quantity': count } }
-            )
-
-            //product total price 
-            const cartItem = await Users.findOne({ _id: user._id, "cart.productId": proId }, { "cart.$": 1 })
-            const productTotal = pPrice * cartItem.cart[0].quantity
-
-            const pTotal = await Users.updateOne(
-                { _id: user._id, "cart.productId": proId },
-                { $set: { 'cart.$.productTotalPrice': productTotal } }
-            )
-
-            // cart total---------------------------------------------------------
-            const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
-
-            const cartTotal = updatedCart.cart.reduce(
-                (total, item) => total + item.productTotalPrice, 0
-            )
-            console.log(cartTotal);
-
-            const cartTotalPrice = await Users.updateOne(
-                { _id: user._id },
-                { cartTotalPrice: cartTotal }
-            )
-
-            // end of cart total price ------------------------------------------------ 
-
-            res.json({ success: true, productTotal, cartTotal })
-
-        }
-
-    } catch (error) {
-        console.log(error.message)
-    }
-}
-
-// cart item remove function
-const removeCart = async (req, res) => {
-    try {
-        const proId = req.params.id
-        const userId = req.session.userId
-        const user = await Users.findOne({_id:userId})
-
-        console.log(proId);
-
-        const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response) => {
-            res.redirect("/cart")
-        })
-
-    } catch (error) {
-        console.log(error.message)
-    }
-}
 
 // ==================== wishlist =================
 const getWishlist = async (req, res) => {
@@ -385,7 +239,7 @@ const getWishlist = async (req, res) => {
         if (req.session.userId) {
 
             const userId = req.session.userId
-            const user = await Users.findOne({_id:userId})
+            const user = await Users.findOne({ _id: userId })
             const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
             const wishData = wishlist[0].wishlist
 
@@ -415,7 +269,7 @@ const addToWishlist = async (req, res) => {
 
             const proId = req.body.productId
             const userId = req.session.userId
-            const user = await Users.findOne({_id:userId})
+            const user = await Users.findOne({ _id: userId })
 
             const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { wishlist: proId } }).then((response) => {
                 res.json(response)
@@ -437,7 +291,7 @@ const removeFromwishlist = async (req, res) => {
 
         const proId = req.params.id
         const userId = req.session.userId
-        const user = await Users.findOne({_id:userId})
+        const user = await Users.findOne({ _id: userId })
 
         const cartUpdate = await Users.updateOne({ _id: user._id }, { $pull: { wishlist: proId } }).then(() => {
             res.redirect("/wishlist")
@@ -457,7 +311,7 @@ const getUserProfile = async (req, res) => {
         if (req.session.userId) {
 
             const userId = req.session.userId
-            const user = await Users.findOne({_id:userId})
+            const user = await Users.findOne({ _id: userId })
             const userDetails = await Users.findOne({ _id: user._id })
             res.render("userprofile", { userDetails: userDetails, user: user })
 
@@ -471,12 +325,12 @@ const getUserProfile = async (req, res) => {
 }
 
 // user profile edit 
-const editUserProfile = async (req, res)=>{
+const editUserProfile = async (req, res) => {
     try {
-        
+
         const userId = req.session.userId
         const user = await Users.updateOne(
-            {_id:userId},
+            { _id: userId },
             {
                 firsName: req.body.firstname,
                 lastName: req.body.lastname,
@@ -484,10 +338,10 @@ const editUserProfile = async (req, res)=>{
                 email: req.body.email,
                 phone: req.body.phone
             }
-        ).then(()=>{
+        ).then(() => {
             res.redirect("/userprofile")
         })
-        
+
 
     } catch (error) {
         console.log(error.message)
@@ -495,37 +349,38 @@ const editUserProfile = async (req, res)=>{
 }
 
 // view all addresses
-const allAddressesPage = async (req, res)=>{
+const allAddressesPage = async (req, res) => {
     try {
 
         if (req.session.userId) {
-            
+
             const userId = req.session.userId
-            const user = await Users.findOne({_id:userId})
+            const user = await Users.findOne({ _id: userId })
             const address = user.addresses
 
-            res.render("manageaddress",{user:user, address:address})
-            
-        }else{
+            res.render("manageaddress", { user: user, address: address })
+
+        } else {
             res.redirect("/userlogin")
         }
-        
+
     } catch (error) {
         console.log(error.message);
     }
 }
 
 // add new address
-const addAddress = async (req, res)=>{
+const addAddress = async (req, res) => {
     try {
 
         const userId = req.session.userId
-        const user = await Users.findOne({id:userId})
+        const user = await Users.findOne({ id: userId })
 
         const address = await Users.updateOne(
-            {_id:user._id},
-            {$push:{
-                addresses:{
+            { _id: user._id },
+            {
+                $push: {
+                    addresses: {
                         name: req.body.name,
                         phoneNumber: req.body.phoneNumber,
                         houseName: req.body.houseName,
@@ -536,50 +391,50 @@ const addAddress = async (req, res)=>{
                     }
                 }
             }
-        ).then(()=>{
+        ).then(() => {
             res.redirect("/manageaddress")
         })
-        
+
     } catch (error) {
         console.log(error.message)
     }
 }
 
 // delete address 
-const deleteAddress = async (req,res)=>{
+const deleteAddress = async (req, res) => {
     try {
 
         const addressId = req.params.id
         console.log(addressId)
         const userId = req.session.userId
-        const user = await Users.findOne({_id:userId})
+        const user = await Users.findOne({ _id: userId })
         console.log(user)
         const address = await Users.updateOne({ _id: user._id }, { $pull: { addresses: { _id: addressId } } })
-        .then(()=>{
-            res.redirect('/manageaddress')
-        })
+            .then(() => {
+                res.redirect('/manageaddress')
+            })
 
-        
+
     } catch (error) {
         console.log(error.message);
     }
 }
 
 // edit address page
-const editAddressPage = async (req,res)=>{
+const editAddressPage = async (req, res) => {
     try {
 
-        if(req.session.userId){
+        if (req.session.userId) {
 
             const addressId = req.params.id
             const userId = req.session.userId
-            const user = await Users.findOne({_id:userId})
+            const user = await Users.findOne({ _id: userId })
 
-            const addressData = await Users.findOne({_id:user._id,"addresses._id":addressId},{"addresses.$":1,_id:0})
-            
-            res.render("editaddresspage",{address:addressData.addresses[0]})
+            const addressData = await Users.findOne({ _id: user._id, "addresses._id": addressId }, { "addresses.$": 1, _id: 0 })
 
-        }else{
+            res.render("editaddresspage", { address: addressData.addresses[0] })
+
+        } else {
             res.redirect("/userlogin")
         }
 
@@ -589,23 +444,25 @@ const editAddressPage = async (req,res)=>{
 }
 
 // post edit address 
-const postEditAddress = async (req,res)=>{
+const postEditAddress = async (req, res) => {
     try {
 
         const addressId = req.params.id
         const userId = req.session.userId
-        const user = await Users.findOne({_id:userId})
+        const user = await Users.findOne({ _id: userId })
 
         const editAddress = await Users.updateOne(
-            {_id:user._id,"addresses._id":addressId},
-            {$set:{
-                "addresses.$":req.body
-            }}
-        ).then(()=>{
+            { _id: user._id, "addresses._id": addressId },
+            {
+                $set: {
+                    "addresses.$": req.body
+                }
+            }
+        ).then(() => {
             res.redirect("/manageaddress")
         })
 
-        
+
     } catch (error) {
         console.log(error.message);
     }
@@ -621,10 +478,6 @@ module.exports = {
     doLogin,
     productsPage,
     singleProductPage,
-    getcart,
-    addToCart,
-    incrementQuantity,
-    removeCart,
     getWishlist,
     addToWishlist,
     removeFromwishlist,

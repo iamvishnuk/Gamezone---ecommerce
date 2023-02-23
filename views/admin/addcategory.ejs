@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Add category</h5>
                         <!-- General Form Elements -->
-                        <form id="add-category-form" action="/admin/addcategory" method="post">
+                        <form id="add-category-form" action="/admin/addcategory" method="post" enctype="multipart/form-data">
                             <div class="row mb-3">
                                 <labe for="" class="col-sm-2 col-form-label">Category Name</labe>
                                 <div class="col-sm-10">
@@ -27,6 +27,12 @@
                                 <label for="" class="col-sm-2 col-form-label">Description</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" name="description">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="" class="col-sm-2 col-form-label">Category Image</label>
+                                <div class="col-sm-10">
+                                    <input accept="image/*" type="file" class="form-control" name="categoryImage">
                                 </div>
                             </div>
                             <div class="row mb-3">

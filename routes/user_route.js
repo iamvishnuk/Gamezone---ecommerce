@@ -69,6 +69,12 @@ user_route.post("/add-address", userController.addAddress)
 // delete address 
 user_route.get("/delete-address/:id", userController.deleteAddress)
 
+// get edit address page
+user_route.get("/editaddress/:id",userController.editAddressPage)
+
+// post edit address
+user_route.post("/post-edit-address/:id",userController.postEditAddress)
+
 
 
 

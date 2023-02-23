@@ -239,7 +239,7 @@ const getcart = async (req, res) => {
             const cartTotal = updatedCart.cart.reduce(
                 (total, item) => total + item.productTotalPrice, 0
             )
-            console.log(cartItems,"hilllllllllllllllllllllllllllllllll");
+            // console.log(cartItems,"hilllllllllllllllllllllllllllllllll");
 
             const cartTotalPrice = await Users.updateOne(
                 { _id: user._id },
@@ -548,11 +548,69 @@ const addAddress = async (req, res)=>{
 // delete address 
 const deleteAddress = async (req,res)=>{
     try {
+
+        const addressId = req.params.id
+        console.log(addressId)
+        const userId = req.session.userId
+        const user = await Users.findOne({_id:userId})
+        console.log(user)
+        const address = await Users.updateOne({ _id: user._id }, { $pull: { addresses: { _id: addressId } } })
+        .then(()=>{
+            res.redirect('/manageaddress')
+        })
+
         
     } catch (error) {
         console.log(error.message);
     }
 }
+
+// edit address page
+const editAddressPage = async (req,res)=>{
+    try {
+
+        if(req.session.userId){
+
+            const addressId = req.params.id
+            const userId = req.session.userId
+            const user = await Users.findOne({_id:userId})
+
+            const addressData = await Users.findOne({_id:user._id,"addresses._id":addressId},{"addresses.$":1,_id:0})
+            
+            res.render("editaddresspage",{address:addressData.addresses[0]})
+
+        }else{
+            res.redirect("/userlogin")
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+// post edit address 
+const postEditAddress = async (req,res)=>{
+    try {
+
+        const addressId = req.params.id
+        const userId = req.session.userId
+        const user = await Users.findOne({_id:userId})
+
+        const editAddress = await Users.updateOne(
+            {_id:user._id,"addresses._id":addressId},
+            {$set:{
+                "addresses.$":req.body
+            }}
+        ).then(()=>{
+            res.redirect("/manageaddress")
+        })
+
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 
 module.exports = {
     userHome,
@@ -575,4 +633,6 @@ module.exports = {
     allAddressesPage,
     addAddress,
     deleteAddress,
+    editAddressPage,
+    postEditAddress,
 }

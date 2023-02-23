@@ -1,0 +1,63 @@
+<%- include("../layout/user/user_header.ejs") %>
+    <header class="header-v4">
+        <%- include("../layout/user/user_navbar.ejs") %>
+    </header>
+
+    <div class="container my-5 py-5">
+        <section>
+            <div class="row">                
+                <div class="col-md-10 mx-auto">
+                    <div class="card mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0 text-font text-uppercase">Edit address</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/post-edit-address/<%= address._id %>" method="post">
+                                <div class="row mb-4">
+                                    <div class="col">   
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form11Example1">Name</label>
+                                            <input type="text" id="form11Example1" class="form-control" name="name" value="<%= address.name %>" />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-outline">
+                                            <label class="form-label" for="form11Example2">Phone</label>
+                                            <input type="number" id="form11Example2" class="form-control" name="phoneNumber" value="<%= address.phoneNumber %>" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form11Example3">House / Building name</label>
+                                    <input type="text" id="form11Example3" class="form-control" name="houseName" value="<%= address.houseName %>" />
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form11Example4">Street</label>
+                                    <input type="text" id="form11Example4" class="form-control" name="street" value="<%= address.street %>" />
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form11Example5">District</label>
+                                    <input type="text" id="form11Example5" class="form-control" name="district" value="<%= address.district %>" />
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form11Example6">State</label>
+                                    <input type="text" id="form11Example6" class="form-control" name="state" value="<%= address.state %>" />
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form11Example6">Pincode</label>
+                                    <input type="number" id="form11Example6" class="form-control" name="pincode" value="<%= address.pincode %>" />
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-primary float-right">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <%- include("../layout/user/user_footer.ejs") %>

@@ -400,6 +400,37 @@ const addAddress = async (req, res) => {
     }
 }
 
+// add address from the checkout page
+const checkoutPageAddAddress = async (req, res)=>{
+    try {
+
+        const userId = req.session.userId
+        const user = await Users.findOne({ id: userId })
+
+        const address = await Users.updateOne(
+            { _id: user._id },
+            {
+                $push: {
+                    addresses: {
+                        name: req.body.name,
+                        phoneNumber: req.body.phoneNumber,
+                        houseName: req.body.houseName,
+                        street: req.body.street,
+                        district: req.body.district,
+                        state: req.body.state,
+                        pincode: req.body.pincode
+                    }
+                }
+            }
+        ).then(() => {
+            res.redirect("/gotocheckoutpage")
+        })
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
 // delete address 
 const deleteAddress = async (req, res) => {
     try {
@@ -485,6 +516,7 @@ module.exports = {
     editUserProfile,
     allAddressesPage,
     addAddress,
+    checkoutPageAddAddress,
     deleteAddress,
     editAddressPage,
     postEditAddress,

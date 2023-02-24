@@ -4,6 +4,7 @@ const path = require('path')
 const userController = require('../controllers/user_controller')
 const userAuth = require("../middlewares/user.auth")
 const cartController = require('../controllers/cart_controller')
+const orderController = require("../controllers/order_controller")
 
 
 user_route.set('view engine', 'ejs')
@@ -67,6 +68,9 @@ user_route.get("/manageaddress",userController.allAddressesPage)
 // add new address post 
 user_route.post("/add-address", userController.addAddress)
 
+// add new address form the checkout page
+user_route.post("/add-address-checkoutpage",userController.checkoutPageAddAddress)
+
 // delete address 
 user_route.get("/delete-address/:id", userController.deleteAddress)
 
@@ -76,8 +80,11 @@ user_route.get("/editaddress/:id",userController.editAddressPage)
 // post edit address
 user_route.post("/post-edit-address/:id",userController.postEditAddress)
 
+// get checkoutpage
+user_route.get("/gotocheckoutpage",orderController.getChekoutPage)
 
-
+// post checkout page 
+user_route.post("/postcheckout",orderController.postCheckout)
 
 
 

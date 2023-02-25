@@ -1,5 +1,7 @@
 const Product = require('../model/products_data')
 const Category = require('../model/category_data')
+const fs = require('fs')
+const path = require('path')
 
 
 //================= PRODUCTS =================
@@ -108,9 +110,6 @@ const editProductPage = async (req, res) => {
         const productData = await Product.findOne({ _id: proId }).populate('category')
 
         console.log(productData.category.categoryName)
-
-        // const categoryName = await Category.findOne({categoryName: productData.category.categoryName})
-        // console.log(categoryName+"hiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
     
         res.render('edit_product', { categoryData: categoryData, productData: productData  })
 
@@ -122,12 +121,12 @@ const editProduct = async (req, res) => {
     try {
 
         const proId = req.params.id
-
-        uploadedImage = req.files
-        const images = []
-        uploadedImage.forEach(element => {
-            images.push(element.filename)
-        });
+        console.log(req.body)
+        // uploadedImage = req.files
+        // const images = []
+        // uploadedImage.forEach(element => {
+        //     images.push(element.filename)
+        // });
 
         const productUpdate = await Product.updateOne(
             { _id: proId },
@@ -137,7 +136,7 @@ const editProduct = async (req, res) => {
                 category: req.body.category,
                 price: req.body.price,
                 stock: req.body.stock,
-                images: images,
+                // images: images,
                 description: req.body.description
             }
         )
@@ -150,6 +149,41 @@ const editProduct = async (req, res) => {
     }
 }
 
+const editImage = async (req, res)=>{
+    try {
+
+        const proId = req.params.id;
+
+        uploadedImage = req.files
+        console.log(uploadedImage)
+        const images = []
+        uploadedImage.forEach(element => {
+            images.push(element.filename)
+        });
+
+        await Product.updateOne({_id:proId},{$push:{images:images}}).then(()=>{
+            res.redirect("/admin/editProductPage/"+proId)
+        })
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+const deleteImage = async (req, res)=>{
+    try {
+
+        const imageId = req.params.imgId
+        const proId = req.params.proId
+        fs.unlink(path.join(__dirname,'../public/product_images',imageId),()=>{})
+        await Product.updateOne({_id:proId},{$pull:{images:imageId}});
+
+        res.redirect("/admin/editProductPage/"+proId)
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports = {
     viewProducts,
     addProducts,
@@ -158,5 +192,7 @@ module.exports = {
     unlistProduct,
     listProduct,
     editProductPage,
-    editProduct
+    editProduct,
+    editImage,
+    deleteImage,
 }

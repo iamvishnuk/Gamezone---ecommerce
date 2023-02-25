@@ -1,6 +1,7 @@
 <%- include("../layout/admin/header.ejs") %>
     <%- include("../layout/admin/navbar.ejs") %>
         <%- include("../layout/admin/sidebar.ejs") %>
+                    
 
             <main id="main" class="main">
                 <div class="pagetitle">
@@ -18,8 +19,7 @@
                         <!-- General Form Elements -->
 
 
-                        <form action="/admin/editProduct/<%= productData._id %>" method="post"
-                            enctype="multipart/form-data">
+                        <form action="/admin/editProduct/<%= productData._id %>" method="post">
                             <div class="row mb-3">
                                 <labe for="" class="col-sm-2 col-form-label">Name</labe>
                                 <div class="col-sm-10">
@@ -73,22 +73,23 @@
                             <div class="row mb-3">
                                 <label for="" class="col-sm-2 col-form-label">Images</label>
                                 <div class="col-sm-10">
-                                    <!-- <input class="form-control" multiple type="file" id="formFile" name="productImage"> -->
-                                    <img src="/product_images/<%= productData.images[0] %>" alt=""
-                                        style="height: 100px; width: 100px;" id="imgView-1">
-                                    <img src="/product_images/<%= productData.images[1] %>" alt=""
-                                        style="height: 100px; width: 100px;" id="imgView-2">
-                                    <img src="/product_images/<%= productData.images[2] %>" alt=""
-                                        style="height: 100px; width: 100px;" id="imgView-3">
+                                    <% productData.images.forEach(element => { %>
+                                        
+                                        <img src="/product_images/<%= element %>" alt=""
+                                            style="height: 100px; width: 100px;" id="imgView-1">
+                                    <% }); %>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Edit
+                                        Image</button>
                                 </div>
                             </div>
-                            <div class="row mb-3">
+                            <hr>
+                            <!-- <div class="row mb-3">
                                 <label for="" class="col-sm-2 col-form-label">Image Upload</label>
                                 <div class="col-sm-10">
                                     <input class="form-control" multiple type="file" id="formFile" name="productImage"
                                         onchange="viewImage(event)">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label"></label>
                                 <div class="col-sm-10">
@@ -100,15 +101,39 @@
                     </div>
                 </div>
             </main>
-
-            <script>
-                function viewImage(event) {
-                    document.getElementById('imgView-1').src = URL.createObjectURL(event.target.files[0])
-                    document.getElementById('imgView-2').src = URL.createObjectURL(event.target.files[1])
-                    document.getElementById('imgView-3').src = URL.createObjectURL(event.target.files[2])
-                }
-            </script>
-
-
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Image</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-header">
+                            <% productData.images.forEach(element => { %>
+                                <div class="container-delete">
+                                    <img class="delete-img" src="/product_images/<%= element %>"alt="" />
+                                
+                                    <div class="overlay"></div>
+                                    <div class="delete-button"><a href="/admin/delete-image/<%= element %>/<%= productData._id %>"><i class="fa fa-trash"></i> </a></div>
+                                </div>
+                                
+                            <% }); %>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/admin/editImage/<%= productData._id %>" method="post" enctype="multipart/form-data">
+                                <div class="col-sm-10">
+                                    <input class="form-control" multiple type="file" id="formFile" name="productImage">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                        </div>
+ 
+                    </div>
+                </div>
+            </div>
 
             <%- include("../layout/admin/footer.ejs") %>

@@ -2,7 +2,7 @@ const admin = require('../model/admin_data');
 const Product = require('../model/products_data');
 const Category = require('../model/category_data');
 const Users = require('../model/user_data');
-var mongoose = require('mongoose');
+const Orders = require('../model/orders_data')
 const moment = require('moment')
 
 // var errorMessage
@@ -83,12 +83,12 @@ const insertCategory = async (req, res) => {
         const findCategory = await Category.find({ categoryName: reqex })
         const dataLength = findCategory.length
 
-        if(dataLength ===1 ){
+        if (dataLength === 1) {
 
             console.log("data already exists");
-            res.render("addcategory",{errorMessage:"Category already exist ....!"})
-            
-        }else{
+            res.render("addcategory", { errorMessage: "Category already exist ....!" })
+
+        } else {
 
             const category = new Category({
                 categoryName: req.body.categoryName,
@@ -105,7 +105,7 @@ const insertCategory = async (req, res) => {
             }
 
         }
-        
+
     } catch (error) {
         console.log(error.message);
     }
@@ -126,20 +126,20 @@ const deleteCategory = async (req, res) => {
 }
 
 // edit category get function
-const getEditCategory = async (req, res)=>{
+const getEditCategory = async (req, res) => {
     try {
 
         const catId = req.params.id
-        const categoryData = await Category.find({_id: catId})
-        res.render('editcategory',{categoryData:categoryData})
-        
+        const categoryData = await Category.find({ _id: catId })
+        res.render('editcategory', { categoryData: categoryData })
+
     } catch (error) {
         console.log(error.message);
     }
 }
 
 // edit category post function
-const postEditCategory = async (req, res)=>{
+const postEditCategory = async (req, res) => {
     try {
 
         console.log(" post edit category function called");
@@ -147,16 +147,16 @@ const postEditCategory = async (req, res)=>{
         console.log(categoryId);
 
         const categoryUpdate = await Category.updateOne(
-            {_id:categoryId},
+            { _id: categoryId },
             {
-                categoryName:req.body.categoryName,
-                description:req.body.description
+                categoryName: req.body.categoryName,
+                description: req.body.description
             }
-        ).then((result)=>{
+        ).then((result) => {
             res.redirect("/admin/category")
         })
 
-        
+
     } catch (error) {
         console.log(error.message)
     }
@@ -202,6 +202,34 @@ const unblockUser = async (req, res) => {
     }
 }
 
+// view all order table
+const getAllOrder = async (req, res) => {
+    try {
+
+        const orderData = await Orders.find({}).populate('product.productId')
+        console.log(orderData)
+
+        res.render("vieworders", { orderData: orderData })
+
+    } catch (error) {
+        console.log(error.messge);
+    }
+}
+
+const changeStatus = async (req, res) => {
+    try {
+
+        const orderId = req.body.orderId
+        const value = req.body.value
+        console.log(orderId);
+        await Orders.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
+            res.json({ success: true, value })
+        })
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 
 
 module.exports = {
@@ -217,4 +245,6 @@ module.exports = {
     unblockUser,
     getEditCategory,
     postEditCategory,
+    getAllOrder,
+    changeStatus,
 }

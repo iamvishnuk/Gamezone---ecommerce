@@ -55,8 +55,14 @@ admin_route.get('/unlistproduct/:id', productController.unlistProduct)
 // edit product get method 
 admin_route.get('/editProductPage/:id', adminAuth.isLogin, productController.editProductPage)
 
-// edit product post method -------------------------------------------------------------------------------------------
-admin_route.post('/editProduct/:id', upload.array('productImage', 3), productController.editProduct)
+// edit product post method 
+admin_route.post('/editProduct/:id', productController.editProduct)
+
+// edit image
+admin_route.post("/editImage/:id",upload.array('productImage',3),productController.editImage)
+
+// delete image
+admin_route.get("/delete-image/:imgId/:proId",productController.deleteImage)
 
 // admin view category
 admin_route.get('/category', adminAuth.isLogin, adminController.viewCategory)
@@ -84,6 +90,12 @@ admin_route.get('/block/:id',adminController.blockUser)
 
 // admin unblock user
 admin_route.get('/unblock/:id',adminController.unblockUser)
+
+// view orders -------------------------------------------------------------
+admin_route.get("/vieweorders", adminAuth.isLogin,adminController.getAllOrder)
+
+// change order status
+admin_route.post('/change-status',adminController.changeStatus)
 
 
 

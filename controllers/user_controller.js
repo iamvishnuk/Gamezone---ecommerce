@@ -203,7 +203,9 @@ const singleProductPage = async (req, res) => {
         if (req.session.userId) {
 
             const userId = req.session.userId
-            const user = await Users.findOne({ userId: userId })
+            console.log(userId);
+            const user = await Users.findOne({ _id: userId })
+            // console.log(user)
             const productID = req.params.id
 
             const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': productID }, { 'productId.$': 1 })

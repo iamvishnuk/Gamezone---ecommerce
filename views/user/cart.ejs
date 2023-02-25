@@ -78,12 +78,12 @@
                                     </div>
 
                                     <% } %>
-                                    <a href="/gotocheckoutpage">
-                                        <div
-                                            class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-                                            Checkout
-                                        </div>
-                                    </a>
+                                        <a href="/gotocheckoutpage">
+                                            <div
+                                                class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
+                                                Checkout
+                                            </div>
+                                        </a>
                             </div>
                         </div>
                     </div>
@@ -97,24 +97,29 @@
         function incrementQuantity(productId, pPrice, count) {
             let quantity = parseInt(document.getElementById(productId).innerHTML)
             count = parseInt(count)
-            $.ajax({
-                url: '/increment-quantity',
-                data: {
-                    productId: productId,
-                    count: count,
-                    pPrice: pPrice
-                },
-                method: 'post',
-                success: (response) => {
-                    console.log(response)
-                    document.getElementById(productId).innerHTML = quantity + count
-                    document.getElementsByClassName(productId)[0].innerHTML = response.productTotal
-                    document.getElementById('total').innerHTML = response.cartTotal
-                    console.log(quantity);
+            if (quantity <= 1 && count == -1) {
+
+            } else {
+
+                $.ajax({
+                    url: '/increment-quantity',
+                    data: {
+                        productId: productId,
+                        count: count,
+                        pPrice: pPrice
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        console.log(response)
+                        document.getElementById(productId).innerHTML = quantity + count
+                        document.getElementsByClassName(productId)[0].innerHTML = response.productTotal
+                        document.getElementById('total').innerHTML = response.cartTotal
+                        console.log(quantity);
 
 
-                }
-            })
+                    }
+                })
+            }
         }
 
 

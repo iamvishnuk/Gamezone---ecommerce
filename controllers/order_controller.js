@@ -7,26 +7,31 @@ const Order = require("../model/orders_data")
 const getChekoutPage = async (req, res) => {
     try {
 
-        if (req.session.userId) {
+        const userId = req.session.userId
+        const user = await User.findOne({ _id: userId })
+        const address = user.addresses
 
-            const userId = req.session.userId
-            const user = await User.findOne({ _id: userId })
-            const address = user.addresses
+        if (user.cart.length == 0) {
+
+            res.redirect('/cart')
+            
+        } else{
+
             const cartItem = await User.findOne({ _id: userId }).populate('cart.productId')
-
-            // console.log(cartItem)
-
             res.render("checkoutpage", { address: address, user: user, cartItem: cartItem })
-
-        } else {
-            res.redirect("/userlogin")
+            
         }
+        // else {
+        //     res.redirect("/userlogin")
+        // }
 
     } catch (error) {
         console.log(error.message)
     }
 }
 
+
+// post checkout page
 const postCheckout = async (req, res) => {
     try {
 
@@ -81,9 +86,42 @@ const postCheckout = async (req, res) => {
     }
 }
 
+// view previous order user side 
+const viewOrder = async (req, res)=>{
+    try {
+
+        const userId = req.session.userId
+        const user = await User.findOne({_id:userId})
+        const orderData = await Order.find({userId:userId}).populate('product.productId')
+        console.log(orderData)
+
+        res.render("orders",{user:user,orderData:orderData})
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// cancel ordre
+const cancelOrder = async (req, res)=>{
+    try {
+
+        const orderId = req.body.orderId
+        const value = req.body.value
+        console.log(orderId);
+        await Order.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
+            res.json({ success: true, value })
+        })
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 
 
 module.exports = {
     getChekoutPage,
     postCheckout,
+    viewOrder,
+    cancelOrder,
 }

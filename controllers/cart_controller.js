@@ -32,7 +32,6 @@ const getcart = async (req, res) => {
             res.redirect('/userlogin')
 
         }
-        res.render('cart')
 
     } catch (error) {
         console.log(error.message);
@@ -58,6 +57,9 @@ const addToCart = async (req, res) => {
             } else {
 
                 const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } })
+
+                //removing from the wishlist after adding to cart
+                await Users.updateOne({_id:user._id},{$pull:{wishlist:proId}})
 
                 // cart total price ==================================================
                 const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })

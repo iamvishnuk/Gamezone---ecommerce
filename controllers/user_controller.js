@@ -7,6 +7,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
+const { response } = require("express");
 
 
 
@@ -267,21 +268,22 @@ const getWishlist = async (req, res) => {
 const addToWishlist = async (req, res) => {
     try {
 
-        if (req.session.userId) {
+        const proId = req.body.productId
+        const userId = req.session.userId
+        const user = await Users.findOne({ _id: userId })
 
-            const proId = req.body.productId
-            const userId = req.session.userId
-            const user = await Users.findOne({ _id: userId })
+        const wishlits = await Users.findOne({_id:userId,'wishlist': proId})
+
+        if (wishlits) {
+            console.log("all ready existing");
+        }else{
 
             const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { wishlist: proId } }).then((response) => {
                 res.json(response)
             })
-
-        } else {
-
-            res.redirect('/userlogin')
-
         }
+
+
 
     } catch (error) {
         console.log(error.message)
@@ -403,7 +405,7 @@ const addAddress = async (req, res) => {
 }
 
 // add address from the checkout page
-const checkoutPageAddAddress = async (req, res)=>{
+const checkoutPageAddAddress = async (req, res) => {
     try {
 
         const userId = req.session.userId
@@ -427,7 +429,7 @@ const checkoutPageAddAddress = async (req, res)=>{
         ).then(() => {
             res.redirect("/gotocheckoutpage")
         })
-        
+
     } catch (error) {
         console.log(error.message)
     }

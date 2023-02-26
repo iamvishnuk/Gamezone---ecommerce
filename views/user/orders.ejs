@@ -1,0 +1,83 @@
+<%- include("../layout/user/user_header.ejs") %>
+    <header class="header-v4">
+        <%- include("../layout/user/user_navbar.ejs") %>
+    </header>
+
+    <section class="bg0 p-t-75 p-b-85">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-xl-12 m-lr-auto m-b-50">
+                    <div class="m-l-25 m-r--38 m-lr-0-xl">
+                        <div class="text-center m-5">
+                            <h3>ORDERS</h3>
+                        </div>
+                        <div class="wrap-table-shopping-cart">
+                            <table class="table">
+                                <tbody>
+                                    <% orderData.forEach(order=> { %>
+                                        <tr class="table_row">
+                                            <td class="column-1">
+                                                <% order.product.forEach(element=>{ %>
+                                                    <img src="/product_images/<%= element.productId.images[0] %>" alt=""
+                                                        style="height: 100px; width: 100px;" class="p-2"> <br>
+                                                    <% }) %>
+                                            </td>
+                                            <td class="column-1">
+                                                <% order.product.forEach(element=>{ %>
+                                                    <%= element.productId.product_name %> <br><br><br><br><br>
+                                                        <% }) %>
+                                            </td>
+                                            <td class="column-1">
+                                                <% order.product.forEach(element=>{ %>
+                                                    RS : <%= element.productId.price %> <br><br><br><br><br>
+                                                        <% }) %>
+                                            </td>
+                                            <td class="column-1">
+                                                <% order.product.forEach(element=>{ %>
+                                                     x<%= element.quantity %> <br><br><br><br><br>
+                                                        <% }) %>
+                                            </td>
+                                            <td class="column-1">
+                                                <% order.product.forEach(element=>{ %>
+                                                    Rs: <%= element.productTotal %> <br><br><br><br><br>
+                                                        <% }) %>
+                                            </td>
+                                            <td class="column-5">Rs: <%= order.total %></td>
+                                            <td class="column-5">
+                                                <span class="badge badge-success" id="<%= order.orderId %>"><%= order.status %></span><br>
+                                                <% if (order.status == "Pending" || order.status == "Order confirmed" || order.status == "Shipped") { %>
+                                                    <button onclick="cancelOrder('<%=order.orderId %>','Cancelled')" class="btn btn-danger">Cancel</button>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    
+                                        <% }); %>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function cancelOrder(orderId,value){
+            $.ajax({
+                url:'/cancelorder',
+                data:{
+                    orderId: orderId,
+                    value: value
+                },
+                method:'post',
+                success: (response)=>{
+                    document.getElementById(orderId).innerHTML = response.value
+                }
+
+            })
+        }
+    </script>
+
+
+    <%- include("../layout/user/user_footer.ejs") %>

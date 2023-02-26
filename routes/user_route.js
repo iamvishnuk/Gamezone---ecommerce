@@ -81,10 +81,16 @@ user_route.get("/editaddress/:id",userController.editAddressPage)
 user_route.post("/post-edit-address/:id",userController.postEditAddress)
 
 // get checkoutpage
-user_route.get("/gotocheckoutpage",orderController.getChekoutPage)
+user_route.get("/gotocheckoutpage",userAuth.isLogin,orderController.getChekoutPage)
 
 // post checkout page 
 user_route.post("/postcheckout",orderController.postCheckout)
+
+// view previous orders 
+user_route.get("/orders",userAuth.isLogin,orderController.viewOrder)
+
+// cancel order
+user_route.post("/cancelorder",orderController.cancelOrder)
 
 
 

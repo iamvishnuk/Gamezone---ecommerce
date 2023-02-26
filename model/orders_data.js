@@ -48,7 +48,7 @@ const orderData = new Schema({
     },
     status: {
         type: String,
-        default: 'pending',
+        default: 'Pending',
     },
 });
 

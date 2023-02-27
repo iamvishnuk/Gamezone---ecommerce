@@ -92,6 +92,9 @@ user_route.get("/orders",userAuth.isLogin,orderController.viewOrder)
 // cancel order
 user_route.post("/cancelorder",orderController.cancelOrder)
 
+// search products
+user_route.post("/getProduct",userController.searchProducts)
+
 
 
 // user Logout 

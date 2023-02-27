@@ -5,6 +5,7 @@ const productController = require('../controllers/product_controller')
 const path = require('path')
 const multer = require("multer");
 const adminAuth = require('../middlewares/admin_auth')
+const couponController = require('../controllers/coupon_controller')
 
 //multer for adding multiple image
 const storage = multer.diskStorage({
@@ -96,6 +97,12 @@ admin_route.get("/vieweorders", adminAuth.isLogin,adminController.getAllOrder)
 
 // change order status
 admin_route.post('/change-status',adminController.changeStatus)
+
+// get coupon page -----------------------------------------------------------
+admin_route.get('/viewcoupon',couponController.getCouponPage)
+
+// get add coupon page
+admin_route.get('/addcoupon',couponController.getAddCouponPage)
 
 
 

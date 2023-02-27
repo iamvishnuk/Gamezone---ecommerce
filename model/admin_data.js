@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const adminData = new mongoose.Schema({
     username: {
         type: String,
-        require: true
+        required: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     }
 })
 

@@ -1,0 +1,42 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>Coupon</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">Coupon</li>
+                        </ol>
+                    </nav>
+                </div>
+                <a href="/admin/addcoupon" class="btn btn-primary mb-3">Add coupon</a>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Coupon</h5>
+                        <!-- Table with hoverable rows -->
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Number</th>
+                                    <th scope="col">Category Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Created on</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+
+
+            <%- include("../layout/admin/footer.ejs") %>

@@ -1,0 +1,105 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>Add Coupon</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">Add coupon</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Coupon Form</h5>
+                
+                        <!-- Multi Columns Form -->
+                        <form class="row g-3">
+                            <div class="col-md-12">
+                                <label for="inputName5" class="form-label">Coupon code</label>
+                                <input type="text" class="form-control" id="inputName5" name="code">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputEmail5" class="form-label">Percentage off</label>
+                                <input type="number" class="form-control" id="inputEmail5" name="percentageOff">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputPassword5" class="form-label">Maxdiscount</label>
+                                <input type="number" class="form-control" id="inputPassword5" name="maxDiscount">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputEmail5" class="form-label">Expiry Date</label>
+                                <input type="date" class="form-control" id="inputEmail5" name="expiryDate">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputPassword5" class="form-label">Minimum Purchase Amount</label>
+                                <input type="number" class="form-control" id="inputPassword5" name="minimumPurchseAmount">
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Add coupon</button>
+                            </div>
+                        </form><!-- End Multi Columns Form -->
+                
+                    </div>
+                </div>
+
+            </main>
+
+            <script>
+                const form = document.querySelector('form');
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.addEventListener('click', (event) => {
+                    event.preventDefault()
+                    if (validate()) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'New product as added',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((response) => {
+                            form.submit();
+                        })
+                    }
+                })
+                function validate() {
+                    // Get form inputs
+                    const productName = document.forms["add-product-form"]["productName"].value;
+                    const brand = document.forms["add-product-form"]["brand"].value;
+                    const category = document.forms["add-product-form"]["category"].value;
+                    const price = document.forms["add-product-form"]["price"].value;
+                    const stock = document.forms["add-product-form"]["stock"].value;
+                    const description = document.forms["add-product-form"]["description"].value;
+                    const productImage = document.forms["add-product-form"]["productImage"].value;
+
+                    // Validate required fields
+                    if (productName === "" || brand === "" || category === "Select the category" || price === "" || stock === "" || description === "" || productImage === "") {
+                        alert("Please fill in all required fields");
+                        return false;
+                    }
+
+                    // Validate price and stock fields are positive numbers
+                    if (isNaN(price) || parseFloat(price) < 0) {
+                        alert("Price must be a positive number");
+                        return false;
+                    }
+                    if (isNaN(stock) || parseInt(stock) < 0) {
+                        alert("Stock must be a positive number");
+                        return false;
+                    }
+
+                    // All validations passed
+                    return true;
+                }
+
+
+
+
+            </script>
+
+
+
+            <%- include("../layout/admin/footer.ejs") %>

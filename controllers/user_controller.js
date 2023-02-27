@@ -7,7 +7,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
-const { response } = require("express");
+const proCount = 4
 
 
 
@@ -168,9 +168,20 @@ const userHome = async (req, res) => {
     }
 }
 
+/// limit the number of product function
+async function getProducts (page){
+    const skip = (page - 1) *proCount
+    const products = await Product.find({ list: true }).populate('category').skip(skip).limit(proCount).exec()
+    return products
+}
+
 //product page 
 const productsPage = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1
+        const products = await getProducts(page)
+        const count = await Product.countDocuments().exec()
+        const totalPages = Math.ceil(count/proCount)
         if (req.session.userId) {
 
             const userId = req.session.userId
@@ -184,12 +195,11 @@ const productsPage = async (req, res) => {
             //     wishdata.push(element.product_name)
             // });
 
-            const product = await Product.find({ list: true }).populate('category')
-            console.log(product)
-            res.render('products_page', { productData: product, user: user, wishlist: wishdata })
+            // const product = await Product.find({ list: true }).populate('category')
+            res.render('products_page', { productData: products, user: user, wishlist: wishdata, page,totalPages })
         } else {
-            const product = await Product.find({ list: true }).populate('category')
-            res.render('products_page', { productData: product, wishlist: 'null' })
+            // const product = await Product.find({ list: true }).populate('category')
+            res.render('products_page', { productData: products, wishlist: 'null', page,totalPages })
         }
 
     } catch (error) {
@@ -503,6 +513,23 @@ const postEditAddress = async (req, res) => {
     }
 }
 
+// search products 
+const searchProducts = async (req, res)=>{
+    try {
+
+        let payload = req.body.payload
+        console.log(payload)
+        let searchKey = new RegExp(payload,'i')
+        let search = await Product.find({product_name:searchKey})
+        search = search.slice(0, 4);
+        res.send({payload:search})
+
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 
 module.exports = {
     userHome,
@@ -524,4 +551,5 @@ module.exports = {
     deleteAddress,
     editAddressPage,
     postEditAddress,
+    searchProducts,
 }

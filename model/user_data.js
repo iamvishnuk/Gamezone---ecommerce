@@ -3,31 +3,31 @@ const mongoose = require('mongoose');
 const userData = new mongoose.Schema({
     firstName: {
         type: String,
-        require: true
+        required: true
     },
     lastName: {
         type: String,
-        require: true
+        required: true
     },
     username: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
-        require: true
+        required: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     phone: {
         type: Number,
-        require: true
+        required: true
     },
     date: {
         type: Date,
-        require: true,
+        required: true,
         default: Date.now()
     },
     blocked: {

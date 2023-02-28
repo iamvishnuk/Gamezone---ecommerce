@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-mongoose.connect("mongodb://127.0.0.1:27017/gamezone")
+const mongoose = require("./config/mongo")
 const path = require('path')
 const express = require('express')
 const app = express()
@@ -9,15 +8,16 @@ const logger = require('morgan')
 
 
 app.use(nocache())
-const bodyParser = require('body-parser');
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.set('view engine', 'ejs')
 app.use(session({
     secret: "thissecretkeyabcdefghijklmnopqrstuvwxyz",
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 6000000 }
 }))
+
 // app.use(logger('dev'))
 
 app.use(express.static(path.join(__dirname, 'public')));

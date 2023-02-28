@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
 const Schema = mongoose.Schema;
 
 const orderData = new Schema({
@@ -11,8 +10,7 @@ const orderData = new Schema({
     orderId: {
         type: String,
         unique: true,
-        required: true,
-        default: `order_id_${uuidv4()}`, // generate a custom order ID using uuid
+        required: true, // generate a custom order ID using uuid
     },
     deliveryAddress: {
         type: String,
@@ -20,7 +18,7 @@ const orderData = new Schema({
     },
     date: {
         type: Date,
-        default: Date.now(),
+        // default: Date.now(),
     },
     product: [
         {
@@ -48,7 +46,7 @@ const orderData = new Schema({
     },
     status: {
         type: String,
-        default: 'Pending',
+        default: 'Order Confirmed',
     },
 });
 

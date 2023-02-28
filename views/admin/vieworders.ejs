@@ -54,17 +54,19 @@
                                             <td><%= order.paymentType %></td>
                                             <td>
                                                 <span id="<%= order.orderId %>" class="badge bg-info"><%= order.status %></span>
-                                                <div class="dropdown d-flex justify-content-center">
-                                                    <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
-                                                        aria-haspopup="true" aria-expanded="false">
-                                                    </span>
-                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Pending')" >Pending</div>
-                                                        <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Order confirmed')" >Order confirmed</div>
-                                                        <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Shipped')" >Shipped</div>
-                                                        <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')" >Delivered</div>
+                                                <% if(order.status !== "Cancelled"){ %>
+
+                                                    <div class="dropdown d-flex justify-content-center">
+                                                        <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                        </span>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Shipped')" >Shipped</div>
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')" >Delivered</div>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                    
+                                                <% } %>
                                             </td>
                                         </tr>
 

@@ -21,16 +21,40 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">Number</th>
-                                    <th scope="col">Category Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Created on</th>
-                                    <th scope="col">Actions</th>
+
+                                    <th scope="col">Coupon Code</th>
+                                    <th scope="col">Percentage Off</th>
+                                    <th scope="col">Max Discount</th>
+                                    <th scope="col">Expiry Date</th>
+                                    <th scope="col">Minimum Purchase Amount</th>
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
 
+                                <% couponData.forEach(element=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= element.code %>
+                                        </td>
+                                        <td>
+                                            <%= element.percentageOff %>
+                                        </td>
+                                        <td>
+                                            <%= element.maxDiscount %>
+                                        </td>
+                                        <% const date = element.expiryDate %>
+                                        <td>
+                                            <%= moment(date).format("MMM Do YY") %>
+                                        </td>
+                                        <td>
+                                            <%= element.minimumPurchseAmount %>
+                                        </td>
+                                        <td>
+                                            <%= element.status %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
                             </tbody>
                         </table>
                     </div>

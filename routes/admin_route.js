@@ -1,27 +1,12 @@
 const express = require('express')
 const admin_route = express()
+const upload = require('../middlewares/multer')
 const adminController = require('../controllers/admin_controller')
 const productController = require('../controllers/product_controller')
-const path = require('path')
-const multer = require("multer");
 const adminAuth = require('../middlewares/admin_auth')
 const couponController = require('../controllers/coupon_controller')
 
-//multer for adding multiple image
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../public/product_images'));
-    },
-    filename: function (req, file, cb) {
-        const name = Date.now() + '-' + file.originalname;
-        cb(null, name);
-    }
-});
-const upload = multer({ storage: storage })
-
-
-
-admin_route.set('view engine', 'ejs')
+// admin_route.set('view engine', 'ejs')
 admin_route.set('views', './views/admin')
 
 
@@ -103,6 +88,9 @@ admin_route.get('/viewcoupon',couponController.getCouponPage)
 
 // get add coupon page
 admin_route.get('/addcoupon',couponController.getAddCouponPage)
+
+// post add coupon 
+admin_route.post('/add-coupon',couponController.postAddCoupon)
 
 
 

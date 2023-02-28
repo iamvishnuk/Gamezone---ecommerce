@@ -7,7 +7,7 @@ const cartController = require('../controllers/cart_controller')
 const orderController = require("../controllers/order_controller")
 
 
-user_route.set('view engine', 'ejs')
+// user_route.set('view engine', 'ejs')
 user_route.set('views', './views/user')
 
 

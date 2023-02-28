@@ -2,6 +2,8 @@ const User = require("../model/user_data")
 const Product = require("../model/products_data")
 const Category = require("../model/category_data")
 const Order = require("../model/orders_data")
+const { v4: uuidv4 } = require('uuid');
+const moment = require("moment")
 
 // get chekout page
 const getChekoutPage = async (req, res) => {
@@ -66,9 +68,12 @@ const postCheckout = async (req, res) => {
                 deliveryAddress: orderData.address,
                 product: orderDetails,
                 total: orderData.total,
-                paymentType: orderData.paymentMethod
-
+                paymentType: orderData.paymentMethod,
+                orderId:`order_id${uuidv4()}`,
+                date: Date.now()
             })
+
+            console.log(Date.now())
 
             const ordered = await orders.save()
 
@@ -77,7 +82,12 @@ const postCheckout = async (req, res) => {
                 { $pull: { cart: { productId: { $in: productIds } } } }
             )
 
-            res.render("orderconfirmpage")
+            const lastOrder = await Order.findOne({}).sort({date: -1}) //.limit(1).lean()
+            console.log(lastOrder);
+            const lastOrderDetails = await Order.findOne({_id: lastOrder._id}).populate("product.productId")
+            // console.log(lastOrderDetails);
+
+            res.render("orderconfirmpage", { orderDatas: lastOrderDetails,moment:moment})
 
         }
 

@@ -68,7 +68,7 @@ const viewCategory = async (req, res) => {
 
 //------------add category page get methode---------- 
 const addCategory = async (req, res) => {
-    try {
+    try {   
         res.render("addcategory")
     } catch (error) {
         console.log(error.message);

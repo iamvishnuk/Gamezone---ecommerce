@@ -45,7 +45,7 @@
                                             <td class="column-5">Rs: <%= order.total %></td>
                                             <td class="column-5">
                                                 <span class="badge badge-success" id="<%= order.orderId %>"><%= order.status %></span><br>
-                                                <% if (order.status == "Pending" || order.status == "Order confirmed" || order.status == "Shipped") { %>
+                                                <% if (order.status == "Order Confirmed" || order.status == "Shipped") { %>
                                                     <button onclick="cancelOrder('<%=order.orderId %>','Cancelled')" class="btn btn-danger">Cancel</button>
                                                 <% } %>
                                             </td>

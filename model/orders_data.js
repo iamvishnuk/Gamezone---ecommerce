@@ -37,6 +37,9 @@ const orderData = new Schema({
             }
         }
     ],
+    discountAmount:{
+        type: Number
+    },
     total: {
         type: Number,
     },

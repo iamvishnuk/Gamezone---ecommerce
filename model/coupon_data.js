@@ -21,10 +21,6 @@ const couponData = new mongoose.Schema({
         type: Date,
         required: true
     },
-    status:{
-        type: String,
-        default: "inactive"
-    },
     minimumPurchseAmount: {
         type: Number,
         required: true

@@ -67,19 +67,7 @@
                                     <div class="row d-flex justify-content-end">
                                         <div class="col-md-5">
                                             <table class="table table-borderless">
-                                                <tbody class="totals">
-                                                    <tr>
-                                                        <td>
-                                                            <div class="text-left">
-                                                                <span class="text-muted">Subtotal</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="text-right">
-                                                                <span>Rs:<%= orderDatas.total %></span>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                <tbody class="totals">                
                                                     <tr>
                                                         <td>
                                                             <div class="text-left">
@@ -100,7 +88,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="text-right">
-                                                                <span class="text-success">Rs:68.50</span>
+                                                                <span class="text-success">Rs: <%= orderDatas.discountAmount %></span>
                                                             </div>
                                                         </td>
                                                     </tr>

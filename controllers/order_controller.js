@@ -1,6 +1,7 @@
 const User = require("../model/user_data")
 const Product = require("../model/products_data")
 const Category = require("../model/category_data")
+const Coupon = require("../model/coupon_data")
 const Order = require("../model/orders_data")
 const { v4: uuidv4 } = require('uuid');
 const moment = require("moment")
@@ -40,7 +41,7 @@ const postCheckout = async (req, res) => {
         const userId = req.session.userId
         const orderData = req.body
         const productIds = orderData.productId
-        console.log(productIds)
+        const couponCode = req.body.couponCode
 
         if (req.body.paymentMethod === "cod") {
 
@@ -67,15 +68,15 @@ const postCheckout = async (req, res) => {
                 userId: userId,
                 deliveryAddress: orderData.address,
                 product: orderDetails,
+                discountAmount: orderData.discountAmount,
                 total: orderData.total,
                 paymentType: orderData.paymentMethod,
                 orderId:`order_id${uuidv4()}`,
                 date: Date.now()
             })
-
-            console.log(Date.now())
-
             const ordered = await orders.save()
+
+            await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
 
             await User.updateOne(
                 { userId: userId },
@@ -83,7 +84,6 @@ const postCheckout = async (req, res) => {
             )
 
             const lastOrder = await Order.findOne({}).sort({date: -1}) //.limit(1).lean()
-            console.log(lastOrder);
             const lastOrderDetails = await Order.findOne({_id: lastOrder._id}).populate("product.productId")
             // console.log(lastOrderDetails);
 
@@ -103,7 +103,6 @@ const viewOrder = async (req, res)=>{
         const userId = req.session.userId
         const user = await User.findOne({_id:userId})
         const orderData = await Order.find({userId:userId}).populate('product.productId')
-        console.log(orderData)
 
         res.render("orders",{user:user,orderData:orderData})
         
@@ -118,7 +117,6 @@ const cancelOrder = async (req, res)=>{
 
         const orderId = req.body.orderId
         const value = req.body.value
-        console.log(orderId);
         await Order.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
             res.json({ success: true, value })
         })

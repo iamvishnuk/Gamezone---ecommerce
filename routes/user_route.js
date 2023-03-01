@@ -5,6 +5,7 @@ const userController = require('../controllers/user_controller')
 const userAuth = require("../middlewares/user.auth")
 const cartController = require('../controllers/cart_controller')
 const orderController = require("../controllers/order_controller")
+const couponController = require('../controllers/coupon_controller')
 
 
 // user_route.set('view engine', 'ejs')
@@ -94,6 +95,9 @@ user_route.post("/cancelorder",orderController.cancelOrder)
 
 // search products
 user_route.post("/getProduct",userController.searchProducts)
+
+// apply coupon 
+user_route.post("/apply-coupon",couponController.applyCoupon)
 
 
 

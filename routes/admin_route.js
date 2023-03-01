@@ -84,13 +84,16 @@ admin_route.get("/vieweorders", adminAuth.isLogin,adminController.getAllOrder)
 admin_route.post('/change-status',adminController.changeStatus)
 
 // get coupon page -----------------------------------------------------------
-admin_route.get('/viewcoupon',couponController.getCouponPage)
+admin_route.get('/viewcoupon', adminAuth.isLogin,couponController.getCouponPage)
 
 // get add coupon page
-admin_route.get('/addcoupon',couponController.getAddCouponPage)
+admin_route.get('/addcoupon', adminAuth.isLogin,couponController.getAddCouponPage)
 
 // post add coupon 
 admin_route.post('/add-coupon',couponController.postAddCoupon)
+
+// delete coupon 
+admin_route.get("/delete-coupon/:id",couponController.deleteCoupon)
 
 
 

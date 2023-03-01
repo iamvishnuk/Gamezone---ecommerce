@@ -29,20 +29,10 @@
                                             </td>
                                             <td class="column-1">
                                                 <% order.product.forEach(element=>{ %>
-                                                    RS : <%= element.productId.price %> <br><br><br><br><br>
+                                                     Quantity x<%= element.quantity %> <br><br><br><br><br>
                                                         <% }) %>
                                             </td>
-                                            <td class="column-1">
-                                                <% order.product.forEach(element=>{ %>
-                                                     x<%= element.quantity %> <br><br><br><br><br>
-                                                        <% }) %>
-                                            </td>
-                                            <td class="column-1">
-                                                <% order.product.forEach(element=>{ %>
-                                                    Rs: <%= element.productTotal %> <br><br><br><br><br>
-                                                        <% }) %>
-                                            </td>
-                                            <td class="column-5">Rs: <%= order.total %></td>
+                                            <td class="column-5">Total Rs: <%= order.total %></td>
                                             <td class="column-5">
                                                 <span class="badge badge-success" id="<%= order.orderId %>"><%= order.status %></span><br>
                                                 <% if (order.status == "Order Confirmed" || order.status == "Shipped") { %>

@@ -15,7 +15,8 @@
 
                                 <input class="d-none" type="text" name="productId" value="<%= data.productId._id %>">
                                 <input class="d-none" type="number" name="quantity" value="<%= data.quantity %>">
-                                <input class="d-none" type="number" name="productTotal" value="<%= data.productTotalPrice %>">
+                                <input class="d-none" type="number" name="productTotal"
+                                    value="<%= data.productTotalPrice %>">
 
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
@@ -34,22 +35,24 @@
                                             <h6 class="my-0">Promo code</h6>
                                             <small>EXAMPLECODE</small>
                                         </div>
-                                        <span class="text-success">-$5</span>
+                                        <span id="coupon" class="text-success"></span>
+                                        <input id="discount-amount" name="discountAmount" type="text" class="d-none" value="">
+                                        <input id="couponCode" name="couponCode" type="text" class="d-none" value="">
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span>Total (INR)</span>
-                                        <input type="text" name="total" value="<%= cartItem.cartTotalPrice %>">
-                                        <strong>
+                                        <input id="cart-amount-h" class="d-none" type="text" name="total" value="<%= cartItem.cartTotalPrice %>">
+                                        <strong id="cart-amount-s">
                                             <%= cartItem.cartTotalPrice %>
                                         </strong>
                                     </li>
                         </ul>
 
-                        <form class="card p-2">
+                        <form id="coupon-form" class="card p-2">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Promo code">
+                                <input form="coupon-form" type="text" class="form-control" placeholder="Promo code" id="coupon-code"> 
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-secondary">Redeem</button>
+                                    <button onclick="applyCoupon('<%= user.cartTotalPrice %>',$('#coupon-code').val())" form="coupon-form" type="submit" class="btn btn-secondary">Redeem</button>
                                 </div>
                             </div>
                         </form>
@@ -59,7 +62,9 @@
                         <div class="d-block my-3">
                             <div class="px-3 py-3 border">
                                 <div class="form-check custom-control custom-radio">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fa fa-plus">&nbsp;</i>Add Address</button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#exampleModal" data-whatever="@mdo"><i
+                                            class="fa fa-plus">&nbsp;</i>Add Address</button>
                                 </div>
                             </div>
                             <% address.forEach((e,i)=> { %>
@@ -67,10 +72,11 @@
                                     <div class="form-check custom-control custom-radio d-block ">
                                         <input class="form-check-input" type="radio" name="address"
                                             id="flexRadioDefault1" value="<%= e.name %>,<%= e.phoneNumber %>,<%= e.houseName %><%= e.street %>,<%= e.district %>,
-                                        <%= e.state %>,<%= e.pincode %>" <%= i===0 ? 'checked' : '' %>>
+                                        <%= e.state %>,<%= e.pincode %>" <%=i===0 ? 'checked' : '' %>>
                                         <label class="form-check-label p-l-0" for="flexRadioDefault1">
                                             <%= e.name %>,<%= e.phoneNumber %> <br>
-                                                    <%= e.houseName %>,<%=e.street %>,<br><%= e.district %>,<%= e.state %>,
+                                                    <%= e.houseName %>,<%=e.street %>,<br>
+                                                            <%= e.district %>,<%= e.state %>,
                                                                     <%= e.pincode %>
                                         </label>
                                     </div>
@@ -207,18 +213,82 @@
     </div>
 
     <script>
-        
+
         const form = document.querySelector('#postcheckout');
-            const radios = form.querySelectorAll('input[name="paymentMethod"]');
-            form.addEventListener('submit', function (event) {
-                if (!radios[0].checked && !radios[1].checked) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Please select a payment method.',
-                    });
+        const radios = form.querySelectorAll('input[name="paymentMethod"]');
+        form.addEventListener('submit', function (event) {
+            
+            if (!radios[0].checked && !radios[1].checked) {
+                event.preventDefault()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please select a payment method.',
+                });
+                
+            }
+        });
+
+
+
+        //  coupon ajax
+        function applyCoupon(cartTotal,couponCode){
+            $.ajax({
+                url:'/apply-coupon',
+                data: {
+                    cartTotal:cartTotal,
+                    couponCode:couponCode
+                },
+                method: 'post',
+                success: (response)=>{
+                    if(response.userUsed){
+                        console.log("user already used")
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Already used',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                    }else if(response.dateFail){
+                        console.log("date validation failed");
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Coupon expired',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            
+                        })
+                    }else if(response.minmumAmountFail){
+                        console.log("Minmum amount validation failed")
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Minmum purchase amount',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }else if(response.discountedAmount){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Coupon added successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        document.getElementById('coupon').innerHTML = response.discountedAmount
+                        document.getElementById("discount-amount").value = response.discountedAmount
+                        document.getElementById('cart-amount-s').innerHTML = response.total
+                        document.getElementById('cart-amount-h').value = response.total
+                        document.getElementById('couponCode').value = couponCode
+                        console.log(response.total)
+
+                    }
                 }
-            });
+            })
+        }
+
     </script>
 
     <%- include("../layout/user/user_footer.ejs") %>

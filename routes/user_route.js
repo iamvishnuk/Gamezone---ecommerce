@@ -87,6 +87,12 @@ user_route.get("/gotocheckoutpage",userAuth.isLogin,orderController.getChekoutPa
 // post checkout page 
 user_route.post("/postcheckout",orderController.postCheckout)
 
+// verify payment 
+user_route.post("/verify-payment",orderController.verifyPayment)
+
+// get order confirmation page
+user_route.get("/orderconfirmation",userAuth.isLogin,orderController.orderConfirmationPage)
+
 // view previous orders 
 user_route.get("/orders",userAuth.isLogin,orderController.viewOrder)
 

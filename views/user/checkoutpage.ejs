@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-md-8 order-md-1">
                         <h4 class="mb-3">Select billing Address</h4>
-                        <div class="d-block my-3">
+                        <div class="d-block my-3" id="address-div">
                             <div class="px-3 py-3 border">
                                 <div class="form-check custom-control custom-radio">
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
@@ -174,7 +174,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/add-address-checkoutpage" method="post">
+                    <form id="add-address-checkoutpage" action="" method="post">
                         <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Name</label>
                             <input type="text" class="form-control" name="name" id="name">
@@ -214,6 +214,7 @@
 
     <script>
 
+        // validatin for checking the user is selected any payment method
         const form = document.querySelector('#postcheckout');
         const radios = form.querySelectorAll('input[name="paymentMethod"]');
         form.addEventListener('submit', function (event) {
@@ -228,6 +229,24 @@
                 
             }
         });
+
+        // add address form the checkout page
+        $('#add-address-checkoutpage').submit((event)=>{
+            event.preventDefault()
+            $.ajax({
+                url:"/add-address-checkoutpage",
+                method: 'post',
+                data: $('#add-address-checkoutpage').serialize(),
+                success: (response)=>{
+                    console.log(response);
+                    $('#exampleModal').on('hidden.bs.modal', function () {
+                        $(this).find('form').trigger('reset');
+                    });
+                    $('#exampleModal').modal('hide')
+                    $('#address-div').load('/gotocheckoutpage #address-div')
+                }
+            })
+        })
 
 
 

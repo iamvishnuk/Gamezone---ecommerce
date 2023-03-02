@@ -436,8 +436,9 @@ const checkoutPageAddAddress = async (req, res) => {
                     }
                 }
             }
-        ).then(() => {
-            res.redirect("/gotocheckoutpage")
+        ).then((response) => {
+            res.json(response)
+            // res.redirect("/gotocheckoutpage")
         })
 
     } catch (error) {

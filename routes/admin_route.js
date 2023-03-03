@@ -5,6 +5,7 @@ const adminController = require('../controllers/admin_controller')
 const productController = require('../controllers/product_controller')
 const adminAuth = require('../middlewares/admin_auth')
 const couponController = require('../controllers/coupon_controller')
+const bannerController = require('../controllers/banner_controller')
 
 // admin_route.set('view engine', 'ejs')
 admin_route.set('views', './views/admin')
@@ -94,6 +95,12 @@ admin_route.post('/add-coupon',couponController.postAddCoupon)
 
 // delete coupon 
 admin_route.get("/delete-coupon/:id",couponController.deleteCoupon)
+
+//banner
+admin_route.get("/banner",bannerController.getBannerPage)
+
+//add banner 
+admin_route.post('/add-banner', upload.single("bannerImage"),bannerController.addBanner)
 
 
 

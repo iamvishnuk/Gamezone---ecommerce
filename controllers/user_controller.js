@@ -1,6 +1,7 @@
 const Product = require("../model/products_data")
 const Users = require("../model/user_data")
 const Category = require("../model/category_data")
+const Banner = require("../model/banner_data")
 require('dotenv').config()
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -145,6 +146,8 @@ const verifyOtp = async (req, res) => {
 //user home page
 const userHome = async (req, res) => {
     try {
+
+        const bannerData = await Banner.find({})
         if (req.session.userId) {
 
             const userId = req.session.userId
@@ -153,13 +156,13 @@ const userHome = async (req, res) => {
             const product = await Product.find({ list: true }).limit(4)
 
             const category = await Category.find({})
-            res.render('user_home', { productData: product, user: user, category: category })
+            res.render('user_home', { productData: product, user: user, category: category,bannerData:bannerData })
 
         } else {
 
             const product = await Product.find({ list: true }).limit(4);
             const category = await Category.find({})
-            res.render('user_home', { productData: product, wishlist: "null", category: category })
+            res.render('user_home', { productData: product, wishlist: "null", category: category, bannerData: bannerData })
 
         }
 
@@ -362,6 +365,38 @@ const editUserProfile = async (req, res) => {
     }
 }
 
+// change user password-------------------------------------------------------
+const changeUserPassword = async (req, res)=>{
+    try {
+
+        const password = req.body.oldPassword
+        const newPassword = req.body.newPassword
+        let confirmPassword = req.body.confirmPassword
+        const user = await Users.findOne({_id:req.session.userId})
+        console.log(user)
+
+        bycrpt.compare(password,user.password).then(async(status)=>{
+            if(status){
+                if (newPassword === confirmPassword) {
+
+                    confirmPassword = await bycrpt.hash(confirmPassword,10)
+                    await Users.updateOne({_id:user._id},{password:confirmPassword})
+                    res.json({change:true})
+                } else {
+                    res.json({matchfailed:true})
+                }
+            }else{
+                console.log("yor password wrong")
+                res.json({wrongPassword:true})
+            }
+        })
+
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 // view all addresses
 const allAddressesPage = async (req, res) => {
     try {
@@ -553,4 +588,5 @@ module.exports = {
     editAddressPage,
     postEditAddress,
     searchProducts,
+    changeUserPassword,
 }

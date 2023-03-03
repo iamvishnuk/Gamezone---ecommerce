@@ -14,11 +14,16 @@
                                 <%= userDetails.firstName %>
                                     <%= userDetails.lastName %>
                             </h5>
-                            <div class="d-flex justify-content-left mb-2">
-                                <a href="/orders" class="btn btn-primary m-1">Orders</a>
-                                <button type="button" class="btn btn-primary m-1" data-toggle="modal"
-                                    data-target="#exampleModal" data-whatever="@fat">Edit profile</button>
-                                <a href="/manageaddress" class="btn btn-primary m-1">Address</a>
+                            <hr>
+                            <div class="mb-2">
+                                <a href="/orders" class="btn btn-primary m-1 d-block">Orders</a>                                
+                                <a class="btn btn-primary m-1 d-block">
+                                    <button type="button" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Edit profile</button>
+                                </a>                                                                
+                                <a href="/manageaddress" class="btn btn-primary m-1 d-block">Address</a>
+                                <a class="btn btn-primary m-1 d-block">
+                                    <button type="button" data-toggle="modal" data-target="#changepassword" data-whatever="@fat">Change password</button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -91,6 +96,7 @@
                 </div>
             </div>
         </div>
+        <!-- edit profile modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -128,13 +134,90 @@
                             </div>
                         </form>
                     </div>
-                    <!-- <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Send message</button>
-                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- change password modal -->
+        <div class="modal fade" id="changepassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Change password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="change-password">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Old password</label>
+                                <input type="password" class="form-control" name="oldPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Enter new password</label>
+                                <input type="password" class="form-control" name="newPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Confirm new password</label>
+                                <input type="password" class="form-control" name="confirmPassword">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                        <div id="alertpassword" class="alert alert-danger" role="alert" style="display: none;">
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <script>
+
+        $('#change-password').submit((event)=>{
+            event.preventDefault();
+            $.ajax({
+                url:"/change-password",
+                method: 'post',
+                data : $("#change-password").serialize(),
+                success: (response)=>{
+                    console.log(response)
+                    if(response.wrongPassword){
+                        $('#alertpassword').attr({style:"display: block"}).html("Old pasword is incorredt")
+                        setTimeout(() => {
+                            $('#alertpassword').hide()
+                        }, 3000);
+                    }else if(response.matchfailed){
+                        $('#alertpassword').attr({ style: "display: block" }).html("New password doesn't match")
+                        setTimeout(() => {
+                            $('#alertpassword').hide()
+                        }, 3000)
+                    }else if(response.change){
+                        Swal.fire({
+                            toast: true,
+                            position: 'bottom-end',
+                            icon: 'success',
+                            title: 'Password changed successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        $('#changepassword').on('hidden.bs.modal', function () {
+                            $(this).find('form').trigger('reset');
+                        });
+                        $('#changepassword').modal('hide')
+                        
+                    }
+                }
+            })
+        })
+        
+
+    </script>
+
+
 
     <%- include("../layout/user/user_footer.ejs") %>

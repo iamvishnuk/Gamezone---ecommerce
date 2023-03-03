@@ -51,7 +51,7 @@ const postCheckout = async (req, res) => {
         const orderData = req.body
         const productIds = orderData.productId
         const couponCode = req.body.couponCode
-        console.log(orderData);
+        // console.log(orderData);
 
         if (req.body.paymentMethod === "cod") {
 
@@ -164,7 +164,7 @@ const verifyPayment = async (req, res)=>{
     try {
 
         const details = req.body
-        console.log(details)
+        // console.log(details)
         let hmac = crypto.createHmac('sha256', process.env.KEY_SECRET)
         hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id)
         hmac = hmac.digest('hex')
@@ -192,6 +192,12 @@ const orderConfirmationPage = async (req, res) => {
 
         const lastOrder = await Order.findOne({}).sort({ date: -1 })
         const lastOrderDetails = await Order.findOne({ _id: lastOrder._id }).populate("product.productId")
+
+        for (let i = 0; i < lastOrder.product.length; i++) {
+            const quantity = lastOrder.product[i].quantity;
+            const proId = lastOrder.product[i].productId;
+            await Product.updateOne({_id:proId},{$inc:{stock:-quantity}})
+        }
 
         res.render("orderconfirmpage", { user: user, orderDatas: lastOrderDetails, moment: moment })
 
@@ -221,7 +227,14 @@ const cancelOrder = async (req, res) => {
 
         const orderId = req.body.orderId
         const value = req.body.value
+        const canceledOrder = await Order.findOne({ orderId: orderId })
+        for (let i = 0; i < canceledOrder.product.length; i++) {
+            const quantity = canceledOrder.product[i].quantity;
+            const proId = canceledOrder.product[i].productId;
+            await Product.updateOne({ _id: proId }, { $inc: { stock: quantity } })
+        }
         await Order.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
+
             res.json({ success: true, value })
         })
 

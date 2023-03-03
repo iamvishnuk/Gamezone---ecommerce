@@ -63,6 +63,9 @@ user_route.get("/userprofile", userController.getUserProfile)
 // user profile edit 
 user_route.post("/edituserprofile",userController.editUserProfile)
 
+// change user password
+user_route.post('/change-password',userController.changeUserPassword)
+
 // view all addresses
 user_route.get("/manageaddress",userController.allAddressesPage)
 

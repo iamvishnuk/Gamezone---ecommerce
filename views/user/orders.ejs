@@ -54,18 +54,39 @@
     </section>
     <script>
         function cancelOrder(orderId,value){
-            $.ajax({
-                url:'/cancelorder',
-                data:{
-                    orderId: orderId,
-                    value: value
-                },
-                method:'post',
-                success: (response)=>{
-                    document.getElementById(orderId).innerHTML = response.value
-                }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to cancel",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/cancelorder',
+                        data: {
+                            orderId: orderId,
+                            value: value
+                        },
+                        method: 'post',
+                        success: (response) => {
+                            Swal.fire(
+                                'Deleted!',
+                                'Your order has been cancelled',
+                                'success'
+                            )
+                            setTimeout(()=>{
+                                location.reload()
+                            })
+                            document.getElementById(orderId).innerHTML = response.value
+                        }
 
+                    })
+                }
             })
+            
         }
     </script>
 

@@ -70,16 +70,24 @@
                 })
                 function validate() {
                     // Get form inputs
-                    const categoryName = document.forms["add-category-form"]["categoryName"].value;
-                    const description = document.forms["add-category-form"]["description"].value;
+                    const categoryName = document.forms["add-category-form"]["categoryName"].value.trim();
+                    const description = document.forms["add-category-form"]["description"].value.trim();
 
                     // Validate required fields
                     if (categoryName === "" || description === "" ) {
-                        alert("Please fill in all required fields");
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'All fields required',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
                         return false;
+                    }else{
+
+                        return true;
                     }
-                    // All validations passed
-                    return true;
+                    
                 }
 
             </script>

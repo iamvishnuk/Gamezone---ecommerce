@@ -23,6 +23,7 @@
                                     <th scope="col">Image</th>
                                     <th scope="col">Heading</th>
                                     <th scope="col">Subheading</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>   
@@ -39,6 +40,9 @@
                                         </td>
                                         <td>
                                             <%= element.subheading %>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger" onclick="deleteBanner('<%= element._id %>','<%= element.image %>')">Delete</button>
                                         </td>
                                     </tr>
                                 <% }); %>                 
@@ -83,7 +87,7 @@
             </div>
 
             <script>
-                function validate(categoryId) {
+                function deleteBanner(bannerId,image) {
                     Swal.fire({
                         title: 'Are you sure?',
                         text: "You won't be able to revert this!",
@@ -93,26 +97,9 @@
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
-                        // $.ajax({
-                        //     url: '/admin/delete_category/'+categoryId,
-                        //     method: 'get',
-                        //     success: (response) => {
-                        //         if (result.isConfirmed) {
-                        //             Swal.fire({
-                        //                 title: 'Deleted!',
-                        //                 text: 'Your file has been deleted.',
-                        //                 icon: 'success',
-                        //                 showConfirmButton: false
-                        //             })
-                        //             setTimeout(() => {
-                        //                 location.reload()
-                        //             }, 1000);
-                        //         }
-                        //     }
-                        // })
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: '/admin/delete_category/' + categoryId,
+                                url: '/admin/delete_banner/' + bannerId,
                                 method: 'get',
                                 success: (response) => {
                                     Swal.fire({

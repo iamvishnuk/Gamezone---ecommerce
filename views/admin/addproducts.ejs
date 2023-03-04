@@ -30,7 +30,15 @@
                             <div class="row mb-3">
                                 <label for="" class="col-sm-2 col-form-label">Brand</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="brand">
+                                    <select class="form-select" aria-label="Default select example" name="brand">
+                                        <option selected>Select the Brand</option>
+                                            <option value="ASUS">ASUS</option>
+                                            <option value="MSI">MSI</option>
+                                            <option value="RAZER">RAZER</option>
+                                            <option value="LENOVO">LENOVO</option>
+                                            <option value="DELL">DELL</option>
+                                            <option value="ACER">ACER</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -49,13 +57,13 @@
                             <div class="row mb-3">
                                 <label for="" class="col-sm-2 col-form-label">Price</label>
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" name="price">
+                                    <input type="number" class="form-control" name="price" min="0">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="" class="col-sm-2 col-form-label">Stock</label>
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" name="stock">
+                                    <input type="number" class="form-control" name="stock" min="0">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -91,11 +99,17 @@
                     event.preventDefault()
                     if (validate()) {
                         Swal.fire({
+                            toast: true,
                             position: 'top-end',
                             icon: 'success',
                             title: 'New product as added',
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
                         }).then((response)=>{
                             form.submit();
                         })
@@ -103,27 +117,45 @@
                 })
                 function validate() {
                         // Get form inputs
-                        const productName = document.forms["add-product-form"]["productName"].value;
-                        const brand = document.forms["add-product-form"]["brand"].value;
-                        const category = document.forms["add-product-form"]["category"].value;
-                        const price = document.forms["add-product-form"]["price"].value;
-                        const stock = document.forms["add-product-form"]["stock"].value;
-                        const description = document.forms["add-product-form"]["description"].value;
-                        const productImage = document.forms["add-product-form"]["productImage"].value;
+                        const productName = document.forms["add-product-form"]["productName"].value.trim();
+                        const brand = document.forms["add-product-form"]["brand"].value.trim();
+                        const category = document.forms["add-product-form"]["category"].value.trim();
+                        const price = document.forms["add-product-form"]["price"].value.trim();
+                        const stock = document.forms["add-product-form"]["stock"].value.trim();
+                        const description = document.forms["add-product-form"]["description"].value.trim();
+                        const productImage = document.forms["add-product-form"]["productImage"].value.trim();
 
                         // Validate required fields
-                        if (productName === "" || brand === "" || category === "Select the category" || price === "" || stock === "" || description === "" || productImage === "") {
-                            alert("Please fill in all required fields");
+                        if (productName === "" || brand === "Select the Brand" || category === "Select the category" || price === "" || stock === "" || description === "" || productImage === "") {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'warning',
+                                title: 'All fields required',
+                                showConfirmButton: false,
+                                timer: 1500,
+                            })
                             return false;
                         }
 
                         // Validate price and stock fields are positive numbers
                         if (isNaN(price) || parseFloat(price) < 0) {
-                            alert("Price must be a positive number");
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'warning',
+                                title: 'Only number in Price field',
+                                showConfirmButton: false,
+                                timer: 1500,
+                            })
                             return false;
                         }
                         if (isNaN(stock) || parseInt(stock) < 0) {
-                            alert("Stock must be a positive number");
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'warning',
+                                title: 'Only number in stock fiels',
+                                showConfirmButton: false,
+                                timer: 1500,
+                            })
                             return false;
                         }
 

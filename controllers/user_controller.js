@@ -8,6 +8,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
+const { response } = require("../routes/user_route")
 const proCount = 4
 
 
@@ -156,7 +157,7 @@ const userHome = async (req, res) => {
             const product = await Product.find({ list: true }).limit(4)
 
             const category = await Category.find({})
-            res.render('user_home', { productData: product, user: user, category: category,bannerData:bannerData })
+            res.render('user_home', { productData: product, user: user, category: category, bannerData: bannerData })
 
         } else {
 
@@ -285,11 +286,11 @@ const addToWishlist = async (req, res) => {
         const userId = req.session.userId
         const user = await Users.findOne({ _id: userId })
 
-        const wishlits = await Users.findOne({_id:userId,'wishlist': proId})
+        const wishlits = await Users.findOne({ _id: userId, 'wishlist': proId })
 
         if (wishlits) {
             console.log("all ready existing");
-        }else{
+        } else {
 
             const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { wishlist: proId } }).then((response) => {
                 res.json(response)
@@ -366,32 +367,32 @@ const editUserProfile = async (req, res) => {
 }
 
 // change user password-------------------------------------------------------
-const changeUserPassword = async (req, res)=>{
+const changeUserPassword = async (req, res) => {
     try {
 
         const password = req.body.oldPassword
         const newPassword = req.body.newPassword
         let confirmPassword = req.body.confirmPassword
-        const user = await Users.findOne({_id:req.session.userId})
+        const user = await Users.findOne({ _id: req.session.userId })
         console.log(user)
 
-        bycrpt.compare(password,user.password).then(async(status)=>{
-            if(status){
+        bycrpt.compare(password, user.password).then(async (status) => {
+            if (status) {
                 if (newPassword === confirmPassword) {
 
-                    confirmPassword = await bycrpt.hash(confirmPassword,10)
-                    await Users.updateOne({_id:user._id},{password:confirmPassword})
-                    res.json({change:true})
+                    confirmPassword = await bycrpt.hash(confirmPassword, 10)
+                    await Users.updateOne({ _id: user._id }, { password: confirmPassword })
+                    res.json({ change: true })
                 } else {
-                    res.json({matchfailed:true})
+                    res.json({ matchfailed: true })
                 }
-            }else{
+            } else {
                 console.log("yor password wrong")
-                res.json({wrongPassword:true})
+                res.json({ wrongPassword: true })
             }
         })
 
-        
+
     } catch (error) {
         console.log(error.message);
     }
@@ -423,7 +424,9 @@ const addAddress = async (req, res) => {
     try {
 
         const userId = req.session.userId
-        const user = await Users.findOne({ id: userId })
+        const user = await Users.findOne({ _id: userId })
+        console.log(user._id)
+        console.log(req.body)
 
         const address = await Users.updateOne(
             { _id: user._id },
@@ -440,7 +443,8 @@ const addAddress = async (req, res) => {
                     }
                 }
             }
-        ).then(() => {
+        ).then((response) => {
+            console.log(response);
             res.redirect("/manageaddress")
         })
 
@@ -454,7 +458,7 @@ const checkoutPageAddAddress = async (req, res) => {
     try {
 
         const userId = req.session.userId
-        const user = await Users.findOne({ id: userId })
+        const user = await Users.findOne({ _id: userId })
 
         const address = await Users.updateOne(
             { _id: user._id },
@@ -550,17 +554,17 @@ const postEditAddress = async (req, res) => {
 }
 
 // search products 
-const searchProducts = async (req, res)=>{
+const searchProducts = async (req, res) => {
     try {
 
         let payload = req.body.payload
         console.log(payload)
-        let searchKey = new RegExp(payload,'i')
-        let search = await Product.find({product_name:searchKey})
+        let searchKey = new RegExp(payload, 'i')
+        let search = await Product.find({ product_name: searchKey })
         search = search.slice(0, 4);
-        res.send({payload:search})
+        res.send({ payload: search })
 
-        
+
     } catch (error) {
         console.log(error.message);
     }

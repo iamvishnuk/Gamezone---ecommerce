@@ -53,7 +53,7 @@
                         <form id="coupon-form" class="card p-2">
                             <div class="input-group">
                                 <input form="coupon-form" type="text" class="form-control" placeholder="Promo code"
-                                    id="coupon-code">
+                                    id="coupon-code" onkeydown="upperCaseF(this)" style="text-transform:uppercase">
                                 <div class="input-group-append">
                                     <button onclick="applyCoupon('<%= user.cartTotalPrice %>',$('#coupon-code').val())"
                                         form="coupon-form" type="submit" class="btn btn-secondary">Redeem</button>
@@ -218,7 +218,11 @@
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-
+        function upperCaseF(a) {
+                setTimeout(function () {
+                    a.value = a.value.toUpperCase();
+                }, 1);
+            }
         // validatin for checking the user is selected any payment method
         // const form = document.querySelector('#postcheckout');
         // const radios = form.querySelectorAll('input[name="paymentMethod"]');

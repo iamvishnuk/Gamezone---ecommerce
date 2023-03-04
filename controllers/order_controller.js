@@ -212,7 +212,7 @@ const viewOrder = async (req, res) => {
 
         const userId = req.session.userId
         const user = await User.findOne({ _id: userId })
-        const orderData = await Order.find({ userId: userId }).populate('product.productId')
+        const orderData = await Order.find({ userId: userId }).populate('product.productId').sort({ date: -1 })
 
         res.render("orders", { user: user, orderData: orderData })
 

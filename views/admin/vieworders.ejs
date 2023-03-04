@@ -53,20 +53,58 @@
                                             <td><%= order.total %></td>
                                             <td><%= order.paymentType %></td>
                                             <td>
-                                                <span id="<%= order.orderId %>" class="badge bg-info"><%= order.status %></span>
-                                                <% if(order.status !== "Cancelled"){ %>
+                                                <span id="<%= order.orderId %>" class="badge bg-info" style="width: 120px;"><%= order.status %></span>
+                                                <% if(order.status === "Order Confirmed"){ %>
 
                                                     <div class="dropdown d-flex justify-content-center">
                                                         <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
                                                             aria-haspopup="true" aria-expanded="false">
                                                         </span>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Packed')" >Packed</div>
                                                             <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Shipped')" >Shipped</div>
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Out for delivery')" >Out for delivery</div>
                                                             <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')" >Delivered</div>
                                                         </div>
                                                     </div>
                                                     
                                                 <% } %>
+                                                <% if(order.status === "Packed"){ %>
+                                                    <div class="dropdown d-flex justify-content-center">
+                                                        <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        </span>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                    
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Shipped')">Shipped</div>
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Out for delivery')">Out for delivery
+                                                            </div>
+                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')">Delivered</div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                                    <% if(order.status==="Shipped" ){ %>
+                                                        <div class="dropdown d-flex justify-content-center">
+                                                            <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                            </span>
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                                                    
+                                                                <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Out for delivery')">Out for
+                                                                    delivery
+                                                                </div>
+                                                                <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')">Delivered</div>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                                        <% if(order.status==="Out for delivery" ){ %>
+                                                            <div class="dropdown d-flex justify-content-center">
+                                                                <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
+                                                                </span>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                    <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')">Delivered</div>
+                                                                </div>
+                                                            </div>
+                                                            <% } %>
                                             </td>
                                         </tr>
 
@@ -92,6 +130,9 @@
                         success: (response)=>{
                             console.log(response)
                             document.getElementById(orderId).innerHTML =  response.value
+                            setTimeout(()=>{
+                                location.reload()
+                            })
                         }
                     })
                 }

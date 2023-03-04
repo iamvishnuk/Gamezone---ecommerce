@@ -16,18 +16,18 @@
                         <h5 class="card-title">Add Coupon Form</h5>
                 
                         <!-- Multi Columns Form -->
-                        <form  action="/admin/add-coupon" method="post" class="row g-3">
+                        <form  action="/admin/add-coupon" method="post" class="row g-3" id="add-coupon-form">
                             <div class="col-md-12">
                                 <label class="form-label">Coupon code</label>
                                 <input type="text" class="form-control" name="code">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Percentage off</label>
-                                <input type="number" class="form-control" name="percentageOff">
+                                <input type="number" class="form-control" name="percentageOff" min="0">
                             </div>
                             <div class="col-md-6">
                                 <label fclass="form-label">Maxdiscount</label>
-                                <input type="number" class="form-control" name="maxDiscount">
+                                <input type="number" class="form-control" name="maxDiscount" min="0">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Expiry Date</label>
@@ -35,7 +35,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Minimum Purchase Amount</label>
-                                <input type="number" class="form-control" name="minimumPurchseAmount">
+                                <input type="number" class="form-control" name="minimumPurchseAmount" min="0">
                             </div>
                             
                             <div class="text-center">
@@ -49,51 +49,50 @@
             </main>
 
             <script>
-                // const form = document.querySelector('form');
-                // const submitButton = form.querySelector('button[type="submit"]');
-                // submitButton.addEventListener('click', (event) => {
-                //     event.preventDefault()
-                //     if (validate()) {
-                //         Swal.fire({
-                //             position: 'top-end',
-                //             icon: 'success',
-                //             title: 'New product as added',
-                //             showConfirmButton: false,
-                //             timer: 1500
-                //         }).then((response) => {
-                //             form.submit();
-                //         })
-                //     }
-                // })
-                // function validate() {
-                //     // Get form inputs
-                //     const productName = document.forms["add-product-form"]["productName"].value;
-                //     const brand = document.forms["add-product-form"]["brand"].value;
-                //     const category = document.forms["add-product-form"]["category"].value;
-                //     const price = document.forms["add-product-form"]["price"].value;
-                //     const stock = document.forms["add-product-form"]["stock"].value;
-                //     const description = document.forms["add-product-form"]["description"].value;
-                //     const productImage = document.forms["add-product-form"]["productImage"].value;
+                const form = document.querySelector('form');
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.addEventListener('click', (event) => {
+                    event.preventDefault()
+                    if (validate()) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'New product as added',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        }).then((response) => {
+                            form.submit();
+                        })
+                    }
+                })
+                function validate() {
+                    // Get form inputs
+                    const code = document.forms["add-coupon-form"]["code"].value.trim();
+                    const percentageOff = document.forms["add-coupon-form"]["percentageOff"].value.trim();
+                    const maxDiscount = document.forms["add-coupon-form"]["maxDiscount"].value.trim();
+                    const expiryDate = document.forms["add-coupon-form"]["expiryDate"].value.trim();
+                    const minimumPurchseAmount = document.forms["add-coupon-form"]["minimumPurchseAmount"].value.trim();
 
-                //     // Validate required fields
-                //     if (productName === "" || brand === "" || category === "Select the category" || price === "" || stock === "" || description === "" || productImage === "") {
-                //         alert("Please fill in all required fields");
-                //         return false;
-                //     }
 
-                //     // Validate price and stock fields are positive numbers
-                //     if (isNaN(price) || parseFloat(price) < 0) {
-                //         alert("Price must be a positive number");
-                //         return false;
-                //     }
-                //     if (isNaN(stock) || parseInt(stock) < 0) {
-                //         alert("Stock must be a positive number");
-                //         return false;
-                //     }
-
-                //     // All validations passed
-                //     return true;
-                // }
+                    // Validate required fields
+                    if (code === "" || percentageOff === "" || maxDiscount === "" || expiryDate === "" || minimumPurchseAmount === "" ) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'All fields required',
+                            showConfirmButton: false,
+                            timer: 500,
+                        })
+                        return false;
+                    }
+                    return true;
+                }
 
 
 

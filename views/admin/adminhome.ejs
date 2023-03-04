@@ -12,6 +12,63 @@
                         </ol>
                     </nav>
                 </div>
+                <div class="col-lg-12 dashboard">
+                    <div class="row">
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card sales-card">                                                
+                                <div class="card-body">
+                                    <h5 class="card-title">Sales <span>| This Week</span></h5>                        
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-cart"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6><%= sales %></h6>                                                
+                                        </div>
+                                    </div>
+                                </div>                        
+                            </div>
+                        </div>
+                        <!-- End Sales Card -->
+                        
+                        <!-- Revenue Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card revenue-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Revenue <span>| This Week</span></h5>
+                        
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-currency-rupee"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6><%= revenue %></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Revenue Card -->
+                        
+                        <!-- Customers Card -->
+                        <div class="col-xxl-4 col-xl-12">
+                        
+                            <div class="card info-card customers-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Customers <span>| This Week</span></h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6><%= customer %></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
@@ -73,6 +130,70 @@
                                 });
                                   //</script>
                         </div>
+                    </div>
+                </div>
+                <!-- pie chart -->
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+                
+                        <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+                
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                echarts.init(document.querySelector("#trafficChart")).setOption({
+                                    tooltip: {
+                                        trigger: 'item'
+                                    },
+                                    legend: {
+                                        top: '5%',
+                                        left: 'center'
+                                    },
+                                    series: [{
+                                        name: 'Access From',
+                                        type: 'pie',
+                                        radius: ['40%', '70%'],
+                                        avoidLabelOverlap: false,
+                                        label: {
+                                            show: false,
+                                            position: 'center'
+                                        },
+                                        emphasis: {
+                                            label: {
+                                                show: true,
+                                                fontSize: '18',
+                                                fontWeight: 'bold'
+                                            }
+                                        },
+                                        labelLine: {
+                                            show: false
+                                        },
+                                        data: [{
+                                            value: 1048,
+                                            name: 'Search Engine'
+                                        },
+                                        {
+                                            value: 735,
+                                            name: 'Direct'
+                                        },
+                                        {
+                                            value: 580,
+                                            name: 'Email'
+                                        },
+                                        {
+                                            value: 484,
+                                            name: 'Union Ads'
+                                        },
+                                        {
+                                            value: 300,
+                                            name: 'Video Ads'
+                                        }
+                                        ]
+                                    }]
+                                });
+                            });
+                        </script>
+                
                     </div>
                 </div>
             </main>

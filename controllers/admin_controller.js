@@ -46,7 +46,57 @@ const adminVerify = async (req, res) => {
 
 const adminHome = async (req, res) => {
     try {
-        res.render('adminhome')
+
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Get date one week ago
+        const customer = await Users.find({ date: { $gte: oneWeekAgo } }).count() // Get all orders from the last week
+        let revenue = 0;
+        let sales = 0;
+        // let customer = 0;
+
+        const totalOrder = await Orders.aggregate([
+            {
+                $match:{
+                    "date":{$gte: oneWeekAgo}
+                }
+            }
+        ])
+        for (let i = 0; i < totalOrder.length; i++) {
+            revenue = revenue + totalOrder[i].total  
+        }
+       
+        // total sales
+        const totalSales = await Orders.aggregate([
+            {
+                $match: {
+                    "date": { $gte: oneWeekAgo }
+                }
+            },
+            { $unwind: "$product" },
+            {
+                $group: {
+                    _id: "$product.productId",
+                    totalQuantity: { $sum: "$product.quantity" }
+                }
+            },
+            {
+                $project: {
+                    productId: "$_id",
+                    totalQuantity: 1,
+                    _id: 0
+                }
+            }
+        ])
+        for (let i = 0; i < totalSales.length; i++) {
+            sales = sales + totalSales[i].totalQuantity
+        }
+        console.log(customer)
+
+
+        
+
+
+
+        res.render('adminhome', { revenue, sales, customer })
     } catch (error) {
         console.log(error.message)
     }
@@ -206,7 +256,7 @@ const unblockUser = async (req, res) => {
 const getAllOrder = async (req, res) => {
     try {
 
-        const orderData = await Orders.find({}).populate('product.productId')
+        const orderData = await Orders.find({}).populate('product.productId').sort({ date: -1 })
         console.log(orderData)
 
         res.render("vieworders", { orderData: orderData })

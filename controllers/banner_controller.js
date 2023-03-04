@@ -1,4 +1,6 @@
 const Banner = require('../model/banner_data')
+const fs = require('fs')
+const path = require('path')
 
 
 
@@ -34,7 +36,24 @@ const addBanner = async (req, res)=>{
     }
 }
 
+const deleteBanner = async (req, res)=>{
+    try {
+
+        const bannerId = req.params.id
+        const bannerData = await Banner.findOne({_id: bannerId})
+        console.log(bannerData.image);
+        fs.unlink(path.join(__dirname,'../public/product_images',bannerData.image),()=>{})
+        await Banner.deleteOne({_id: bannerId}).then(()=>{
+            res.json({success: true})
+        })
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
 module.exports = {
     getBannerPage,
     addBanner,
+    deleteBanner,
 }

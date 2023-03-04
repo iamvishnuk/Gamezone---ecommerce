@@ -58,12 +58,12 @@
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
 
-                const firstName = document.querySelector('[name="firstName"]').value;
-                const lastName = document.querySelector('[name="lname"]').value;
-                const username = document.querySelector('[name="username"]').value;
-                const email = document.querySelector('[name="email"]').value;
-                const password = document.querySelector('[name="password"]').value;
-                const phone = document.querySelector('[name="phone"]').value;
+                const firstName = document.querySelector('[name="firstName"]').value.trim();
+                const lastName = document.querySelector('[name="lname"]').value.trim();
+                const username = document.querySelector('[name="username"]').value.trim();
+                const email = document.querySelector('[name="email"]').value.trim();
+                const password = document.querySelector('[name="password"]').value.trim();
+                const phone = document.querySelector('[name="phone"]').value.trim();
 
                 if(firstName === "" || lastName === "" || username === "" || email ==="" || password === "" || phone === ""){
                     alert("all fields are required")

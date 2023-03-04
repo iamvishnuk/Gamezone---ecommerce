@@ -102,6 +102,9 @@ admin_route.get("/banner",bannerController.getBannerPage)
 //add banner 
 admin_route.post('/add-banner', upload.single("bannerImage"),bannerController.addBanner)
 
+// delete banner
+admin_route.get("/delete_banner/:id",bannerController.deleteBanner)
+
 
 
 

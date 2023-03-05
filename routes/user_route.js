@@ -99,6 +99,9 @@ user_route.get("/orderconfirmation",userAuth.isLogin,orderController.orderConfir
 // view previous orders 
 user_route.get("/orders",userAuth.isLogin,orderController.viewOrder)
 
+// single order view
+user_route.get("/viweorder/:id",userAuth.isLogin,orderController.viewSingleOrder)
+
 // cancel order
 user_route.post("/cancelorder",orderController.cancelOrder)
 
@@ -112,6 +115,11 @@ user_route.post("/apply-coupon",couponController.applyCoupon)
 
 // user Logout 
 user_route.get('/userlogout', userAuth.userLogout)
+
+
+user_route.use((req,res)=>{
+    res.render("error")
+})
 
 
 module.exports = user_route

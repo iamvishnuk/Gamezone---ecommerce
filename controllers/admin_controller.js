@@ -3,7 +3,8 @@ const Product = require('../model/products_data');
 const Category = require('../model/category_data');
 const Users = require('../model/user_data');
 const Orders = require('../model/orders_data')
-const moment = require('moment')
+const moment = require('moment');
+const { findById } = require('../model/admin_data');
 
 // var errorMessage
 // var successMessage
@@ -11,17 +12,18 @@ const moment = require('moment')
 
 
 // login login page
-const adminlogin = async (req, res) => {
+const adminlogin = async (req, res, next) => {
     try {
         res.render('admin_login')
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 
 // admin dashboard 
-const adminVerify = async (req, res) => {
+const adminVerify = async (req, res,next) => {
     try {
 
         const username = req.body.username
@@ -41,10 +43,11 @@ const adminVerify = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
-const adminHome = async (req, res) => {
+const adminHome = async (req, res,next) => {
     try {
 
         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Get date one week ago
@@ -55,15 +58,15 @@ const adminHome = async (req, res) => {
 
         const totalOrder = await Orders.aggregate([
             {
-                $match:{
-                    "date":{$gte: oneWeekAgo}
+                $match: {
+                    "date": { $gte: oneWeekAgo }
                 }
             }
         ])
         for (let i = 0; i < totalOrder.length; i++) {
-            revenue = revenue + totalOrder[i].total  
+            revenue = revenue + totalOrder[i].total
         }
-       
+
         // total sales
         const totalSales = await Orders.aggregate([
             {
@@ -89,22 +92,23 @@ const adminHome = async (req, res) => {
         for (let i = 0; i < totalSales.length; i++) {
             sales = sales + totalSales[i].totalQuantity
         }
-        console.log(customer)
+        const outputArray = await Promise.all(totalSales.map(async (item) => {
+            const product = await Product.findById(item.productId)
+            return product.brand
+        }));
 
+        console.log(outputArray)
 
-        
-
-
-
-        res.render('adminhome', { revenue, sales, customer })
+        res.render('adminhome', { revenue, sales, customer, outputArray })
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 
 //==================================== CATEGORY ===============================
-const viewCategory = async (req, res) => {
+const viewCategory = async (req, res, next) => {
     try {
 
         const categoryData = await Category.find({})
@@ -113,19 +117,21 @@ const viewCategory = async (req, res) => {
         res.render("category", { categoryData: categoryData, moment: moment })
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 //------------add category page get methode---------- 
-const addCategory = async (req, res) => {
-    try {   
+const addCategory = async (req, res, next) => {
+    try {
         res.render("addcategory")
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 // insert category post function
-const insertCategory = async (req, res) => {
+const insertCategory = async (req, res, next) => {
     try {
 
         const cname = req.body.categoryName
@@ -158,12 +164,13 @@ const insertCategory = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 
 }
 
 // category delete function
-const deleteCategory = async (req, res) => {
+const deleteCategory = async (req, res, next) => {
     try {
 
         const categoryId = req.params.id
@@ -172,11 +179,12 @@ const deleteCategory = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // edit category get function
-const getEditCategory = async (req, res) => {
+const getEditCategory = async (req, res, next) => {
     try {
 
         const catId = req.params.id
@@ -185,11 +193,12 @@ const getEditCategory = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // edit category post function
-const postEditCategory = async (req, res) => {
+const postEditCategory = async (req, res, next) => {
     try {
 
         console.log(" post edit category function called");
@@ -209,13 +218,14 @@ const postEditCategory = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 
 // =========== USER =============================
 // all users table
-const allUsers = async (req, res) => {
+const allUsers = async (req, res, next) => {
     try {
 
         const userDetails = await Users.find({})
@@ -223,11 +233,12 @@ const allUsers = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // block user
-const blockUser = async (req, res) => {
+const blockUser = async (req, res, next) => {
     try {
         const userId = req.params.id;
         console.log(userId);
@@ -235,11 +246,12 @@ const blockUser = async (req, res) => {
         res.redirect('/admin/allusers');
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 };
 
 // unblock user
-const unblockUser = async (req, res) => {
+const unblockUser = async (req, res, next) => {
     try {
 
         const userId = req.params.id;
@@ -249,11 +261,12 @@ const unblockUser = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // view all order table
-const getAllOrder = async (req, res) => {
+const getAllOrder = async (req, res, next) => {
     try {
 
         const orderData = await Orders.find({}).populate('product.productId').sort({ date: -1 })
@@ -263,10 +276,11 @@ const getAllOrder = async (req, res) => {
 
     } catch (error) {
         console.log(error.messge);
+        next(error)
     }
 }
 
-const changeStatus = async (req, res) => {
+const changeStatus = async (req, res, next) => {
     try {
 
         const orderId = req.body.orderId
@@ -278,6 +292,56 @@ const changeStatus = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
+    }
+}
+
+// sales report 
+const saleReport = async (req, res, next) => {
+    try {
+
+
+        const ordersData = await Orders.find().populate({
+            path: "product.productId",
+            select: "product_name price",
+        });
+
+        // Create a new object to store total sales for each product by month
+        const salesByMonthAndProduct = {};
+
+        // Iterate over each order and update salesByMonthAndProduct with the total sales for each product by month
+        ordersData.forEach((order) => {
+            const orderDate = new Date(order.date); // for getting one month data
+            const month = orderDate.toLocaleString("default", { month: "long" });
+
+            order.product.forEach((product) => {
+                const productName = product.productId.product_name;
+                const productSalesTotal = product.quantity * product.productId.price;
+
+                if (!(month in salesByMonthAndProduct)) {
+                    salesByMonthAndProduct[month] = {};
+                }
+
+                if (productName in salesByMonthAndProduct[month]) {
+                    salesByMonthAndProduct[month][productName].quantitySold += product.quantity;
+                    salesByMonthAndProduct[month][productName].totalSales += productSalesTotal;
+                } else {
+                    salesByMonthAndProduct[month][productName] = {
+                        quantitySold: product.quantity,
+                        totalSales: productSalesTotal,
+                    };
+                }
+            });
+        });
+
+        res.render("salesreport", {
+            salesByMonthAndProduct,
+        });
+
+
+    } catch (error) {
+        console.log(error.message);
+        next(error)
     }
 }
 
@@ -297,4 +361,5 @@ module.exports = {
     postEditCategory,
     getAllOrder,
     changeStatus,
+    saleReport,
 }

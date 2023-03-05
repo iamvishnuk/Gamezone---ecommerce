@@ -4,7 +4,7 @@ const path = require('path')
 
 
 
-const getBannerPage = async(req, res)=>{
+const getBannerPage = async(req, res, next)=>{
     try {
 
         const bannerData = await Banner.find({})
@@ -13,10 +13,11 @@ const getBannerPage = async(req, res)=>{
         
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
-const addBanner = async (req, res)=>{
+const addBanner = async (req, res, next)=>{
     try {
 
         console.log(req.body)
@@ -33,10 +34,11 @@ const addBanner = async (req, res)=>{
         
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
-const deleteBanner = async (req, res)=>{
+const deleteBanner = async (req, res, next)=>{
     try {
 
         const bannerId = req.params.id
@@ -49,6 +51,7 @@ const deleteBanner = async (req, res)=>{
         
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 

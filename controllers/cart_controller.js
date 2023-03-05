@@ -5,7 +5,7 @@ const Category = require("../model/category_data")
 
 
 // get cart
-const getcart = async (req, res) => {
+const getcart = async (req, res, next) => {
     try {
         if (req.session.userId) {
 
@@ -35,11 +35,12 @@ const getcart = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // add to cart post function
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -82,6 +83,7 @@ const addToCart = async (req, res) => {
 
         } else {
             res.redirect('/userlogin')
+            next(error)
         }
 
     } catch (error) {
@@ -90,7 +92,7 @@ const addToCart = async (req, res) => {
 }
 
 // cart quantity increment function
-const incrementQuantity = async (req, res) => {
+const incrementQuantity = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -137,17 +139,18 @@ const incrementQuantity = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // cart item remove function
-const removeCart = async (req, res) => {
+const removeCart = async (req, res, next) => {
     try {
         const proId = req.params.id
         const userId = req.session.userId
         const user = await Users.findOne({ _id: userId })
 
-        console.log(proId);
+        console.log(proId+"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
 
         const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response) => {
             res.redirect("/cart")
@@ -155,6 +158,7 @@ const removeCart = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 

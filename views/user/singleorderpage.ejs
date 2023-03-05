@@ -1,0 +1,72 @@
+<%- include("../layout/user/user_header.ejs") %>
+    <header class="header-v4">
+        <%- include("../layout/user/user_navbar.ejs") %>
+    </header>
+
+    <section class="bg0 p-t-75 p-b-85">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-xl-12 m-lr-auto m-b-50">
+                    <div class="m-l-25 m-r--38 m-lr-0-xl">
+                        <div class="text-center m-5">
+                            <h3>ORDERS</h3>
+                        </div>
+                        <div class="wrap-table-shopping-cart">
+                            <button onclick="window.print()">Print this page</button>
+                            <table class="table">
+                                <tbody>
+                                        <tr class="table_row">
+                                            <td class="column-1 text-center">
+                                                <% orderData.product.forEach(element => { %>
+                                                    <img src="/product_images/<%= element.productId.images[0] %>" alt="" style="height: 100px; width: 100px;" class="p-2">
+                                                    <br>
+                                                <% }); %>
+                                            </td>
+                                            <td class="column-1 text-center">
+                                                <% orderData.product.forEach(element=> { %>
+                                                   <br><%= element.productId.product_name %>&nbsp x<%= element.quantity %>
+                                                    <br><br><br><br>
+                                                <% }); %>
+                                            </td>
+                                            <td class="column-1 text-center">
+                                                <% orderData.product.forEach(element=> { %>
+                                                    <br>
+                                                    ₹<%= element.productTotal %>
+                                                            <br><br><br><br>
+                                                            <% }); %>
+                                            </td>
+                                        </tr>                             
+                                        
+                                </tbody>
+                            </table>
+                            <div class="p-5">
+                                <div class="d-flex justify-content-between pt-2">
+                                    <p class="fw-bold mb-0">Order Details</p>
+                                    <p class="text-muted mb-0"><span class="fw-bold me-4">Total:</span>&nbsp ₹<%= orderData.total+orderData.discountAmount %></p>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between pt-2">
+                                    <p class="text-muted mb-0">OrderID: <%= orderData.orderId %></p>
+                                    <p class="text-muted mb-0"><span class="fw-bold me-4">Discount:</span>&nbsp ₹<%= orderData.discountAmount %></p>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <% const date = orderData.date %>
+                                    <p class="text-muted mb-0">Order Date : <%= moment(date).format("MMM Do YY") %></p>
+                                    <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges:</span>&nbsp Free</p>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-5">
+                                    <p class="text-muted mb-0">Delivery Address : <%= orderData.deliveryAddress %></p>
+                                    <p class="text-muted mb-0"><span class="fw-bold me-4">Total payable:</span>&nbsp <%= orderData.total %></p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <%- include("../layout/user/user_footer.ejs") %>

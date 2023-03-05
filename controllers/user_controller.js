@@ -14,15 +14,16 @@ const proCount = 4
 
 
 //user login page
-const userLogin = async (req, res) => {
+const userLogin = async (req, res, next) => {
     try {
         res.render('user_login')
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
-const doLogin = async (req, res) => {
+const doLogin = async (req, res, next) => {
     try {
 
         const userName = req.body.username
@@ -56,20 +57,22 @@ const doLogin = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 //uer signup page
-const userSignup = async (req, res) => {
+const userSignup = async (req, res, next) => {
     try {
         res.render('usersignup')
     } catch (error) {
         console.log(error.messge)
+        next(error)
     }
 }
 
 //user signup post fuction
-const verifyUser = async (req, res) => {
+const verifyUser = async (req, res, next) => {
     try {
 
         const userEmail = req.body.email
@@ -97,10 +100,11 @@ const verifyUser = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
-const verifyOtp = async (req, res) => {
+const verifyOtp = async (req, res, next) => {
     try {
 
         const number = req.session.userId.phone
@@ -138,6 +142,7 @@ const verifyOtp = async (req, res) => {
             })
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
@@ -145,7 +150,7 @@ const verifyOtp = async (req, res) => {
 
 
 //user home page
-const userHome = async (req, res) => {
+const userHome = async (req, res, next) => {
     try {
 
         const bannerData = await Banner.find({})
@@ -169,6 +174,7 @@ const userHome = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
@@ -180,7 +186,7 @@ async function getProducts (page){
 }
 
 //product page 
-const productsPage = async (req, res) => {
+const productsPage = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1
         const products = await getProducts(page)
@@ -208,11 +214,12 @@ const productsPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // single product page 
-const singleProductPage = async (req, res) => {
+const singleProductPage = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -243,6 +250,7 @@ const singleProductPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
@@ -250,7 +258,7 @@ const singleProductPage = async (req, res) => {
 
 
 // ==================== wishlist =================
-const getWishlist = async (req, res) => {
+const getWishlist = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -275,11 +283,12 @@ const getWishlist = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // add to wishlist post method
-const addToWishlist = async (req, res) => {
+const addToWishlist = async (req, res, next) => {
     try {
 
         const proId = req.body.productId
@@ -301,10 +310,11 @@ const addToWishlist = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
-const removeFromwishlist = async (req, res) => {
+const removeFromwishlist = async (req, res, next) => {
     try {
 
         const proId = req.params.id
@@ -318,12 +328,13 @@ const removeFromwishlist = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 
 // user profile +===========================================
-const getUserProfile = async (req, res) => {
+const getUserProfile = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -339,11 +350,12 @@ const getUserProfile = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // user profile edit 
-const editUserProfile = async (req, res) => {
+const editUserProfile = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
@@ -363,11 +375,12 @@ const editUserProfile = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // change user password-------------------------------------------------------
-const changeUserPassword = async (req, res) => {
+const changeUserPassword = async (req, res, next) => {
     try {
 
         const password = req.body.oldPassword
@@ -395,11 +408,12 @@ const changeUserPassword = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // view all addresses
-const allAddressesPage = async (req, res) => {
+const allAddressesPage = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -416,11 +430,12 @@ const allAddressesPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // add new address
-const addAddress = async (req, res) => {
+const addAddress = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
@@ -450,11 +465,12 @@ const addAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // add address from the checkout page
-const checkoutPageAddAddress = async (req, res) => {
+const checkoutPageAddAddress = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
@@ -482,11 +498,12 @@ const checkoutPageAddAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // delete address 
-const deleteAddress = async (req, res) => {
+const deleteAddress = async (req, res, next) => {
     try {
 
         const addressId = req.params.id
@@ -502,11 +519,12 @@ const deleteAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // edit address page
-const editAddressPage = async (req, res) => {
+const editAddressPage = async (req, res, next) => {
     try {
 
         if (req.session.userId) {
@@ -525,11 +543,12 @@ const editAddressPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // post edit address 
-const postEditAddress = async (req, res) => {
+const postEditAddress = async (req, res, next) => {
     try {
 
         const addressId = req.params.id
@@ -550,11 +569,12 @@ const postEditAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // search products 
-const searchProducts = async (req, res) => {
+const searchProducts = async (req, res, next) => {
     try {
 
         let payload = req.body.payload
@@ -567,6 +587,7 @@ const searchProducts = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 

@@ -6,7 +6,7 @@ const path = require('path')
 
 //================= PRODUCTS =================
 // product page get function
-const viewProducts = async (req, res) => {
+const viewProducts = async (req, res, next) => {
     try {
 
         const allProducts = await Product.find({}).populate("category")
@@ -14,21 +14,23 @@ const viewProducts = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 //admin add products get function
-const addProducts = async (req, res) => {
+const addProducts = async (req, res, next) => {
     try {
         const categoryData = await Category.find({})
         res.render("addproducts", { categoryData: categoryData })
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // admin insert poducts post methode function
-const insertProducts = async (req, res) => {
+const insertProducts = async (req, res, next) => {
     try {
 
 
@@ -60,22 +62,24 @@ const insertProducts = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // admin delete product function
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
     try {
         const productId = req.params.id
         await Product.deleteOne({ _id: productId })
         res.redirect('/admin/viewproducts')
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // product unlist
-const unlistProduct = async (req, res) => {
+const unlistProduct = async (req, res, next) => {
     try {
 
         const proId = req.params.id
@@ -84,11 +88,12 @@ const unlistProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // product list 
-const listProduct = async (req, res) => {
+const listProduct = async (req, res, next) => {
     try {
 
         const proId = req.params.id
@@ -97,11 +102,12 @@ const listProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // edit product 
-const editProductPage = async (req, res) => {
+const editProductPage = async (req, res, next) => {
     try {
 
         const proId = req.params.id
@@ -115,9 +121,10 @@ const editProductPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
-const editProduct = async (req, res) => {
+const editProduct = async (req, res, next) => {
     try {
 
         const proId = req.params.id
@@ -145,11 +152,13 @@ const editProduct = async (req, res) => {
         res.redirect('/admin/viewproducts')
 
     } catch (error) {
+        console.log(error);
+        next(error)
 
     }
 }
 
-const editImage = async (req, res)=>{
+const editImage = async (req, res, next)=>{
     try {
 
         const proId = req.params.id;
@@ -167,9 +176,10 @@ const editImage = async (req, res)=>{
         
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
-const deleteImage = async (req, res)=>{
+const deleteImage = async (req, res, next)=>{
     try {
 
         const imageId = req.params.imgId
@@ -181,7 +191,9 @@ const deleteImage = async (req, res)=>{
         
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
+
 }
 
 module.exports = {

@@ -33,11 +33,12 @@
                                                         <% }) %>
                                             </td>
                                             <td class="column-5">Total Rs: <%= order.total %></td>
-                                            <td class="column-5">
-                                                <span class="badge badge-success" id="<%= order.orderId %>"><%= order.status %></span><br>
+                                            <td class="column-5 text-center">
+                                                <span class="" id="<%= order.orderId %>" style="width:120px ;"><%= order.status %></span><br>
                                                 <% if (order.status == "Order Confirmed" || order.status == "Shipped") { %>
-                                                    <button onclick="cancelOrder('<%=order.orderId %>','Cancelled')" class="btn btn-danger">Cancel</button>
+                                                    <button onclick="cancelOrder('<%=order.orderId %>','Cancelled')" class="btn btn-danger">Cancel</button><br> 
                                                 <% } %>
+                                                <a href="/viweorder/<%= order.orderId %>" class="btn btn-primary m-1">View</a>
                                             </td>
                                         </tr>
                                     

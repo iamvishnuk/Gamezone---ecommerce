@@ -2,7 +2,7 @@ const Coupon = require('../model/coupon_data')
 const moment = require('moment')
 const { request, response } = require('express')
 
-const getCouponPage = async (req, res) => {
+const getCouponPage = async (req, res, next) => {
     try {
 
         const couponData = await Coupon.find({})
@@ -10,21 +10,23 @@ const getCouponPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 
 // get add coupon page
-const getAddCouponPage = async (req, res) => {
+const getAddCouponPage = async (req, res, next) => {
     try {
         res.render('addcoupon')
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // add coupon post method 
-const postAddCoupon = async (req, res) => {
+const postAddCoupon = async (req, res, next) => {
     try {
 
         const coupon = new Coupon({
@@ -43,11 +45,12 @@ const postAddCoupon = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // apply coupon by user
-const applyCoupon = async (req, res) => {
+const applyCoupon = async (req, res, next) => {
     try {
 
         const cartTotal = req.body.cartTotal
@@ -101,11 +104,12 @@ const applyCoupon = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // delete coupon 
-const deleteCoupon = async (req, res) =>{
+const deleteCoupon = async (req, res, next) =>{
     try {
         
         console.log(req.params.id)
@@ -115,6 +119,7 @@ const deleteCoupon = async (req, res) =>{
         
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 

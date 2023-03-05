@@ -16,7 +16,7 @@ var instance = new Razorpay({
 });
 
 // get chekout page
-const getChekoutPage = async (req, res) => {
+const getChekoutPage = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
@@ -39,19 +39,20 @@ const getChekoutPage = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 
 // post checkout page
-const postCheckout = async (req, res) => {
+const postCheckout = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
         const orderData = req.body
         const productIds = orderData.productId
         const couponCode = req.body.couponCode
-        // console.log(orderData);
+
 
         if (req.body.paymentMethod === "cod") {
 
@@ -140,7 +141,7 @@ const postCheckout = async (req, res) => {
             const lastOrderDetails = await Order.findOne({ _id: lastOrder._id }).populate("product.productId")
 
             var options = {
-                amount: lastOrderDetails.total*100,
+                amount: lastOrderDetails.total * 100,
                 currency: 'INR',
                 receipt: "" + lastOrderDetails._id
             }
@@ -154,13 +155,15 @@ const postCheckout = async (req, res) => {
 
         }
 
+
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 // verify payment 
-const verifyPayment = async (req, res)=>{
+const verifyPayment = async (req, res, next) => {
     try {
 
         const details = req.body
@@ -168,23 +171,24 @@ const verifyPayment = async (req, res)=>{
         let hmac = crypto.createHmac('sha256', process.env.KEY_SECRET)
         hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id)
         hmac = hmac.digest('hex')
-        if (hmac == details.payment.razorpay_signature){
-            
-            await Order.updateOne({ _id: details.order.receipt }, { status:"Order Confirmed"})
-            res.json({payment:true})
+        if (hmac == details.payment.razorpay_signature) {
 
-        }else{
+            await Order.updateOne({ _id: details.order.receipt }, { status: "Order Confirmed" })
+            res.json({ payment: true })
+
+        } else {
             console.log("payment not verified");
         }
-        
+
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
 
 // order confirmation page 
-const orderConfirmationPage = async (req, res) => {
+const orderConfirmationPage = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
@@ -196,18 +200,19 @@ const orderConfirmationPage = async (req, res) => {
         for (let i = 0; i < lastOrder.product.length; i++) {
             const quantity = lastOrder.product[i].quantity;
             const proId = lastOrder.product[i].productId;
-            await Product.updateOne({_id:proId},{$inc:{stock:-quantity}})
+            await Product.updateOne({ _id: proId }, { $inc: { stock: -quantity } })
         }
 
         res.render("orderconfirmpage", { user: user, orderDatas: lastOrderDetails, moment: moment })
 
     } catch (error) {
         console.log(error.message);
+        next(error)
     }
 }
 
 // view previous order user side 
-const viewOrder = async (req, res) => {
+const viewOrder = async (req, res, next) => {
     try {
 
         const userId = req.session.userId
@@ -218,11 +223,28 @@ const viewOrder = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
+    }
+}
+
+// single order view
+const viewSingleOrder = async (req, res, next) => {
+    try {
+
+        const userId = req.session.userId
+        const orderId = req.params.id
+        const user = await User.findOne({ _id: userId })
+        const orderData = await Order.findOne({ orderId: orderId }).populate("product.productId")
+        res.render("singleorderpage", { orderData: orderData, moment: moment, user: user })
+
+    } catch (error) {
+        console.log(error.message)
+        next(error)
     }
 }
 
 // cancel ordre
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res, next) => {
     try {
 
         const orderId = req.body.orderId
@@ -240,6 +262,7 @@ const cancelOrder = async (req, res) => {
 
     } catch (error) {
         console.log(error.message)
+        next(error)
     }
 }
 
@@ -251,4 +274,5 @@ module.exports = {
     cancelOrder,
     orderConfirmationPage,
     verifyPayment,
+    viewSingleOrder
 }

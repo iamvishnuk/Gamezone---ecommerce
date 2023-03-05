@@ -31,7 +31,10 @@ app.use('/admin', adminRoutes)
 const userRoutes = require('./routes/user_route')
 app.use('/', userRoutes)
 
-
+app.use((err, req, res, next)=>{
+    console.log(err.stack)
+    res.status(500).send(err.stack)
+})
 
 app.listen(3000, () => {
     console.log("server is runnig");

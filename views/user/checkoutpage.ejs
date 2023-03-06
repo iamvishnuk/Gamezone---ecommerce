@@ -109,6 +109,17 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="px-3 py-3 border d-flex justify-content-between">
+                                <div class="form-check custom-control custom-radio">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" value="wallet" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Wallet
+                                    </label>
+                                </div>
+                                <div>
+                                    <h5>₹&nbsp;<%= user.wallet %></h5>
+                                </div>
+                            </div>
                         </div>
                         <button class="btn btn-primary btn-lg btn-block" type="submit">Place order</button>
                     </div>
@@ -215,7 +226,15 @@
                 },
                 method: 'post',
                 success: (response) => {
-                    if (response.userUsed) {
+                    if(response.noCoupon){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Invalid coupon',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                    }else if (response.userUsed) {
                         console.log("user already used")
                         Swal.fire({
                             position: 'center',
@@ -275,8 +294,26 @@
                     console.log(response)
                     if (response.codStatus) {
                         location.href = '/orderconfirmation'
-                    } else if (response.razorpay) {
+                    }else if(response.walletStatus){
+                        location.href ="/orderconfirmation" 
+                    }else if (response.razorpay) {
                         razorpayPayment(response.order)
+                    }else if(response.amoutExceeded){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Wallet amout exceeded please choose a another method',
+                            showConfirmButton: false,
+                            timer: 1500,    
+                        })
+                    }else if(response.address){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Add address',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
                     }
                 }
             })

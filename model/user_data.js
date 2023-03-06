@@ -87,7 +87,13 @@ const userData = new mongoose.Schema({
             required: true
         }
 
-    }]
+    }],
+    wallet:{
+        type: Number,
+        default: 0,
+        required: true
+    }
+
 
 
 })

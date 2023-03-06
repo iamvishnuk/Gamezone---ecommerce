@@ -60,45 +60,55 @@ const applyCoupon = async (req, res, next) => {
 
         const coupon = await Coupon.findOne({ code: couponCode })
         const couponUsedUser = await Coupon.findOne({code: couponCode,usersUsed:{$in:[ user]}})
-        
-        if(couponUsedUser){
-            res.json({userUsed: true})
-        }else{
 
-            if (today < coupon.expiryDate) {
+        if(coupon){
 
-                if (cartTotal >= coupon.minimumPurchseAmount) {
+            if (couponUsedUser) {
+                res.json({ userUsed: true })
+            } else {
 
-                    const percentage = (cartTotal * coupon.percentageOff) / 100
-                    console.log(percentage)
+                if (today < coupon.expiryDate) {
 
-                    if (percentage > coupon.maxDiscount) {
+                    if (cartTotal >= coupon.minimumPurchseAmount) {
 
-                        const total = cartTotal - coupon.maxDiscount
-                        console.log(total)
-                        res.json({ discountedAmount: coupon.maxDiscount, total })
+                        const percentage = (cartTotal * coupon.percentageOff) / 100
+                        console.log(percentage)
+
+                        if (percentage > coupon.maxDiscount) {
+
+                            const total = cartTotal - coupon.maxDiscount
+                            console.log(total)
+                            res.json({ discountedAmount: coupon.maxDiscount, total })
+
+                        } else {
+
+                            const total = cartTotal - percentage
+                            console.log(total)
+                            res.json({ discountedAmount: percentage, total })
+
+                        }
 
                     } else {
 
-                        const total = cartTotal - percentage
-                        console.log(total)
-                        res.json({ discountedAmount: percentage, total })
+                        res.json({ minmumAmountFail: true })
 
                     }
-                    
+
                 } else {
 
-                    res.json({ minmumAmountFail: true })
+                    res.json({ dateFail: true })
 
                 }
 
-            } else {
-
-                res.json({ dateFail: true })
-
             }
 
+        }else{
+
+            res.json({noCoupon: true})
+
         }
+        
+        
 
         
 

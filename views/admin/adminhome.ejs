@@ -82,7 +82,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Reports <span>/Today</span></h5>
+                            <h5 class="card-title">Revenue <span>/Past 7 days</span></h5>
                             <!-- Line Chart -->
                             <div id="reportsChart"></div>
                         </div>
@@ -91,59 +91,77 @@
                 <!-- pie chart -->
                 <div class="card">
                     <div class="card-body pb-0">
-                        <h5 class="card-title">Website Traffic <span>| Today</span></h5>
-                        <div>
-                            <canvas id="myChart"></canvas>
+                        <h5 class="card-title">Sales<span>| Overall</span></h5>
+                
+                        <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+                
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                echarts.init(document.querySelector("#trafficChart")).setOption({
+                                    tooltip: {
+                                        trigger: 'item'
+                                    },
+                                    legend: {
+                                        top: '5%',
+                                        left: 'center'
+                                    },
+                                    series: [{
+                                        name: 'Access From',
+                                        type: 'pie',
+                                        radius: ['40%', '70%'],
+                                        avoidLabelOverlap: false,
+                                        label: {
+                                            show: false,
+                                            position: 'center'
+                                        },
+                                        emphasis: {
+                                            label: {
+                                                show: true,
+                                                fontSize: '18',
+                                                fontWeight: 'bold'
+                                            }
+                                        },
+                                        labelLine: {
+                                            show: false
+                                        },
+                                        data: [{
+                                            value: "<%= delivered %>",
+                                            name: 'delivered'
+                                        },
+                                        {
+                                            value: "<%= shipped %>",
+                                            name: 'shipped'
+                                        },
+                                        {
+                                            value: "<%= orderConfirmed %>",
+                                            name: 'orderConfirmed'
+                                        },
+                                        {
+                                            value: "<%= cancelled %>",
+                                            name: 'cancelled'
+                                        },
+                                        {
+                                            value: 0,
+                                            name: 'Payment faild'
+                                        }
+                                        ]
+                                    }]
+                                });
+                            });
+                        </script>
+                
                     </div>
-
-                    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-
-                    <script>
-                        const ctx = document.getElementById('myChart');
-
-                        new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: "<%= JSON.stringify(outputArray) %>",
-                                datasets: [{
-                                    label: 'Top selling brand',
-                                    data: ["<%=outputArray[0].totalQuantity %>", 19, 3, 5, 2, 3],
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            }
-                        });
-                    </script>
-
-                </div>
                 </div>
             </main>
 
-
-
-
             <%- include("../layout/admin/footer.ejs") %>
-
-
 
                 <script>
                     document.addEventListener("DOMContentLoaded", () => {
                         new ApexCharts(document.querySelector("#reportsChart"), {
                             series: [{
                                 name: 'Sales',
-                                data: [31, 40, 28, 51, 42, 82, 56],
-                            }, {
-                                name: 'Revenue',
-                                data: [11, 32, 45, 32, 34, 52, 41]
-                            }, {
-                                name: 'Customers',
-                                data: [15, 11, 32, 18, 9, 24, 11]
+                                data: ["<%= amount[0] %>", "<%= amount[1] %>", "<%= amount[2] %>", "<%= amount[3] %>", "<%= amount[4] %>", "<%= amount[5] %>","<%= amount[6] %>",],
                             }],
                             chart: {
                                 height: 350,
@@ -155,7 +173,7 @@
                             markers: {
                                 size: 4
                             },
-                            colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                            colors: ['#4154f1'],
                             fill: {
                                 type: "gradient",
                                 gradient: {
@@ -173,12 +191,12 @@
                                 width: 2
                             },
                             xaxis: {
-                                type: 'datetime',
-                                categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                                type: 'date',
+                                categories: ["<%= date[0] %>", "<%= date[1] %>", "<%= date[2] %>", "<%= date[3] %>", "<%= date[4] %>", "<%= date[5] %>", "<%= date[6] %>",]
                             },
                             tooltip: {
                                 x: {
-                                    format: 'dd/MM/yy HH:mm'
+                                    format: 'yyyy-MM-dd'
                                 },
                             }
                         }).render();

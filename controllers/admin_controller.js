@@ -52,9 +52,14 @@ const adminHome = async (req, res,next) => {
 
         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Get date one week ago
         const customer = await Users.find({ date: { $gte: oneWeekAgo } }).count() // Get all orders from the last week
+        const delivered = await Orders.findOne({status: 'Delivered'}).count()
+        const orderConfirmed = await Orders.findOne({ status: 'Order Confirmed'}).count()
+        const shipped = await Orders.findOne({ status: 'Shipped'}).count()
+        const cancelled = await Orders.findOne({ status: 'Cancelled'}).count()
         let revenue = 0;
         let sales = 0;
-        // let customer = 0;
+        console.log(delivered, orderConfirmed, shipped, cancelled)
+
 
         const totalOrder = await Orders.aggregate([
             {
@@ -97,9 +102,33 @@ const adminHome = async (req, res,next) => {
             return product.brand
         }));
 
-        console.log(outputArray)
+        // console.log(totalSales)
 
-        res.render('adminhome', { revenue, sales, customer, outputArray })
+        const salesChart = await Orders.aggregate([
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                    sales: { $sum: "$total" },
+                }
+            },
+            {
+                $sort:{_id: 1}
+            },
+            {
+                $limit: 7
+            }
+        ])
+        // console.log(salesChart)
+        const date = salesChart.map((item)=>{
+            return item._id
+        })
+        // console.log(date)
+        const amount = salesChart.map((item) => {
+            return item.sales
+        })
+        // console.log(amount)
+
+        res.render('adminhome', { revenue, sales, customer, delivered, orderConfirmed, shipped, cancelled, date, amount })
     } catch (error) {
         console.log(error.message)
         next(error)

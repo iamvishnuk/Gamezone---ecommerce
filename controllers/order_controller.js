@@ -54,6 +54,7 @@ const postCheckout = async (req, res, next) => {
         const couponCode = req.body.couponCode
 
 
+
         if (req.body.paymentMethod === "cod") {
 
             if (!Array.isArray(orderData.productId)) {
@@ -85,7 +86,9 @@ const postCheckout = async (req, res, next) => {
                 orderId: `order_id${uuidv4()}`,
                 date: Date.now()
             })
-            const ordered = await orders.save()
+            const ordered = await orders.save().then((response)=>{
+                console.log(response+"haiiiiiiiiiiiiiiiiiiiii")
+            })
 
             await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
 
@@ -153,10 +156,68 @@ const postCheckout = async (req, res, next) => {
                 }
             })
 
+        } else if (req.body.paymentMethod === "wallet") {
+
+            const user = await User.findOne({ _id: userId })
+            console.log(user)
+            if (orderData.total >= user.wallet) {
+
+                res.json({ amoutExceeded: true })
+
+            } else {
+
+                if (!Array.isArray(orderData.productId)) {
+                    orderData.productId = [orderData.productId]
+                }
+                if (!Array.isArray(orderData.quantity)) {
+                    orderData.quantity = [orderData.quantity]
+                }
+                if (!Array.isArray(orderData.productTotal)) {
+                    orderData.productTotal = [orderData.productTotal]
+                }
+                const orderDetails = []
+
+                for (let i = 0; i < orderData.productId.length; i++) {
+                    const productId = orderData.productId[i]
+                    const quantity = orderData.quantity[i]
+                    const productTotal = orderData.productTotal[i]
+                    orderDetails.push({ productId: productId, quantity: quantity, productTotal: productTotal })
+                }
+                // console.log(orderDetails);
+
+                const orders = new Order({
+                    userId: userId,
+                    deliveryAddress: orderData.address,
+                    product: orderDetails,
+                    discountAmount: orderData.discountAmount,
+                    total: orderData.total,
+                    paymentType: orderData.paymentMethod,
+                    orderId: `order_id${uuidv4()}`,
+                    date: Date.now()
+                })
+                const ordered = await orders.save()
+
+                // degressing the wallet amout
+                await User.updateOne({ _id: userId }, { $inc: { wallet: -orderData.total } })
+
+                await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
+
+                await User.updateOne(
+                    { userId: userId },
+                    { $pull: { cart: { productId: { $in: productIds } } } }
+                )
+                res.json({ walletStatus: true })
+
+            }
+
+
+
+
         }
 
 
     } catch (error) {
+        res.json({address: true})
         console.log(error.message)
         next(error)
     }
@@ -187,12 +248,12 @@ const verifyPayment = async (req, res, next) => {
 }
 
 // faild payment
-const faildPayment = async (req, res, next)=>{
+const faildPayment = async (req, res, next) => {
     try {
 
         const orderDetails = req.body
         console.log(orderDetails);
-        
+
     } catch (error) {
         console.log(error);
         next(error)
@@ -259,6 +320,7 @@ const viewSingleOrder = async (req, res, next) => {
 const cancelOrder = async (req, res, next) => {
     try {
 
+        const userId = req.session.userId
         const orderId = req.body.orderId
         const value = req.body.value
         const canceledOrder = await Order.findOne({ orderId: orderId })
@@ -267,6 +329,10 @@ const cancelOrder = async (req, res, next) => {
             const proId = canceledOrder.product[i].productId;
             await Product.updateOne({ _id: proId }, { $inc: { stock: quantity } })
         }
+        log(canceledOrder.total)
+        const wallet = await User.updateOne({ _id: userId }, { $inc: { wallet: canceledOrder.total } }).then((response) => {
+            console.log(response);
+        })
         await Order.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
 
             res.json({ success: true, value })

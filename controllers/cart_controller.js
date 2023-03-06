@@ -150,9 +150,10 @@ const removeCart = async (req, res, next) => {
         const userId = req.session.userId
         const user = await Users.findOne({ _id: userId })
 
-        console.log(proId+"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+        console.log(proId);
 
         const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response) => {
+            console.log(response)
             res.redirect("/cart")
         })
 

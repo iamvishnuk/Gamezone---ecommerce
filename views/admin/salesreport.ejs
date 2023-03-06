@@ -2,6 +2,9 @@
     <%- include("../layout/admin/navbar.ejs") %>
         <%- include("../layout/admin/sidebar.ejs") %>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+            <style>
+               
+            </style>
             <main id="main" class="main">
                 <div class="pagetitle">
                     <h1>Sales Report</h1>
@@ -12,9 +15,12 @@
                         </ol>
                     </nav>
                 </div>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-success m-2" id="print">Print Report</button>
+                </div>
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
-                        <div class="card-body">
+                        <div class="card-body"  id="myTable">
                             <h5 class="card-title">Sales Report</h5>
 
                             <table class="table table-borderless datatable">
@@ -31,7 +37,8 @@
                                 <% let prevMonthTotalSales=0 %>
                                     <% Object.entries(salesByMonthAndProduct).forEach(([month, products], index)=> { %>
                                         <% let monthTotalSales=0 %>
-                                            <% Object.entries(products).forEach(([productName, { quantitySold, totalSales }])=> { %>
+                                            <% Object.entries(products).forEach(([productName, {quantitySold,
+                                                totalSales}])=> { %>
                                                 <% monthTotalSales +=totalSales %>
                                                     <tr>
                                                         <td>
@@ -51,7 +58,8 @@
                                                         </td>
                                                         <td
                                                             class="<%= index === 0 ? '' : (monthTotalSales - prevMonthTotalSales) < 0 ? 'text-danger' : 'text-success' %>">
-                                                            <%= index===0 ? 0 : (monthTotalSales - prevMonthTotalSales)/100 %>
+                                                            <%= index===0 ? 0 : (monthTotalSales -
+                                                                prevMonthTotalSales)/100 %>
                                                         </td>
                                                     </tr>
                                                     <% }) %>
@@ -65,5 +73,17 @@
                     </div>
                 </div>
             </main>
+            <script>
+                const printBtn = document.getElementById("print");
+                printBtn.addEventListener("click", function () {
+                    const report = document.querySelector(".recent-sales");
+                    const printContents = report.innerHTML;
+                    const originalContents = document.body.innerHTML;
+                    document.body.innerHTML = printContents;
+                    window.print();
+                    document.body.innerHTML = originalContents;
+                });
+            </script>
+
 
             <%- include("../layout/admin/footer.ejs") %>

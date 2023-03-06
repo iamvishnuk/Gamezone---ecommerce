@@ -93,10 +93,16 @@ admin_route.get('/addcoupon', adminAuth.isLogin,couponController.getAddCouponPag
 // post add coupon 
 admin_route.post('/add-coupon',couponController.postAddCoupon)
 
+// edit coupon page 
+admin_route.get('/editcoupon/:id',adminAuth.isLogin,couponController.editCoupon)
+
+// edit coupon post 
+admin_route.post('/edit-coupon/:id',couponController.postEditCoupon)
+
 // delete coupon 
 admin_route.get("/delete-coupon/:id",couponController.deleteCoupon)
 
-//banner
+//banner---------------------------------------------------------
 admin_route.get("/banner",bannerController.getBannerPage)
 
 //add banner 

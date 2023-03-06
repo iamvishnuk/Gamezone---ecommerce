@@ -167,7 +167,7 @@ const verifyPayment = async (req, res, next) => {
     try {
 
         const details = req.body
-        // console.log(details)
+        console.log(details)
         let hmac = crypto.createHmac('sha256', process.env.KEY_SECRET)
         hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id)
         hmac = hmac.digest('hex')
@@ -186,6 +186,18 @@ const verifyPayment = async (req, res, next) => {
     }
 }
 
+// faild payment
+const faildPayment = async (req, res, next)=>{
+    try {
+
+        const orderDetails = req.body
+        console.log(orderDetails);
+        
+    } catch (error) {
+        console.log(error);
+        next(error)
+    }
+}
 
 // order confirmation page 
 const orderConfirmationPage = async (req, res, next) => {
@@ -274,5 +286,6 @@ module.exports = {
     cancelOrder,
     orderConfirmationPage,
     verifyPayment,
+    faildPayment,
     viewSingleOrder
 }

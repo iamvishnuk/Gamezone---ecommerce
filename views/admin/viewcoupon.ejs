@@ -51,6 +51,9 @@
                                             <%= element.minimumPurchseAmount %>
                                         </td>
                                         <td>
+                                            <a href="/admin/editcoupon/<%= element._id %>" class="btn btn-primary">Edit</a>
+                                        </td>
+                                        <td>
                                            <button class="btn btn-danger" onclick="deleteCoupon('<%= element._id %>')">Delete</button>
                                         </td>
                                     </tr>

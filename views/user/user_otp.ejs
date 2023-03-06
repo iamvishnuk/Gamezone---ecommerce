@@ -14,7 +14,10 @@
         <div class="login-box">
             <p>OTP varification</p>
             <form action="/userotp" method="post">
-                <div class="user-box">
+                <div class="user-box"><
+                    <% if(typeof otperr !== "undefined"){ %>
+                        <label for="" style="color: red;"><%= otperr %></label>
+                    <% } %>
                     <input required="" name="otp" type="text">
                     <label>Enter the otp</label>
                 </div>

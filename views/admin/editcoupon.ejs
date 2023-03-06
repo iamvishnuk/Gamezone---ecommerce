@@ -1,0 +1,104 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>Add Coupon</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">Add coupon</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Coupon Form</h5>
+
+                        <!-- Multi Columns Form -->
+                        <form action="/admin/edit-coupon/<%= couponData._id %>" method="post" class="row g-3" id="add-coupon-form">
+                            <div class="col-md-12">
+                                <label class="form-label">Coupon code</label>
+                                <input type="text" class="form-control" name="code" value="<%= couponData.code %>">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Percentage off</label>
+                                <input type="number" class="form-control" name="percentageOff" min="0" value="<%= couponData.percentageOff %>">
+                            </div>
+                            <div class="col-md-6">
+                                <label fclass="form-label">Maxdiscount</label>
+                                <input type="number" class="form-control" name="maxDiscount" min="0" value="<%= couponData.maxDiscount %>">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="date" class="form-control" name="expiryDate" value="<%= couponData.expiryDate.toISOString().slice(0, 10); %>">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Minimum Purchase Amount</label>
+                                <input type="number" class="form-control" name="minimumPurchseAmount" min="0" value="<%= couponData.minimumPurchseAmount %>">
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Add coupon</button>
+                            </div>
+                        </form><!-- End Multi Columns Form -->
+
+                    </div>
+                </div>
+
+            </main>
+
+            <script>
+                // const form = document.querySelector('form');
+                // const submitButton = form.querySelector('button[type="submit"]');
+                // submitButton.addEventListener('click', (event) => {
+                //     event.preventDefault()
+                //     if (validate()) {
+                //         Swal.fire({
+                //             toast: true,
+                //             position: 'top-end',
+                //             icon: 'success',
+                //             title: 'New product as added',
+                //             showConfirmButton: false,
+                //             timer: 1500,
+                //             timerProgressBar: true,
+                //             didOpen: (toast) => {
+                //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+                //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+                //             }
+                //         }).then((response) => {
+                //             form.submit();
+                //         })
+                //     }
+                // })
+                // function validate() {
+                //     // Get form inputs
+                //     const code = document.forms["add-coupon-form"]["code"].value.trim();
+                //     const percentageOff = document.forms["add-coupon-form"]["percentageOff"].value.trim();
+                //     const maxDiscount = document.forms["add-coupon-form"]["maxDiscount"].value.trim();
+                //     const expiryDate = document.forms["add-coupon-form"]["expiryDate"].value.trim();
+                //     const minimumPurchseAmount = document.forms["add-coupon-form"]["minimumPurchseAmount"].value.trim();
+
+
+                //     // Validate required fields
+                //     if (code === "" || percentageOff === "" || maxDiscount === "" || expiryDate === "" || minimumPurchseAmount === "") {
+                //         Swal.fire({
+                //             position: 'center',
+                //             icon: 'warning',
+                //             title: 'All fields required',
+                //             showConfirmButton: false,
+                //             timer: 500,
+                //         })
+                //         return false;
+                //     }
+                //     return true;
+                // }
+
+
+
+
+            </script>
+
+
+
+            <%- include("../layout/admin/footer.ejs") %>

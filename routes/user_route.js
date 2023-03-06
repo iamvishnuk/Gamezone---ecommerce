@@ -93,6 +93,9 @@ user_route.post("/postcheckout",orderController.postCheckout)
 // verify payment 
 user_route.post("/verify-payment",orderController.verifyPayment)
 
+//faild payment
+user_route.post("/faild-payment",orderController.faildPayment)
+
 // get order confirmation page
 user_route.get("/orderconfirmation",userAuth.isLogin,orderController.orderConfirmationPage)
 

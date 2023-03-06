@@ -138,6 +138,7 @@ const verifyOtp = async (req, res, next) => {
 
                 } else {
                     console.log("opt not matched");
+                    res.render("user_otp",{otperr:"opt not matched"})
                 }
             })
     } catch (error) {

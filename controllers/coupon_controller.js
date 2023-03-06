@@ -108,6 +108,37 @@ const applyCoupon = async (req, res, next) => {
     }
 }
 
+// edit coupon
+const editCoupon = async (req, res, next)=>{
+    try {
+
+        const couponId = req.params.id
+        const couponData = await Coupon.findById(couponId)
+        console.log(couponData)
+        res.render('editcoupon',{couponData:couponData})
+        
+    } catch (error) {
+        console.log(error.message)
+        next(error)
+    }
+}
+
+// post edit coupon
+const postEditCoupon = async (req, res, next)=>{
+    try {
+
+        const couponId = req.params.id
+        const couponData = req.body
+        await Coupon.findByIdAndUpdate(couponId, couponData)
+        res.redirect('/admin/viewcoupon')
+        
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+
 // delete coupon 
 const deleteCoupon = async (req, res, next) =>{
     try {
@@ -134,5 +165,7 @@ module.exports = {
     getAddCouponPage,
     postAddCoupon,
     applyCoupon,
+    editCoupon,
+    postEditCoupon,
     deleteCoupon,
 }

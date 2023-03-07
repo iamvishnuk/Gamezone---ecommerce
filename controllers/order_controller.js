@@ -228,7 +228,6 @@ const verifyPayment = async (req, res, next) => {
     try {
 
         const details = req.body
-        console.log(details)
         let hmac = crypto.createHmac('sha256', process.env.KEY_SECRET)
         hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id)
         hmac = hmac.digest('hex')
@@ -252,7 +251,9 @@ const faildPayment = async (req, res, next) => {
     try {
 
         const orderDetails = req.body
-        console.log(orderDetails);
+        await Order.updateOne({_id: orderDetails.order.receipt},{status:"Payment faild"}).then(()=>{
+            res.json({paymentFailed:true,reason:orderDetails.description})
+        })
 
     } catch (error) {
         console.log(error);
@@ -330,9 +331,11 @@ const cancelOrder = async (req, res, next) => {
             await Product.updateOne({ _id: proId }, { $inc: { stock: quantity } })
         }
         log(canceledOrder.total)
-        const wallet = await User.updateOne({ _id: userId }, { $inc: { wallet: canceledOrder.total } }).then((response) => {
-            console.log(response);
-        })
+        if (cancelOrder.paymentType == "razorpay" || cancelOrder.paymentType == "wallet"){
+            const wallet = await User.updateOne({ _id: userId }, { $inc: { wallet: canceledOrder.total } }).then((response) => {
+                console.log(response);
+            })
+        }
         await Order.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
 
             res.json({ success: true, value })

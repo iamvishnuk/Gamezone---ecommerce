@@ -56,6 +56,7 @@ const adminHome = async (req, res,next) => {
         const orderConfirmed = await Orders.findOne({ status: 'Order Confirmed'}).count()
         const shipped = await Orders.findOne({ status: 'Shipped'}).count()
         const cancelled = await Orders.findOne({ status: 'Cancelled'}).count()
+        const paymentFailed = await Orders.findOne({ status: 'Payment faild'}).count()
         let revenue = 0;
         let sales = 0;
         console.log(delivered, orderConfirmed, shipped, cancelled)
@@ -128,7 +129,7 @@ const adminHome = async (req, res,next) => {
         })
         // console.log(amount)
 
-        res.render('adminhome', { revenue, sales, customer, delivered, orderConfirmed, shipped, cancelled, date, amount })
+        res.render('adminhome', { revenue, sales, customer, delivered, orderConfirmed, shipped, cancelled, paymentFailed, date, amount })
     } catch (error) {
         console.log(error.message)
         next(error)

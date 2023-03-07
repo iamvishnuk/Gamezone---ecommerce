@@ -348,15 +348,16 @@
             };
             var rzp1 = new Razorpay(options);
             rzp1.on('payment.failed', function (response) {
-                alert(response.error.code);
-                alert(response.error.description);
-                alert(response.error.source);
-                alert(response.error.step);
-                alert(response.error.reason);
-                alert(response.error.metadata.order_id);
-                alert(response.error.metadata.payment_id);
-                console.log(response)
+                // alert(response.error.code);
+                // alert(response.error.description);
+                // alert(response.error.source);
+                // alert(response.error.step);
+                // alert(response.error.reason);
+                // alert(response.error.metadata.order_id);
+                // alert(response.error.metadata.payment_id);
+                // console.log(response)
                 faildPayment(response, order)
+                rzp1.close();
             }),
             rzp1.open();
 
@@ -380,6 +381,7 @@
             })
         }
         function faildPayment(data, order){
+
             $.ajax({
                 url:'/faild-payment',
                 data:{
@@ -388,7 +390,20 @@
                 },
                 method:'post',
                 success: (response)=>{
-                    console.log("hai")
+                    console.log(data)
+                    if(response.paymentFailed){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'payment failed',
+                            text: data.error.description,
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1000);
+                    }
                 }
                 
             })

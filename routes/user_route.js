@@ -33,6 +33,9 @@ user_route.post('/userotp', userController.verifyOtp)
 // product page get method
 user_route.get("/products", userController.productsPage)
 
+// filter product by brand
+user_route.get("/filter",userController.filterProducts)
+
 // single product paget get method
 user_route.get("/singleproductpage/:id", userController.singleProductPage)
 

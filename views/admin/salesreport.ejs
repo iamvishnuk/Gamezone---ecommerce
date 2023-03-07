@@ -3,27 +3,19 @@
         <%- include("../layout/admin/sidebar.ejs") %>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
             <style>
-               
+
             </style>
             <main id="main" class="main">
-                <div class="pagetitle">
-                    <h1>Sales Report</h1>
-                    <nav>
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/admin/adminhome">Home</a></li>
-                            <li class="breadcrumb-item active">Sales Report</li>
-                        </ol>
-                    </nav>
-                </div>
+                
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-success m-2" id="print">Print Report</button>
                 </div>
                 <div class="col-12">
-                    <div class="card recent-sales overflow-auto">
-                        <div class="card-body"  id="myTable">
+                    <div class="card">
+                        <div class="card-body">
                             <h5 class="card-title">Sales Report</h5>
 
-                            <table class="table table-borderless datatable">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">No</th>
@@ -76,12 +68,7 @@
             <script>
                 const printBtn = document.getElementById("print");
                 printBtn.addEventListener("click", function () {
-                    const report = document.querySelector(".recent-sales");
-                    const printContents = report.innerHTML;
-                    const originalContents = document.body.innerHTML;
-                    document.body.innerHTML = printContents;
                     window.print();
-                    document.body.innerHTML = originalContents;
                 });
             </script>
 

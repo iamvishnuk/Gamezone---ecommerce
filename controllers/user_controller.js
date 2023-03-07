@@ -9,7 +9,7 @@ const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
 const { response } = require("../routes/user_route")
-const proCount = 4
+const proCount = 8
 
 
 
@@ -138,7 +138,7 @@ const verifyOtp = async (req, res, next) => {
 
                 } else {
                     console.log("opt not matched");
-                    res.render("user_otp",{otperr:"opt not matched"})
+                    res.render("user_otp", { otperr: "opt not matched" })
                 }
             })
     } catch (error) {
@@ -180,8 +180,8 @@ const userHome = async (req, res, next) => {
 }
 
 /// limit the number of product function
-async function getProducts (page){
-    const skip = (page - 1) *proCount
+async function getProducts(page) {
+    const skip = (page - 1) * proCount
     const products = await Product.find({ list: true }).populate('category').skip(skip).limit(proCount).exec()
     return products
 }
@@ -192,7 +192,7 @@ const productsPage = async (req, res, next) => {
         const page = parseInt(req.query.page) || 1
         const products = await getProducts(page)
         const count = await Product.countDocuments().exec()
-        const totalPages = Math.ceil(count/proCount)
+        const totalPages = Math.ceil(count / proCount)
         if (req.session.userId) {
 
             const userId = req.session.userId
@@ -207,14 +207,42 @@ const productsPage = async (req, res, next) => {
             // });
 
             // const product = await Product.find({ list: true }).populate('category')
-            res.render('products_page', { productData: products, user: user, wishlist: wishdata, page,totalPages })
+            res.render('products_page', { productData: products, user: user, wishlist: wishdata, page, totalPages })
         } else {
             // const product = await Product.find({ list: true }).populate('category')
-            res.render('products_page', { productData: products, wishlist: 'null', page,totalPages })
+            res.render('products_page', { productData: products, wishlist: 'null', page, totalPages })
         }
 
     } catch (error) {
         console.log(error.message);
+        next(error)
+    }
+}
+
+// filter products by brand name
+const filterProducts = async (req, res, next) => {
+    try {
+
+        const brand = req.query.brand
+        const product = await Product.find({ list: true, brand: brand }).populate('category')
+        const wishData = []
+        const page = null
+        const totalPages = null
+
+        if(req.session.userId){
+
+            const userId = req.session.userId
+            const user = await Users.findOne({_id: userId})
+            res.render("products_page",{productData:product, user: user, wishlist: wishData, page, totalPages})
+
+        }else{
+
+            res.render("products_page", { productData: product, wishlist: 'null', page, totalPages })
+
+        }
+
+    } catch (error) {
+        console.log(error.message)
         next(error)
     }
 }
@@ -615,4 +643,5 @@ module.exports = {
     postEditAddress,
     searchProducts,
     changeUserPassword,
+    filterProducts
 }

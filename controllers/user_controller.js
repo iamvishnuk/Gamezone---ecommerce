@@ -38,20 +38,19 @@ const doLogin = async (req, res, next) => {
                     if (status) {
 
                         req.session.userId = userDetails._id
-                        console.log(req.session.userId)
-
                         res.redirect('/')
+
                     } else {
                         res.render('user_login', { message: 'Password is incorrect !...' })
                     }
                 })
             } else {
-                console.log("blocked")
+                
                 res.render('user_login', { message: 'Account is blocked !...' })
             }
 
         } else {
-            console.log("login failed")
+        
             res.render('user_login', { message: 'Username id incorrect !...' })
         }
 
@@ -254,9 +253,7 @@ const singleProductPage = async (req, res, next) => {
         if (req.session.userId) {
 
             const userId = req.session.userId
-            console.log(userId);
             const user = await Users.findOne({ _id: userId })
-            // console.log(user)
             const productID = req.params.id
 
             const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': productID }, { 'productId.$': 1 })
@@ -296,11 +293,6 @@ const getWishlist = async (req, res, next) => {
             const user = await Users.findOne({ _id: userId })
             const wishlist = await Users.find({ _id: user._id }).populate('wishlist').lean().exec()
             const wishData = wishlist[0].wishlist
-
-            // const wishdata = []
-            // wish.forEach(eement => {
-            //     wishdata.push(element.product_name)
-            // });
 
             res.render('wishlist', { wishData: wishData, user: user })
 

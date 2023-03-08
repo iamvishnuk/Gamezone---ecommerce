@@ -124,7 +124,6 @@ const editCoupon = async (req, res, next)=>{
 
         const couponId = req.params.id
         const couponData = await Coupon.findById(couponId)
-        console.log(couponData)
         res.render('editcoupon',{couponData:couponData})
         
     } catch (error) {

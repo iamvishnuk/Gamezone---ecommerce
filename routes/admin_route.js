@@ -112,8 +112,11 @@ admin_route.post('/add-banner', upload.single("bannerImage"),bannerController.ad
 admin_route.get("/delete_banner/:id",bannerController.deleteBanner)
 
 // sales report 
-admin_route.get("/salesreport",adminController.saleReport)
+ 
+admin_route.get('/sales_report',adminController.salesData)
+admin_route.post("/date-wise-report",adminController.dateWiseReport)
 
+    
 
 
 

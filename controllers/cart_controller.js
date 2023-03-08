@@ -48,9 +48,7 @@ const addToCart = async (req, res, next) => {
             const userId = req.session.userId
             const proId = req.params.id
             const user = await Users.findOne({ _id: userId })
-
             const productData = await Product.findOne({ _id: proId })
-
             const cartCheck = await Users.findOne({ _id: user._id, 'cart.productId': proId }, { 'productId.$': 1 })
 
             if (cartCheck) {
@@ -60,7 +58,7 @@ const addToCart = async (req, res, next) => {
                 const cartUpdate = await Users.updateOne({ _id: user._id }, { $push: { cart: { productId: proId, productTotalPrice: productData.price } } })
 
                 //removing from the wishlist after adding to cart
-                await Users.updateOne({_id:user._id},{$pull:{wishlist:proId}})
+                await Users.updateOne({ _id: user._id }, { $pull: { wishlist: proId } })
 
                 // cart total price ==================================================
                 const updatedCart = await Users.findOne({ _id: user._id }, { cart: 1 })
@@ -104,6 +102,7 @@ const incrementQuantity = async (req, res, next) => {
 
             const user = await Users.findOne({ _id: userId })
 
+
             const increment = await Users.updateOne(
                 { _id: user._id, "cart.productId": proId },
                 { $inc: { 'cart.$.quantity': count } }
@@ -135,6 +134,7 @@ const incrementQuantity = async (req, res, next) => {
 
             res.json({ success: true, productTotal, cartTotal })
 
+
         }
 
     } catch (error) {
@@ -146,14 +146,12 @@ const incrementQuantity = async (req, res, next) => {
 // cart item remove function
 const removeCart = async (req, res, next) => {
     try {
+
         const proId = req.params.id
         const userId = req.session.userId
         const user = await Users.findOne({ _id: userId })
 
-        console.log(proId);
-
         const removeItem = await Users.updateOne({ _id: user._id }, { $pull: { cart: { productId: proId } } }).then((response) => {
-            console.log(response)
             res.redirect("/cart")
         })
 

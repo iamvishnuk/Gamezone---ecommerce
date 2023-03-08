@@ -5,6 +5,7 @@ const Users = require('../model/user_data');
 const Orders = require('../model/orders_data')
 const moment = require('moment');
 const { findById } = require('../model/admin_data');
+const excelJS = require('exceljs');
 
 // var errorMessage
 // var successMessage
@@ -23,13 +24,11 @@ const adminlogin = async (req, res, next) => {
 
 
 // admin dashboard 
-const adminVerify = async (req, res,next) => {
+const adminVerify = async (req, res, next) => {
     try {
 
         const username = req.body.username
         const password = req.body.password
-
-        console.log(req.body);
 
         const adminData = await admin.findOne({ username: username, password: password })
         console.log(adminData)
@@ -47,37 +46,38 @@ const adminVerify = async (req, res,next) => {
     }
 }
 
-const adminHome = async (req, res,next) => {
+const adminHome = async (req, res, next) => {
     try {
 
         const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Get date one week ago
         const customer = await Users.find({ date: { $gte: oneWeekAgo } }).count() // Get all orders from the last week
-        const delivered = await Orders.findOne({status: 'Delivered'}).count()
-        const orderConfirmed = await Orders.findOne({ status: 'Order Confirmed'}).count()
-        const shipped = await Orders.findOne({ status: 'Shipped'}).count()
-        const cancelled = await Orders.findOne({ status: 'Cancelled'}).count()
-        const paymentFailed = await Orders.findOne({ status: 'Payment faild'}).count()
+        const delivered = await Orders.findOne({ status: 'Delivered' }).count()
+        const orderConfirmed = await Orders.findOne({ status: 'Order Confirmed' }).count()
+        const shipped = await Orders.findOne({ status: 'Shipped' }).count()
+        const cancelled = await Orders.findOne({ status: 'Cancelled' }).count()
+        const paymentFailed = await Orders.findOne({ status: 'Payment faild' }).count()
+        const returned = await Orders.findOne({ status: 'Retruned' }).count()
         let revenue = 0;
         let sales = 0;
-        console.log(delivered, orderConfirmed, shipped, cancelled)
-
 
         const totalOrder = await Orders.aggregate([
             {
                 $match: {
-                    "date": { $gte: oneWeekAgo }
+                    date:{$gte:oneWeekAgo},
+                    status:{$eq:"Delivered"}
                 }
             }
         ])
+
         for (let i = 0; i < totalOrder.length; i++) {
             revenue = revenue + totalOrder[i].total
         }
-
         // total sales
         const totalSales = await Orders.aggregate([
             {
                 $match: {
-                    "date": { $gte: oneWeekAgo }
+                    "date": { $gte: oneWeekAgo },
+                    status:{$eq:"Delivered"}
                 }
             },
             { $unwind: "$product" },
@@ -95,17 +95,17 @@ const adminHome = async (req, res,next) => {
                 }
             }
         ])
+
         for (let i = 0; i < totalSales.length; i++) {
             sales = sales + totalSales[i].totalQuantity
         }
-        const outputArray = await Promise.all(totalSales.map(async (item) => {
-            const product = await Product.findById(item.productId)
-            return product.brand
-        }));
-
-        // console.log(totalSales)
 
         const salesChart = await Orders.aggregate([
+            {
+                $match: {
+                    status: { $eq: "Delivered" }
+                }
+            },
             {
                 $group: {
                     _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
@@ -113,23 +113,22 @@ const adminHome = async (req, res,next) => {
                 }
             },
             {
-                $sort:{_id: 1}
+                $sort: { _id: 1 }
             },
             {
                 $limit: 7
             }
         ])
-        // console.log(salesChart)
-        const date = salesChart.map((item)=>{
+
+        const date = salesChart.map((item) => {
             return item._id
         })
-        // console.log(date)
+
         const amount = salesChart.map((item) => {
             return item.sales
         })
-        // console.log(amount)
 
-        res.render('adminhome', { revenue, sales, customer, delivered, orderConfirmed, shipped, cancelled, paymentFailed, date, amount })
+        res.render('adminhome', { revenue, sales, customer, delivered, orderConfirmed, shipped, cancelled, paymentFailed, returned, date, amount })
     } catch (error) {
         console.log(error.message)
         next(error)
@@ -142,9 +141,8 @@ const viewCategory = async (req, res, next) => {
     try {
 
         const categoryData = await Category.find({})
-        // console.log(categoryData)
-
         res.render("category", { categoryData: categoryData, moment: moment })
+
     } catch (error) {
         console.log(error.message);
         next(error)
@@ -270,10 +268,11 @@ const allUsers = async (req, res, next) => {
 // block user
 const blockUser = async (req, res, next) => {
     try {
+
         const userId = req.params.id;
-        console.log(userId);
         await Users.updateOne({ _id: req.params.id }, { blocked: true });
         res.redirect('/admin/allusers');
+
     } catch (error) {
         console.log(error.message);
         next(error)
@@ -285,7 +284,6 @@ const unblockUser = async (req, res, next) => {
     try {
 
         const userId = req.params.id;
-        console.log(userId);
         await Users.updateOne({ _id: req.params.id }, { blocked: false });
         res.redirect('/admin/allusers');
 
@@ -298,10 +296,8 @@ const unblockUser = async (req, res, next) => {
 // view all order table
 const getAllOrder = async (req, res, next) => {
     try {
-
+        
         const orderData = await Orders.find({}).populate('product.productId').sort({ date: -1 })
-        console.log(orderData)
-
         res.render("vieworders", { orderData: orderData })
 
     } catch (error) {
@@ -310,12 +306,13 @@ const getAllOrder = async (req, res, next) => {
     }
 }
 
+// change order status
 const changeStatus = async (req, res, next) => {
     try {
 
         const orderId = req.body.orderId
         const value = req.body.value
-        console.log(orderId);
+
         await Orders.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
             res.json({ success: true, value })
         })
@@ -327,53 +324,38 @@ const changeStatus = async (req, res, next) => {
 }
 
 // sales report 
-const saleReport = async (req, res, next) => {
+const salesData = async (req, res, next) => {
     try {
 
-
-        const ordersData = await Orders.find().populate({
-            path: "product.productId",
-            select: "product_name price",
-        });
-
-        // Create a new object to store total sales for each product by month
-        const salesByMonthAndProduct = {};
-
-        // Iterate over each order and update salesByMonthAndProduct with the total sales for each product by month
-        ordersData.forEach((order) => {
-            const orderDate = new Date(order.date); // for getting one month data
-            const month = orderDate.toLocaleString("default", { month: "long" });
-
-            order.product.forEach((product) => {
-                const productName = product.productId.product_name;
-                const productSalesTotal = product.quantity * product.productId.price;
-
-                if (!(month in salesByMonthAndProduct)) {
-                    salesByMonthAndProduct[month] = {};
-                }
-
-                if (productName in salesByMonthAndProduct[month]) {
-                    salesByMonthAndProduct[month][productName].quantitySold += product.quantity;
-                    salesByMonthAndProduct[month][productName].totalSales += productSalesTotal;
-                } else {
-                    salesByMonthAndProduct[month][productName] = {
-                        quantitySold: product.quantity,
-                        totalSales: productSalesTotal,
-                    };
-                }
-            });
-        });
-
-        res.render("salesreport", {
-            salesByMonthAndProduct,
-        });
-
+        res.render("sales_report")
 
     } catch (error) {
         console.log(error.message);
         next(error)
     }
 }
+const dateWiseReport = async (req, res, next) => {
+    try {
+
+        const date = req.body.date
+        const endDate = req.body.enddate
+
+        const order = await Orders.find({
+            date: {
+                $gte: new Date(date),
+                $lte: new Date(endDate)
+            },
+            status:"Delivered"
+        }).populate('product.productId')
+
+        res.render("sales_report", { orderData: order })
+
+    } catch (error) {
+        console.log(error.message);
+        next(error)
+    }
+}
+
 
 
 module.exports = {
@@ -391,5 +373,6 @@ module.exports = {
     postEditCategory,
     getAllOrder,
     changeStatus,
-    saleReport,
+    salesData,
+    dateWiseReport,
 }

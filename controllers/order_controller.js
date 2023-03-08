@@ -86,8 +86,8 @@ const postCheckout = async (req, res, next) => {
                 orderId: `order_id${uuidv4()}`,
                 date: Date.now()
             })
-            const ordered = await orders.save().then((response)=>{
-                console.log(response+"haiiiiiiiiiiiiiiiiiiiii")
+            const ordered = await orders.save().then((response) => {
+                console.log(response + "haiiiiiiiiiiiiiiiiiiiii")
             })
 
             await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
@@ -217,7 +217,7 @@ const postCheckout = async (req, res, next) => {
 
 
     } catch (error) {
-        res.json({address: true})
+        res.json({ address: true })
         console.log(error.message)
         next(error)
     }
@@ -251,8 +251,8 @@ const faildPayment = async (req, res, next) => {
     try {
 
         const orderDetails = req.body
-        await Order.updateOne({_id: orderDetails.order.receipt},{status:"Payment faild"}).then(()=>{
-            res.json({paymentFailed:true,reason:orderDetails.description})
+        await Order.updateOne({ _id: orderDetails.order.receipt }, { status: "Payment faild" }).then(() => {
+            res.json({ paymentFailed: true, reason: orderDetails.description })
         })
 
     } catch (error) {
@@ -330,8 +330,7 @@ const cancelOrder = async (req, res, next) => {
             const proId = canceledOrder.product[i].productId;
             await Product.updateOne({ _id: proId }, { $inc: { stock: quantity } })
         }
-        log(canceledOrder.total)
-        if (cancelOrder.paymentType == "razorpay" || cancelOrder.paymentType == "wallet"){
+        if (cancelOrder.paymentType == "razorpay" || cancelOrder.paymentType == "wallet") {
             const wallet = await User.updateOne({ _id: userId }, { $inc: { wallet: canceledOrder.total } }).then((response) => {
                 console.log(response);
             })
@@ -347,6 +346,31 @@ const cancelOrder = async (req, res, next) => {
     }
 }
 
+const returnOrder = async (req, res, next) => {
+    try {
+
+        const userId = req.session.userId
+        const orderId = req.body.orderId
+        const returnOrderData = await Order.findOne({ orderId: orderId })
+
+        //updating the quantity of the product
+        for (let i = 0; i < returnOrderData.length; i++) {
+            const quantity = returnOrderData[i].quantity
+            const proId = returnOrderData[i].productId
+            await Product.updateOne({ _id: proId }, { $inc: { stock: quantity, } })
+        }
+
+        await User.updateOne({ _id: userId }, { $inc: { wallet: returnOrderData.total } })
+        await Order.updateOne({ orderId: orderId }, { $set: { status: "Retruned" } })
+
+        res.json({ success: true })
+
+    } catch (error) {
+        console.log(error);
+        next(error)
+    }
+}
+
 
 module.exports = {
     getChekoutPage,
@@ -356,5 +380,6 @@ module.exports = {
     orderConfirmationPage,
     verifyPayment,
     faildPayment,
-    viewSingleOrder
+    viewSingleOrder,
+    returnOrder,
 }

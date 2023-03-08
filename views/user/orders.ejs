@@ -29,19 +29,27 @@
                                             </td>
                                             <td class="column-1">
                                                 <% order.product.forEach(element=>{ %>
-                                                     Quantity x<%= element.quantity %> <br><br><br><br><br>
+                                                    Quantity x<%= element.quantity %> <br><br><br><br><br>
                                                         <% }) %>
                                             </td>
-                                            <td class="column-5">Total Rs: <%= order.total %></td>
+                                            <td class="column-5">Total Rs: <%= order.total %>
+                                            </td>
                                             <td class="column-5 text-center">
-                                                <span class="" id="<%= order.orderId %>" style="width:120px ;"><%= order.status %></span><br>
-                                                <% if (order.status == "Order Confirmed" || order.status == "Shipped") { %>
-                                                    <button onclick="cancelOrder('<%=order.orderId %>','Cancelled')" class="btn btn-danger">Cancel</button><br> 
-                                                <% } %>
-                                                <a href="/viweorder/<%= order.orderId %>" class="btn btn-primary m-1">View</a>
+                                                <span class="font-weight-bold" id="<%= order.orderId %>" style="width:120px ;">
+                                                    <%= order.status %>
+                                                </span><br>
+                                                <% if (order.status=="Order Confirmed" || order.status=="Shipped" ) { %>
+                                                    <button onclick="cancelOrder('<%=order.orderId %>','Cancelled')"
+                                                        class="btn btn-danger">Cancel</button><br>
+                                                    <% } %>
+                                                        <a href="/viweorder/<%= order.orderId %>"
+                                                            class="btn btn-primary m-1">Details</a><br>
+                                                            <% if(order.status == 'Delivered'){ %>
+                                                                <button onclick="returnOrder('<%= order.orderId %>')" class="btn btn-warning">Return</button>
+                                                            <% } %>
                                             </td>
                                         </tr>
-                                    
+
                                         <% }); %>
                                 </tbody>
                             </table>
@@ -54,7 +62,7 @@
         </div>
     </section>
     <script>
-        function cancelOrder(orderId,value){
+        function cancelOrder(orderId, value) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Do you want to cancel",
@@ -74,11 +82,11 @@
                         method: 'post',
                         success: (response) => {
                             Swal.fire(
-                                'Deleted!',
+                                'Cancelled!',
                                 'Your order has been cancelled',
                                 'success'
                             )
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 location.reload()
                             })
                             document.getElementById(orderId).innerHTML = response.value
@@ -87,7 +95,41 @@
                     })
                 }
             })
-            
+
+        }
+
+        function returnOrder(orderId){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to retrun your order",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/return-order',
+                        data: {
+                            orderId: orderId,
+                        },
+                        method: 'post',
+                        success: (response) => {
+                            Swal.fire(
+                                'Returned!',
+                                'Your order has been retruned',
+                                'success'
+                            )
+                            setTimeout(() => {
+                                location.reload()
+                            })
+                            document.getElementById(orderId).innerHTML = "Returned"
+                        }
+
+                    })
+                }
+            })
         }
     </script>
 

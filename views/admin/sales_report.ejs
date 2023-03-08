@@ -1,0 +1,122 @@
+<%- include("../layout/admin/header.ejs") %>
+    <%- include("../layout/admin/navbar.ejs") %>
+        <%- include("../layout/admin/sidebar.ejs") %>
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+            <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+            <script type="text/javascript" charset="utf8"
+                src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+
+            <main id="main" class="main">
+                <div class="pagetitle">
+                    <h1>Sales Report</h1>
+                    <nav>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">Sales Report</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="m-2">
+                    <form action="/admin/date-wise-report" method="post">
+                        <label for="start-date">Start Date</label>
+                        <input type="date" id="start-date" name="date" class="">
+                
+                        <label for="end-date">End Date</label>
+                        <input type="date" id="end-date" name="enddate">
+                
+                        <button class="btn btn-success" type="submit">Generate Report</button>
+                    </form>
+                </div>
+                <% if(typeof orderData !=='undefined' ){ %>
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+                            <div class="card-body">
+                                <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+                                <table id="example" class="display" width="100%">
+                                    <thead>
+                                        <tr>
+                                        <tr>
+                                            <th scope="col">OrderID</th>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Product Total</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Payment Method</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% orderData.forEach((order,i)=> { %>
+
+                                            <tr>
+                                                <td scope="row">
+                                                    <%= order.orderId %>
+                                                </td>
+                                                <td>
+                                                    <% order.product.forEach(element=> { %>
+                                                        <%= element.productId.product_name %><br>
+                                                            <% }); %>
+                                                </td>
+                                                <td>
+                                                    <% order.product.forEach(element=> { %>
+                                                        <%= element.quantity %><br>
+                                                            <% }); %>
+                                                </td>
+                                                <td>
+                                                    <% order.product.forEach(element=> { %>
+                                                        <%= element.productTotal %><br>
+                                                            <% }); %>
+                                                </td>
+                                                <td>
+                                                    <%= order.total %>
+                                                </td>
+                                                <td>
+                                                    <%= order.paymentType %>
+                                                </td>
+                                                <td>
+                                                    <%= order.status %>
+                                                </td>
+                                            </tr>
+
+                                            <% }); %>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <% } %>
+            </main>
+
+
+            <script>
+                $(document).ready(function () {
+                    $('#example').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'excel', 'pdf', 'print'
+                        ]
+                    });
+                });
+            </script>
+
+
+            <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+            <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+            <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+            <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css"></script>
+            <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                    crossorigin="anonymous"></script>
+
+
+                <script type="text/javascript" charset="utf8"
+                    src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script> -->

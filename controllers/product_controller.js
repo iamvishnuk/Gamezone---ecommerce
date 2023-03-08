@@ -114,8 +114,6 @@ const editProductPage = async (req, res, next) => {
 
         const categoryData = await Category.find()
         const productData = await Product.findOne({ _id: proId }).populate('category')
-
-        console.log(productData.category.categoryName)
     
         res.render('edit_product', { categoryData: categoryData, productData: productData  })
 
@@ -129,11 +127,6 @@ const editProduct = async (req, res, next) => {
 
         const proId = req.params.id
         console.log(req.body)
-        // uploadedImage = req.files
-        // const images = []
-        // uploadedImage.forEach(element => {
-        //     images.push(element.filename)
-        // });
 
         const productUpdate = await Product.updateOne(
             { _id: proId },
@@ -143,11 +136,9 @@ const editProduct = async (req, res, next) => {
                 category: req.body.category,
                 price: req.body.price,
                 stock: req.body.stock,
-                // images: images,
                 description: req.body.description
             }
         )
-
 
         res.redirect('/admin/viewproducts')
 
@@ -162,10 +153,9 @@ const editImage = async (req, res, next)=>{
     try {
 
         const proId = req.params.id;
-
         uploadedImage = req.files
-        console.log(uploadedImage)
         const images = []
+
         uploadedImage.forEach(element => {
             images.push(element.filename)
         });

@@ -19,7 +19,7 @@
                         <form  action="/admin/add-coupon" method="post" class="row g-3" id="add-coupon-form">
                             <div class="col-md-12">
                                 <label class="form-label">Coupon code</label>
-                                <input type="text" class="form-control" name="code">
+                                <input type="text" class="form-control" name="code" onkeydown="upperCaseF(this)">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Percentage off</label>
@@ -49,6 +49,14 @@
             </main>
 
             <script>
+
+                function upperCaseF(a) {
+                        setTimeout(function () {
+                            a.value = a.value.toUpperCase();
+                        }, 1);
+                    }
+
+
                 const form = document.querySelector('form');
                 const submitButton = form.querySelector('button[type="submit"]');
                 submitButton.addEventListener('click', (event) => {

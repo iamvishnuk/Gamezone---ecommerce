@@ -8,7 +8,6 @@ const getBannerPage = async(req, res, next)=>{
     try {
 
         const bannerData = await Banner.find({})
-        console.log(bannerData)
         res.render('banner',{bannerData: bannerData})
         
     } catch (error) {
@@ -19,10 +18,6 @@ const getBannerPage = async(req, res, next)=>{
 
 const addBanner = async (req, res, next)=>{
     try {
-
-        console.log(req.body)
-        console.log(req.file.filename)
-
 
         const banner = new Banner({
             heading: req.body.heading,
@@ -43,7 +38,7 @@ const deleteBanner = async (req, res, next)=>{
 
         const bannerId = req.params.id
         const bannerData = await Banner.findOne({_id: bannerId})
-        console.log(bannerData.image);
+
         fs.unlink(path.join(__dirname,'../public/product_images',bannerData.image),()=>{})
         await Banner.deleteOne({_id: bannerId}).then(()=>{
             res.json({success: true})

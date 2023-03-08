@@ -57,19 +57,22 @@
                             <%= productDetails.product_name %>
                         </h4>
 
-                        <span class="mtext-106 cl2">
+                        <span class="mtext-106 cl2" style="font-size: 22px;">
                             ₹ <%= productDetails.price %>
                         </span>&nbsp;
-                        <span class="mtext-106 cl2">
+                        <span class="mtext-106 cl2" style="font-size: 15px;">
                            <s>₹ <%= productDetails.price*120/100 %></s>
                         </span>
 
                         <p class="stext-102 cl3 p-t-23">
                             <%= productDetails.description %>
                         </p>
-
-
-
+                        <% if (productDetails.stock == '0') { %>
+                            <p class="stext-102 cl3 p-t-23 text-danger font-weight-bold" style="font-size: 17px;">
+                            out of stock
+                        </p>
+                        <% } %>
+                        
                         <div class="flex-w flex-r-m p-b-10">
                             <div class="size-204 flex-w flex-m respon6-next">
                                 <!-- <div class="wrap-num-product flex-w m-r-20 m-tb-10">
@@ -93,12 +96,12 @@
                                     </a>
 
                                     <% }else{ %>
-                                        <a href="/addtocart/<%= productDetails._id %>">
+                                        <!-- <a href="/addtocart/"> -->
                                             <button
-                                                class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail mt-3">
+                                                class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mt-3" onclick="addtocart('<%= productDetails._id %>','<%= productDetails.stock %>')">
                                                 Add to cart
                                             </button>
-                                        </a>
+                                        <!-- </a> -->
                                         <% } %>
                                             <!-- <button
                                     class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 mt-3">
@@ -112,5 +115,38 @@
             </div>
         </div>
     </section>
+
+    <script>
+
+        function addtocart(proId, stock){
+            console.log(stock,proId)
+            if (stock == 0) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'Out of stock',
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+            }else{
+                $.ajax({
+                    url:'/addtocart/'+proId,
+                    method:'get',
+                    success:(response)=>{
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Coupon added successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        location.reload()
+                    },
+                })
+            }
+
+        }
+
+    </script>
 
     <%- include("../layout/user/user_footer.ejs") %>

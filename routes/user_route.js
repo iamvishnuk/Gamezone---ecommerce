@@ -111,6 +111,9 @@ user_route.get("/viweorder/:id",userAuth.isLogin,orderController.viewSingleOrder
 // cancel order
 user_route.post("/cancelorder",orderController.cancelOrder)
 
+// retrun order
+user_route.post('/return-order',orderController.returnOrder)
+
 // search products
 user_route.post("/getProduct",userController.searchProducts)
 

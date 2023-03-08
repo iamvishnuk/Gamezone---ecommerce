@@ -1,6 +1,7 @@
 <%- include("../layout/admin/header.ejs") %>
     <%- include("../layout/admin/navbar.ejs") %>
         <%- include("../layout/admin/sidebar.ejs") %>
+            <link href="/admin_assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
             <main id="main" class="main">
                 <div class="pagetitle">
@@ -13,10 +14,10 @@
                     </nav>
                 </div>
                 <div class="col-12">
-                    <div class="card recent-sales overflow-auto">                                
+                    <div class="card recent-sales overflow-auto">
                         <div class="card-body">
                             <h5 class="card-title">Recent Sales <span>| Today</span></h5>
-                
+
                             <table class="table table-striped datatable">
                                 <thead>
                                     <tr>
@@ -31,106 +32,149 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% orderData.forEach((order,i) => { %>
-                                        
+                                    <% orderData.forEach((order,i)=> { %>
+
                                         <tr>
-                                            <td scope="row"><%= order.orderId %></td>
-                                            <td><%= order.deliveryAddress %></td>
-                                            <td><% order.product.forEach(element => { %>
-                                                <%= element.productId.product_name %> <br><br>   
-                                            <% }); %>
+                                            <td scope="row">
+                                                <%= order.orderId %>
                                             </td>
                                             <td>
-                                            <% order.product.forEach(element=> { %>
-                                                <%= element.quantity %> <br><br><br><br>
-                                            <% }); %>
+                                                <%= order.deliveryAddress %>
                                             </td>
                                             <td>
-                                            <% order.product.forEach(element=> { %>
-                                                <%= element.productTotal %> <br><br><br><br>
-                                            <% }); %>
+                                                <% order.product.forEach(element=> { %>
+                                                    <%= element.productId.product_name %> <br><br>
+                                                        <% }); %>
                                             </td>
-                                            <td><%= order.total %></td>
-                                            <td><%= order.paymentType %></td>
                                             <td>
-                                                <span id="<%= order.orderId %>" class="badge bg-info" style="width: 120px;"><%= order.status %></span>
-                                                <% if(order.status === "Order Confirmed"){ %>
+                                                <% order.product.forEach(element=> { %>
+                                                    <%= element.quantity %> <br><br><br><br>
+                                                        <% }); %>
+                                            </td>
+                                            <td>
+                                                <% order.product.forEach(element=> { %>
+                                                    <%= element.productTotal %> <br><br><br><br>
+                                                        <% }); %>
+                                            </td>
+                                            <td>
+                                                <%= order.total %>
+                                            </td>
+                                            <td>
+                                                <%= order.paymentType %>
+                                            </td>
+                                            <td>
+                                                <span id="<%= order.orderId %>" class="badge bg-info"
+                                                    style="width: 120px;">
+                                                    <%= order.status %>
+                                                </span>
+                                                <% if(order.status==="Order Confirmed" ){ %>
 
                                                     <div class="dropdown d-flex justify-content-center">
-                                                        <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false">
-                                                        </span>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Packed')" >Packed</div>
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Shipped')" >Shipped</div>
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Out for delivery')" >Out for delivery</div>
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')" >Delivered</div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                <% } %>
-                                                <% if(order.status === "Packed"){ %>
-                                                    <div class="dropdown d-flex justify-content-center">
-                                                        <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                        <span class="dropdown-toggle" id="dropdownMenuButton"
+                                                            data-toggle="dropdown" aria-haspopup="true"
                                                             aria-expanded="false">
                                                         </span>
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                    
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Shipped')">Shipped</div>
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Out for delivery')">Out for delivery
-                                                            </div>
-                                                            <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')">Delivered</div>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <div class="dropdown-item"
+                                                                onclick="changeStatus('<%= order.orderId %>','Packed')">
+                                                                Packed</div>
+                                                            <div class="dropdown-item"
+                                                                onclick="changeStatus('<%= order.orderId %>','Shipped')">
+                                                                Shipped</div>
+                                                            <div class="dropdown-item"
+                                                                onclick="changeStatus('<%= order.orderId %>','Out for delivery')">
+                                                                Out for delivery</div>
+                                                            <div class="dropdown-item"
+                                                                onclick="changeStatus('<%= order.orderId %>','Delivered')">
+                                                                Delivered</div>
                                                         </div>
                                                     </div>
+
                                                     <% } %>
-                                                    <% if(order.status==="Shipped" ){ %>
-                                                        <div class="dropdown d-flex justify-content-center">
-                                                            <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                            </span>
-                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                                                    
-                                                                <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Out for delivery')">Out for
-                                                                    delivery
-                                                                </div>
-                                                                <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')">Delivered</div>
-                                                            </div>
-                                                        </div>
-                                                        <% } %>
-                                                        <% if(order.status==="Out for delivery" ){ %>
+                                                        <% if(order.status==="Packed" ){ %>
                                                             <div class="dropdown d-flex justify-content-center">
-                                                                <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                                <span class="dropdown-toggle" id="dropdownMenuButton"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
                                                                 </span>
-                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                                    <div class="dropdown-item" onclick="changeStatus('<%= order.orderId %>','Delivered')">Delivered</div>
+                                                                <div class="dropdown-menu"
+                                                                    aria-labelledby="dropdownMenuButton">
+                                                                    <div class="dropdown-item"
+                                                                        onclick="changeStatus('<%= order.orderId %>','Shipped')">
+                                                                        Shipped</div>
+                                                                    <div class="dropdown-item"
+                                                                        onclick="changeStatus('<%= order.orderId %>','Out for delivery')">
+                                                                        Out for delivery
+                                                                    </div>
+                                                                    <div class="dropdown-item"
+                                                                        onclick="changeStatus('<%= order.orderId %>','Delivered')">
+                                                                        Delivered</div>
                                                                 </div>
                                                             </div>
                                                             <% } %>
+                                                                <% if(order.status==="Shipped" ){ %>
+                                                                    <div class="dropdown d-flex justify-content-center">
+                                                                        <span class="dropdown-toggle"
+                                                                            id="dropdownMenuButton"
+                                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                                            aria-expanded="false">
+                                                                        </span>
+                                                                        <div class="dropdown-menu"
+                                                                            aria-labelledby="dropdownMenuButton">
+                                                                            <div class="dropdown-item"
+                                                                                onclick="changeStatus('<%= order.orderId %>','Out for delivery')">
+                                                                                Out for
+                                                                                delivery
+                                                                            </div>
+                                                                            <div class="dropdown-item"
+                                                                                onclick="changeStatus('<%= order.orderId %>','Delivered')">
+                                                                                Delivered</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% } %>
+                                                                        <% if(order.status==="Out for delivery" ){ %>
+                                                                            <div
+                                                                                class="dropdown d-flex justify-content-center">
+                                                                                <span class="dropdown-toggle"
+                                                                                    id="dropdownMenuButton"
+                                                                                    data-toggle="dropdown"
+                                                                                    aria-haspopup="true"
+                                                                                    aria-expanded="false">
+                                                                                </span>
+                                                                                <div class="dropdown-menu"
+                                                                                    aria-labelledby="dropdownMenuButton">
+                                                                                    <div class="dropdown-item"
+                                                                                        onclick="changeStatus('<%= order.orderId %>','Delivered')">
+                                                                                        Delivered</div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <% } %>
                                             </td>
                                         </tr>
 
-                                    <% }); %>
+                                        <% }); %>
                                 </tbody>
                             </table>
-                
+
                         </div>
-                
+
                     </div>
                 </div>
             </main>
 
             <script>
-                function changeStatus(orderId, value){
+                function changeStatus(orderId, value) {
                     $.ajax({
                         url: '/admin/change-status',
-                        data:{
+                        data: {
                             orderId: orderId,
                             value: value
                         },
-                        method:"post",
-                        success: (response)=>{
+                        method: "post",
+                        success: (response) => {
                             console.log(response)
-                            document.getElementById(orderId).innerHTML =  response.value
-                            setTimeout(()=>{
+                            document.getElementById(orderId).innerHTML = response.value
+                            setTimeout(() => {
                                 location.reload()
                             })
                         }
@@ -138,8 +182,8 @@
                 }
             </script>
 
-            
 
+            <script src="/admin_assets/vendor/simple-datatables/simple-datatables.js"></script>
 
 
             <%- include("../layout/admin/footer.ejs") %>

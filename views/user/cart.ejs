@@ -34,7 +34,7 @@
                                         <td class="column-4">
                                             <div class="wrap-num-product flex-w m-l-auto m-r-0">
                                                 <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-                                                    onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',-1)">
+                                                    onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>','<%= element.productId.stock %>',-1)">
                                                     <i class="fs-16 zmdi zmdi-minus"></i>
                                                 </div>
                                                 <span id="<%= element.productId._id %>"
@@ -43,7 +43,7 @@
                                                 </span>
 
                                                 <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-                                                    onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>',+1)">
+                                                    onclick="incrementQuantity('<%= element.productId._id %>','<%= element.productId.price %>','<%= element.productId.stock %>',+1)">
                                                     <i class="fs-16 zmdi zmdi-plus"></i>
                                                 </div>
                                             </div>
@@ -103,40 +103,20 @@
         </div>
     </section>
     <script>
-        function incrementQuantity(productId, pPrice, count) {
+        function incrementQuantity(productId, pPrice, stock, count) {
             let quantity = parseInt(document.getElementById(productId).innerHTML)
             count = parseInt(count)
             if (quantity <= 1 && count == -1 ) {
 
-                // Swal.fire({
-                //     title: 'Are you sure?',
-                //     text: "Do you want remove from the cart",
-                //     icon: 'warning',
-                //     showCancelButton: true,
-                //     confirmButtonColor: '#3085d6',
-                //     cancelButtonColor: '#d33',
-                //     confirmButtonText: 'Yes, remove it!'
-                // }).then((result) => {
-                //     if (result.isConfirmed) {
-                //         $.ajax({
-                //             url: '/cart-remove/'+ productId,
-                //             method: 'get',
-                //             success: (response) => {
-                //                 console.log(response)
-                //                 Swal.fire(
-                //                     'Deleted!',
-                //                     'Your product has been removed',
-                //                     'success'
-                //                 )
-                //                 setTimeout(() => {
-                //                     location.reload()
-                //                 })
-                                
-                //             }
+            }else if(quantity == stock && count == +1){
 
-                //         })
-                //     }
-                // })
+                   Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'Out of stock',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
 
             } else {
 
@@ -156,7 +136,7 @@
                         console.log(quantity);
 
 
-                    }
+                    },
                 })
             }
         }

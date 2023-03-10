@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/admin_login.css">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css">
 
 </head>
 
@@ -39,58 +38,8 @@
                 <p style="color: red; font-size: 15px;"><%= message %></p>
             <% } %>
 
-
         </div>
     </div>
-    <script>
-
-         const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-        const form = document.querySelector('#loginform')
-        form.addEventListener('click',(event)=>{
-            event.preventDefault();
-
-            const username = document.querySelector('#username')
-            const password = document.querySelector('#password')
-
-            if(username === ''){
-                Toast.fire({
-                    icon:'error',
-                    title:'Username is required'
-                })
-            }
-            if(password === ''){
-                Toast.fire({
-                    icon:'error',
-                    title:'Password is required'
-                })
-            }
-            if(username !== '' && password !== ''){
-                Toast.fire({
-                    icon:'success',
-                    title:'Logged in successfully'
-                })
-            }
-
-        }).then(()=>{
-            form.submit()
-        })
-
-
-       
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
-        crossorigin="anonymous"></script>
 </body>
 
 </html>

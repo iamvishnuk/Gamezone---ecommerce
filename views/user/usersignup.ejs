@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/admin_login.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+        crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
 
@@ -53,7 +56,10 @@
         </form>
         <p>Already have account <a href="/userlogin" class="a2">Login!</a></p>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+        crossorigin="anonymous"></script>
     <script>
+
         const form = document.querySelector('form');
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
@@ -66,7 +72,14 @@
                 const phone = document.querySelector('[name="phone"]').value.trim();
 
                 if(firstName === "" || lastName === "" || username === "" || email ==="" || password === "" || phone === ""){
-                    alert("all fields are required")
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'warning',
+                        text: 'all fields are required',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    })
                 }else{
 
                     form.submit();

@@ -40,7 +40,7 @@ user_route.get("/filter",userController.filterProducts)
 user_route.get("/singleproductpage/:id", userController.singleProductPage)
 
 //cart get method ========================================================
-user_route.get("/cart", cartController.getcart)
+user_route.get("/cart",userAuth.isLogin, cartController.getcart)
 
 // cart post method
 user_route.get("/addtocart/:id", cartController.addToCart)

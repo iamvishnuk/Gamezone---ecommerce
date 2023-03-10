@@ -8,7 +8,6 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const serviceSid = process.env.TWILIO_SERVICE_SID
 const client = require('twilio')(accountSid, authToken);
 const bycrpt = require('bcrypt');
-const { response } = require("../routes/user_route")
 const proCount = 8
 
 

@@ -8,7 +8,6 @@ const moment = require("moment")
 const Razorpay = require('razorpay');
 require('dotenv').config()
 const crypto = require("crypto")
-const { log } = require("console")
 
 var instance = new Razorpay({
     key_id: process.env.KEY_ID,
@@ -33,9 +32,6 @@ const getChekoutPage = async (req, res, next) => {
             res.render("checkoutpage", { address: address, user: user, cartItem: cartItem })
 
         }
-        // else {
-        //     res.redirect("/userlogin")
-        // }
 
     } catch (error) {
         console.log(error.message)

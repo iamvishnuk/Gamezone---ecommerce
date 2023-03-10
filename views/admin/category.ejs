@@ -69,30 +69,13 @@
                 function validate(categoryId) {
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
+                        text: "You won't be able to revert this! and delete the product before continuing",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
-                        // $.ajax({
-                        //     url: '/admin/delete_category/'+categoryId,
-                        //     method: 'get',
-                        //     success: (response) => {
-                        //         if (result.isConfirmed) {
-                        //             Swal.fire({
-                        //                 title: 'Deleted!',
-                        //                 text: 'Your file has been deleted.',
-                        //                 icon: 'success',
-                        //                 showConfirmButton: false
-                        //             })
-                        //             setTimeout(() => {
-                        //                 location.reload()
-                        //             }, 1000);
-                        //         }
-                        //     }
-                        // })
                         if (result.isConfirmed) {
                             $.ajax({
                                 url: '/admin/delete_category/' + categoryId,

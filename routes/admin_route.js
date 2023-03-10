@@ -64,7 +64,7 @@ admin_route.post('/addcategory', upload.single("categoryImage"), adminController
 admin_route.get("/delete_category/:id", adminController.deleteCategory)
 
 // edit category get method
-admin_route.get('/editcategory/:id', adminController.getEditCategory)
+admin_route.get('/editcategory/:id',adminAuth.isLogin, adminController.getEditCategory) 
 
 // edit category post method
 admin_route.post('/posteditcategory/:id',adminController.postEditCategory)
@@ -103,7 +103,7 @@ admin_route.post('/edit-coupon/:id',couponController.postEditCoupon)
 admin_route.get("/delete-coupon/:id",couponController.deleteCoupon)
 
 //banner---------------------------------------------------------
-admin_route.get("/banner",bannerController.getBannerPage)
+admin_route.get("/banner",adminAuth.isLogin, bannerController.getBannerPage)
 
 //add banner 
 admin_route.post('/add-banner', upload.single("bannerImage"),bannerController.addBanner)
@@ -113,12 +113,8 @@ admin_route.get("/delete_banner/:id",bannerController.deleteBanner)
 
 // sales report 
  
-admin_route.get('/sales_report',adminController.salesData)
+admin_route.get('/sales_report',adminAuth.isLogin,adminController.salesData)
 admin_route.post("/date-wise-report",adminController.dateWiseReport)
-
-    
-
-
 
 // admin logout
 admin_route.get('/adminLogout',adminAuth.adminLogout)

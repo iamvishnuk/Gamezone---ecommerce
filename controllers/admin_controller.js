@@ -300,6 +300,15 @@ const getAllOrder = async (req, res, next) => {
         const orderData = await Orders.find({}).populate('product.productId').sort({ date: -1 })
         res.render("vieworders", { orderData: orderData })
 
+
+        const today = new Date();
+        const threeDaysFromToday = new Date(today.setDate(today.getDate() + 3));
+        console.log(threeDaysFromToday);
+
+
+
+
+
     } catch (error) {
         console.log(error.messge);
         next(error)
@@ -312,6 +321,10 @@ const changeStatus = async (req, res, next) => {
 
         const orderId = req.body.orderId
         const value = req.body.value
+
+        if(value == "Delivered"){
+            await Orders.updateOne({ orderId: orderId }, { $set: { deliveryDate: Date.now()}})
+        }
 
         await Orders.updateOne({ orderId: orderId }, { $set: { status: value } }).then(() => {
             res.json({ success: true, value })

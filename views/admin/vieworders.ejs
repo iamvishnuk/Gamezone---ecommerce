@@ -22,13 +22,12 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">OrderID</th>
-                                        <th scope="col">Delivery Details</th>
                                         <th scope="col">Product</th>
                                         <th scope="col">Quantity</th>
-                                        <th scope="col">Product Total</th>
                                         <th scope="col">Total</th>
                                         <th scope="col">Payment Method</th>
                                         <th scope="col">Status</th>
+                                        <th scope="col">View</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -39,9 +38,6 @@
                                                 <%= order.orderId %>
                                             </td>
                                             <td>
-                                                <%= order.deliveryAddress %>
-                                            </td>
-                                            <td>
                                                 <% order.product.forEach(element=> { %>
                                                     <%= element.productId.product_name %> <br><br>
                                                         <% }); %>
@@ -49,11 +45,6 @@
                                             <td>
                                                 <% order.product.forEach(element=> { %>
                                                     <%= element.quantity %> <br><br><br><br>
-                                                        <% }); %>
-                                            </td>
-                                            <td>
-                                                <% order.product.forEach(element=> { %>
-                                                    <%= element.productTotal %> <br><br><br><br>
                                                         <% }); %>
                                             </td>
                                             <td>
@@ -150,7 +141,108 @@
                                                                             </div>
                                                                             <% } %>
                                             </td>
+                                            <td>
+
+                                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#<%= order.orderId %>"
+                                                    data-whatever="@mdo">Details</button>
+                                            </td>
                                         </tr>
+                                        <div class="modal fade" id="<%= order.orderId %>" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="col-lg-12">
+                                                            <div class="card mb-4">
+                                                                <div class="card-body" style="padding-top:20px">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">OrderID</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0"><%= order.orderId %>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Products</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <% order.product.forEach(element=> { %>
+                                                                                <img src="/product_images/<%= element.productId.images[0] %>" alt="" style="width:80px; height:80px">
+                                                                                <p class="text-muted mb-0">
+                                                                                    <%= element.productId.product_name %>&nbsp: x<%= element.quantity %>&nbsp; ₹<%= element.productTotal %><br>
+
+                                                                                </p>
+                                                                                    <% }); %>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Discount</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0">
+                                                                                ₹<%= order.discountAmount %>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Total</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0">
+                                                                                ₹<%= order.total %>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Payment Type</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0">
+                                                                                <%= order.paymentType %>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Status</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0">
+                                                                                <%= order.status %>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <% }); %>
                                 </tbody>

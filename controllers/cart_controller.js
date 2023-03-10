@@ -1,6 +1,7 @@
 const Product = require("../model/products_data")
 const Users = require("../model/user_data")
 const Category = require("../model/category_data")
+const { response } = require("../routes/user_route")
 
 
 
@@ -75,7 +76,8 @@ const addToCart = async (req, res, next) => {
 
                 const cartData = await Users.findOne({ _id: user._id },).populate('cart.productId').lean().exec()
 
-                res.render('cart', { cartItems: cartData, user: user, total: cartTotal })
+                // res.render('cart', { cartItems: cartData, user: user, total: cartTotal })
+                res.json({success: true})
             }
 
 

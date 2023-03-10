@@ -12,7 +12,7 @@
 
 /* for user detail edit modal */
 .modal {
-    position: absolute;
+    /* position: absolute; */
     top: 100px;
     /* right: 100px; */
     bottom: 0;
@@ -21,4 +21,12 @@
     overflow: auto;
     overflow-y: auto;
 
+}
+
+/* button in the wishlist page */
+.wish-remove{
+    width: 115px;
+}
+.wish-add-cart{
+    width: 115px;
 }

@@ -74,7 +74,6 @@ const postCheckout = async (req, res, next) => {
                 const productTotal = orderData.productTotal[i]
                 orderDetails.push({ productId: productId, quantity: quantity, productTotal: productTotal })
             }
-            // console.log(orderDetails);
 
             const orders = new Order({
                 userId: userId,
@@ -92,10 +91,6 @@ const postCheckout = async (req, res, next) => {
 
             await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
 
-            await User.updateOne(
-                { userId: userId },
-                { $pull: { cart: { productId: { $in: productIds } } } }
-            )
             res.json({ codStatus: true })
 
 
@@ -134,11 +129,6 @@ const postCheckout = async (req, res, next) => {
             const ordered = await orders.save()
 
             await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
-
-            await User.updateOne(
-                { userId: userId },
-                { $pull: { cart: { productId: { $in: productIds } } } }
-            )
 
             const lastOrder = await Order.findOne({}).sort({ date: -1 })
             const lastOrderDetails = await Order.findOne({ _id: lastOrder._id }).populate("product.productId")
@@ -183,7 +173,7 @@ const postCheckout = async (req, res, next) => {
                     const productTotal = orderData.productTotal[i]
                     orderDetails.push({ productId: productId, quantity: quantity, productTotal: productTotal })
                 }
-                // console.log(orderDetails);
+
 
                 const orders = new Order({
                     userId: userId,
@@ -202,16 +192,9 @@ const postCheckout = async (req, res, next) => {
 
                 await Coupon.updateOne({ code: couponCode }, { $push: { usersUsed: userId } }) //adding the already coupon used users
 
-                await User.updateOne(
-                    { userId: userId },
-                    { $pull: { cart: { productId: { $in: productIds } } } }
-                )
                 res.json({ walletStatus: true })
 
             }
-
-
-
 
         }
 
@@ -277,6 +260,10 @@ const orderConfirmationPage = async (req, res, next) => {
             await Product.updateOne({ _id: proId }, { $inc: { stock: -quantity } })
         }
 
+        await User.updateOne({_id:userId},{$set:{
+            cart: []
+        }})
+
         res.render("orderconfirmpage", { user: user, orderDatas: lastOrderDetails, moment: moment })
 
     } catch (error) {
@@ -330,7 +317,7 @@ const cancelOrder = async (req, res, next) => {
             const proId = canceledOrder.product[i].productId;
             await Product.updateOne({ _id: proId }, { $inc: { stock: quantity } })
         }
-        if (cancelOrder.paymentType == "razorpay" || cancelOrder.paymentType == "wallet") {
+        if (canceledOrder.paymentType == "razorpay" || canceledOrder.paymentType == "wallet") {
             const wallet = await User.updateOne({ _id: userId }, { $inc: { wallet: canceledOrder.total } }).then((response) => {
                 console.log(response);
             })

@@ -82,10 +82,10 @@ user_route.post("/add-address-checkoutpage",userController.checkoutPageAddAddres
 user_route.get("/delete-address/:id", userController.deleteAddress)
 
 // get edit address page
-user_route.get("/editaddress/:id",userController.editAddressPage)
+// user_route.get("/editaddress/:id",userController.editAddressPage)
 
-// post edit address
-user_route.post("/post-edit-address/:id",userController.postEditAddress)
+// post edit address-------------------------------------------------------------------------------------------
+user_route.post("/post-edit-address",userController.postEditAddress)
 
 // get checkoutpage
 user_route.get("/gotocheckoutpage",userAuth.isLogin,orderController.getChekoutPage)

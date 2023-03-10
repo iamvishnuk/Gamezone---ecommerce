@@ -45,12 +45,12 @@ const doLogin = async (req, res, next) => {
                     }
                 })
             } else {
-                
+
                 res.render('user_login', { message: 'Account is blocked !...' })
             }
 
         } else {
-        
+
             res.render('user_login', { message: 'Username id incorrect !...' })
         }
 
@@ -228,13 +228,13 @@ const filterProducts = async (req, res, next) => {
         const page = null
         const totalPages = null
 
-        if(req.session.userId){
+        if (req.session.userId) {
 
             const userId = req.session.userId
-            const user = await Users.findOne({_id: userId})
-            res.render("products_page",{productData:product, user: user, wishlist: wishData, page, totalPages})
+            const user = await Users.findOne({ _id: userId })
+            res.render("products_page", { productData: product, user: user, wishlist: wishData, page, totalPages })
 
-        }else{
+        } else {
 
             res.render("products_page", { productData: product, wishlist: 'null', page, totalPages })
 
@@ -461,8 +461,8 @@ const addAddress = async (req, res, next) => {
 
         const userId = req.session.userId
         const user = await Users.findOne({ _id: userId })
-        console.log(user._id)
-        console.log(req.body)
+        // console.log(user._id)
+        // console.log(req.body)
 
         const address = await Users.updateOne(
             { _id: user._id },
@@ -480,8 +480,8 @@ const addAddress = async (req, res, next) => {
                 }
             }
         ).then((response) => {
-            console.log(response);
-            res.redirect("/manageaddress")
+            // console.log(response);
+            res.json(response)
         })
 
     } catch (error) {
@@ -545,49 +545,57 @@ const deleteAddress = async (req, res, next) => {
 }
 
 // edit address page
-const editAddressPage = async (req, res, next) => {
-    try {
+// const editAddressPage = async (req, res, next) => {
+//     try {
 
-        if (req.session.userId) {
+//         if (req.session.userId) {
 
-            const addressId = req.params.id
-            const userId = req.session.userId
-            const user = await Users.findOne({ _id: userId })
+//             const addressId = req.params.id
+//             const userId = req.session.userId
+//             const user = await Users.findOne({ _id: userId })
 
-            const addressData = await Users.findOne({ _id: user._id, "addresses._id": addressId }, { "addresses.$": 1, _id: 0 })
+//             const addressData = await Users.findOne({ _id: user._id, "addresses._id": addressId }, { "addresses.$": 1, _id: 0 })
 
-            res.render("editaddresspage", { address: addressData.addresses[0] })
+//             res.render("editaddresspage", { address: addressData.addresses[0] })
 
-        } else {
-            res.redirect("/userlogin")
-        }
+//         } else {
+//             res.redirect("/userlogin")
+//         }
 
-    } catch (error) {
-        console.log(error.message);
-        next(error)
-    }
-}
+//     } catch (error) {
+//         console.log(error.message);
+//         next(error)
+//     }
+// }
 
 // post edit address 
 const postEditAddress = async (req, res, next) => {
     try {
 
-        const addressId = req.params.id
         const userId = req.session.userId
-        const user = await Users.findOne({ _id: userId })
+        const addressId = req.body.addressId
 
+        const user = await Users.findOne({ _id: userId })
+        console.log(req.body);
         const editAddress = await Users.updateOne(
             { _id: user._id, "addresses._id": addressId },
             {
                 $set: {
-                    "addresses.$": req.body
+                    "addresses.$.name": req.body.name,
+                    "addresses.$.phoneNumber": req.body.phoneNumber,
+                    "addresses.$.houseName": req.body.houseName,
+                    "addresses.$.street": req.body.street,
+                    "addresses.$.district": req.body.district,
+                    "addresses.$.state": req.body.state,
+                    "addresses.$.pincode": req.body.pincode,
+                    
                 }
             }
-        ).then(() => {
-            res.redirect("/manageaddress")
-        })
+        )
 
-
+        console.log(editAddress);
+        res.redirect('/manageaddress')
+        
     } catch (error) {
         console.log(error.message);
         next(error)
@@ -631,7 +639,6 @@ module.exports = {
     addAddress,
     checkoutPageAddAddress,
     deleteAddress,
-    editAddressPage,
     postEditAddress,
     searchProducts,
     changeUserPassword,

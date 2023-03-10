@@ -51,6 +51,9 @@ const orderData = new Schema({
         type: String,
         default: 'Order Confirmed',
     },
+    deliveryDate:{
+        type: Date,
+    }
 });
 
 module.exports = mongoose.model('order',orderData)

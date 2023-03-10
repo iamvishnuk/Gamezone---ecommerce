@@ -17,37 +17,44 @@
                                     <div class="col">   
                                         <div class="form-outline">
                                             <label class="form-label" for="form11Example1">Name</label>
-                                            <input type="text" id="form11Example1" class="form-control" name="name" value="<%= address.name %>" />
+                                            <input type="text" id="name" class="form-control" name="name" value="<%= address.name %>" />
+                                            <label for="" id="name-alert" style="display: none;">Name is required</label>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-outline">
                                             <label class="form-label" for="form11Example2">Phone</label>
-                                            <input type="number" id="form11Example2" class="form-control" name="phoneNumber" value="<%= address.phoneNumber %>" />
+                                            <input type="number" id="phoneNumber" class="form-control" name="phoneNumber" value="<%= address.phoneNumber %>" />
+                                            <label for="" id="phoneNumber-alert" style="display: none;">Phone number is required</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form11Example3">House / Building name</label>
-                                    <input type="text" id="form11Example3" class="form-control" name="houseName" value="<%= address.houseName %>" />
+                                    <input type="text" id="houseName" class="form-control" name="houseName" value="<%= address.houseName %>" />
+                                    <label for="" id="houseName-alert" style="display: none;">House / Building name is required</label>
                                 </div>
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form11Example4">Street</label>
-                                    <input type="text" id="form11Example4" class="form-control" name="street" value="<%= address.street %>" />
+                                    <input type="text" id="street" class="form-control" name="street" value="<%= address.street %>" />
+                                    <label for="" id="street-alert" style="display: none;">Street is required</label>
                                 </div>
 
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form11Example5">District</label>
-                                    <input type="text" id="form11Example5" class="form-control" name="district" value="<%= address.district %>" />
+                                    <input type="text" id="district" class="form-control" name="district" value="<%= address.district %>" />
+                                    <label for="" id="district-alert" style="display: none">District is required</label>
                                 </div>
 
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form11Example6">State</label>
-                                    <input type="text" id="form11Example6" class="form-control" name="state" value="<%= address.state %>" />
+                                    <input type="text" id="state" class="form-control" name="state" value="<%= address.state %>" />
+                                    <label for="" id="state-alert" style="display: none">State is required</label>
                                 </div>
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form11Example6">Pincode</label>
-                                    <input type="number" id="form11Example6" class="form-control" name="pincode" value="<%= address.pincode %>" />
+                                    <input type="number" id="pincode" class="form-control" name="pincode" value="<%= address.pincode %>" />
+                                    <label for="" id="pincode-alert" style="display: none">Pincode is required</label>
                                 </div>
                                 <div>
                                     <button type="submit" class="btn btn-primary float-right">Save</button>
@@ -59,5 +66,86 @@
             </div>
         </section>
     </div>
+    <script>
+        $(document).ready(function () {
+            // Get the form element
+            const form = $('form');
+
+            // Add an event listener to the form's submit button
+            form.submit(function (event) {
+                // Prevent the form from submitting by default
+                event.preventDefault();
+
+                // Get the input fields
+                const name = $('#name');
+                const phoneNumber = $('#phoneNumber');
+                const houseName = $('#houseName');
+                const street = $('#street');
+                const district = $('#district');
+                const state = $('#state');
+                const pincode = $('#pincode');
+
+                // Validate the input fields
+                if (name.val().trim() === '') {
+                    $('#name-alert').attr({ style: 'display: block; color:red' })
+                    setTimeout(() => {
+                        $('#name-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                if (phoneNumber.val().trim() === '') {
+                    $('#phoneNumber-alert').attr({ style: 'display: block; color: red' })
+                    setTimeout(() => {
+                        $('#phoneNumber-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                if (houseName.val().trim() === '') {
+                    $('#houseName-alert').attr({ style: 'display: block; color: red' })
+                    setTimeout(() => {
+                        $('#houseName-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                if (street.val().trim() === '') {
+                    $('#street-alert').attr({ style: 'display: block; color: red' })
+                    setTimeout(() => {
+                        $('#street-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                if (district.val().trim() === '') {
+                    $('#district-alert').attr({ style: 'display: block; color: red' })
+                    setTimeout(() => {
+                        $('#district-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                if (state.val().trim() === '') {
+                    $('#state-alert').attr({ style: 'display: block; color: red' })
+                    setTimeout(() => {
+                        $('#state-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                if (pincode.val().trim() === '') {
+                    $('#pincode-alert').attr({ style: 'display: block; color: red' })
+                    setTimeout(() => {
+                        $('#pincode-alert').hide()
+                    }, 2000)
+                    return false;
+                }
+
+                // Submit the form if all fields are valid
+                form.unbind('submit').submit();
+            });
+        });
+    </script>
 
     <%- include("../layout/user/user_footer.ejs") %>

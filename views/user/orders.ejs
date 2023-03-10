@@ -35,7 +35,8 @@
                                             <td class="column-5">Total Rs: <%= order.total %>
                                             </td>
                                             <td class="column-5 text-center">
-                                                <span class="font-weight-bold" id="<%= order.orderId %>" style="width:120px ;">
+                                                <span class="font-weight-bold" id="<%= order.orderId %>"
+                                                    style="width:120px ;">
                                                     <%= order.status %>
                                                 </span><br>
                                                 <% if (order.status=="Order Confirmed" || order.status=="Shipped" ) { %>
@@ -44,9 +45,16 @@
                                                     <% } %>
                                                         <a href="/viweorder/<%= order.orderId %>"
                                                             class="btn btn-primary m-1">Details</a><br>
-                                                            <% if(order.status == 'Delivered'){ %>
-                                                                <button onclick="returnOrder('<%= order.orderId %>')" class="btn btn-warning">Return</button>
-                                                            <% } %>
+
+
+                                                        <% let deliveryDate=new Date(order.deliveryDate); %>
+                                                            <% let currentDate=new Date(); %>
+                                                        
+                                                                <% if ((currentDate - deliveryDate) / (24 * 60 * 60 * 1000) <=3 && order.status==='Delivered' ) { %>
+                                                                    <button onclick="returnOrder('<%= order.orderId %>')" class="btn btn-warning">Return</button>
+                                                                    <% } %>
+
+
                                             </td>
                                         </tr>
 
@@ -98,7 +106,7 @@
 
         }
 
-        function returnOrder(orderId){
+        function returnOrder(orderId) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Do you want to retrun your order",

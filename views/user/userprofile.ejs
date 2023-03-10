@@ -116,22 +116,27 @@
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">First Name</label>
                                 <input type="text" class="form-control" name="firstname" id="firstname" value="<%= userDetails.firstName %>">
+                                <label for="" id="firstname-alert" style="display:none">Fisrt name is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Last Name</label>
                                 <input type="text" class="form-control" name="lastname" id="lastname" value="<%= userDetails.lastName %>">
+                                <label for="" id="lastname-alert" style="display:none">Last name is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Username</label>
                                 <input type="text" class="form-control" name="username" id="username" value="<%= userDetails.username %>">
+                                <label for="" id="username-alert" style="display:none">Username is requried</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Email</label>
                                 <input type="text" class="form-control" name="email" id="email" value="<%= userDetails.email %>">
+                                <label for="" id="email-alert" style="display:none">Email is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Phone</label>
                                 <input type="text" class="form-control" name="phone" id="phone" value="<%= userDetails.phone %>">
+                                <label for="" id="phone-alert" style="display:none">Phone number is required</label>
                             </div>  
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary">Save</button>
@@ -219,6 +224,67 @@
             })
         })
         
+
+        $(document).ready(function () {
+                // Get the form element
+                const form = $('#exampleModal');
+
+                // Add an event listener to the form's submit button
+                form.submit(function (event) {
+                    // Prevent the form from submitting by default
+                    // event.preventDefault();
+
+                    // Get the input fields
+                    const firstname = $('#firstname');
+                    const lastname = $('#lastname');
+                    const username = $('#username');
+                    const email = $('#email');
+                    const phone = $('#phone');
+
+                    // Validate the input fields
+                    if (firstname.val().trim() === '') {
+                        $('#firstname-alert').attr({ style: 'display: block; color:red' })
+                        setTimeout(() => {
+                            $('#lastname-alert').hide()
+                        }, 2000)
+                        return false;
+                    }
+
+                    if (lastname.val().trim() === '') {
+                        $('#lastname-alert').attr({ style: 'display: block; color: red' })
+                        setTimeout(() => {
+                            $('#lastname-alert').hide()
+                        }, 2000)
+                        return false;
+                    }
+                    if (username.val().trim() === '') {
+                        $('#username-alert').attr({ style: 'display: block; color: red' })
+                        setTimeout(() => {
+                            $('#username-alert').hide()
+                        }, 2000)
+                        return false;
+                    }
+                    if (email.val().trim() === '') {
+                        $('#email-alert').attr({ style: 'display: block; color: red' })
+                        setTimeout(() => {
+                            $('#email-alert').hide()
+                        }, 2000)
+                        return false;
+                    }
+                    if (phone.val().trim() === '') {
+                        $('#phone-alert').attr({ style: 'display: block; color: red' })
+                        setTimeout(() => {
+                            $('#phone-alert').hide()
+                        }, 2000)
+                        return false;
+                    }
+                    // Submit the form if all fields are valid
+                    form.unbind('submit').submit();
+
+                });
+            });
+
+
 
     </script>
 

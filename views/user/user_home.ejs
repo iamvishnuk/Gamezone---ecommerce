@@ -93,34 +93,31 @@
         <section class="section-slide">
             <div class="wrap-slick1 rs2-slick1">
                 <div class="slick1">
-                    <% bannerData.forEach(element => { %>
+                    <% bannerData.forEach(element=> { %>
 
-                        <div class="item-slick1 bg-overlay1" style="background-image: url('/product_images/<%= element.image %>');">
-                        <div class="container h-full">
-                            <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
-                                <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
-                                    <span class="ltext-101 cl2 respon2" style="color: white;">
-                                        <%= element.heading %>
-                                    </span>
-                                </div>
-                        
-                                <div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
-                                    <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1"style="color: white;">
-                                        <%= element.subheading %>
-                                    </h2>
-                                </div>
-                        
-                                <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-                                    <a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04" style="color: white;">
-                                        Shop Now
-                                    </a>
+                        <div class="item-slick1 bg-overlay1"
+                            style="background-image: url('/product_images/<%= element.image %>');">
+                            <div class="container h-full">
+                                <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                                    <div class="layer-slick1 animated visible-false" data-appear="fadeInDown"
+                                        data-delay="0">
+                                        <span class="ltext-101 cl2 respon2" style="color: white;">
+                                            <%= element.heading %>
+                                        </span>
+                                    </div>
+
+                                    <div class="layer-slick1 animated visible-false" data-appear="fadeInUp"
+                                        data-delay="800">
+                                        <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1" style="color: white;">
+                                            <%= element.subheading %>
+                                        </h2>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                        
-                    <% }); %>                                    
-                </div>                
+
+                        <% }); %>
+                </div>
             </div>
         </section>
 
@@ -129,30 +126,30 @@
         <div class="sec-banner bg0 p-t-95 p-b-55">
             <div class="container">
                 <div class="row">
-                    <% category.forEach(element => { %>
-                        
+                    <% category.forEach(element=> { %>
+
                         <div class="col-md-6 p-b-30 m-lr-auto">
                             <!-- Block1 -->
                             <div class="block1 wrap-pic-w">
                                 <img src="/product_images/<%= element.categoryImage %>" alt="IMG-BANNER">
-                                
-                                <a href="#"
+
+                                <a href="/products"
                                     class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
                                     <div class="block1-txt-child1 flex-col-l">
                                         <span class="block1-name ltext-102 trans-04 p-b-8">
                                             <%= element.categoryName %>
                                         </span>
                                     </div>
-                                    
+
                                     <div class="block1-txt-child2 p-b-4 trans-05">
                                         <div class="block1-link stext-101 cl0 trans-09">
-                                            Shop Now
+                                            Shop now
                                         </div>
                                     </div>
                                 </a>
                             </div>
                         </div>
-                    <% }); %>
+                        <% }); %>
                 </div>
             </div>
         </div>
@@ -186,7 +183,7 @@
                                 <div class="block2-txt flex-w flex-t p-t-14">
                                     <div class="block2-txt-child1 flex-col-l ">
                                         <a href="product-detail.html"
-                                            class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">    
+                                            class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
                                             <%= element.product_name %>
                                         </a>
 
@@ -197,10 +194,12 @@
 
 
                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                        <a href="" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" onclick="addTowishlist('<%= element._id %>')">
-                                            <i id="<%= element._id %>" class="fa fa-heart" style="color: rgb(188, 181, 181);"></i>
+                                        <a href="" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                                            onclick="addTowishlist('<%= element._id %>')">
+                                            <i id="<%= element._id %>" class="fa fa-heart"
+                                                style="color: rgb(188, 181, 181);"></i>
                                         </a>
-                                    
+
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +210,7 @@
         </section>
 
         <script>
-            function addTowishlist(productId){
+            function addTowishlist(productId) {
                 $.ajax({
                     url: '/addtowishlist',
                     data: {
@@ -219,7 +218,7 @@
                     },
                     method: 'post',
                     success: (response) => {
-                        
+
                         document.getElementById(productId).style.color = "red"
 
                     }

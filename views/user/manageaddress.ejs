@@ -14,25 +14,122 @@
                                     <p class="mb-0 font-weight-bold" style="color: black;">Manage Address</p>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add address</button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#exampleModal" data-whatever="@mdo">Add address</button>
                                 </div>
                             </div>
                             <hr>
-                            <% address.forEach((e) => { %>
-                                
+                            <% address.forEach((e)=> { %>
                                 <div class="row">
                                     <div class="col-sm-10">
-                                        <p class="mb-0"><%= e.name %> &nbsp; <%= e.phoneNumber %></p>
-                                        <p><%= e.houseName %>,&nbsp;<%= e.street %>,&nbsp;<%= e.district %>,&nbsp;<%= e.state %>,&nbsp;<%= e.pincode %></p>
+                                        <p class="mb-0">
+                                            <%= e.name %> &nbsp; <%= e.phoneNumber %>
+                                        </p>
+                                        <p>
+                                            <%= e.houseName %>,&nbsp;<%= e.street %>,&nbsp;<%= e.district %>,&nbsp;<%=
+                                                            e.state %>,&nbsp;<%= e.pincode %>
+                                        </p>
                                     </div>
                                     <div class="col-sm-2">
-                                        <a href="/editaddress/<%= e._id %>" class="btn btn-warning">Edit</a>
+                                        <button type="button" class="btn btn-warning" data-toggle="modal"
+                                            data-target="#<%= e._id %>" data-whatever="@mdo">Edit</button>
+                                        <!-- <a href="/editaddress/" class="btn btn-warning">Edit</a> -->
                                         <a href="/delete-address/<%= e._id %>" class="btn btn-danger">Delete</a>
                                     </div>
                                 </div>
-                                <hr>            
+                                <hr>
+                                <div class="modal fade" id="<%= e._id %>" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="card-body">
+                                                <form id="edit-address" action="/post-edit-address" method="post">
+                                                    <div class="row mb-4">
+                                                        <div class="col">
+                                                            <div class="form-outline">
+                                                                <label class="form-label"
+                                                                    for="form11Example1">Name</label>
+                                                                <input type="text" id="name-edit" class="form-control"
+                                                                    name="name" value="<%= e.name %>" />
+                                                                <input type="text" id="name" class="form-control"
+                                                                    name="addressId" value="<%= e._id %>" hidden />
+                                                                <label for="" id="name-aler-edit"
+                                                                    style="display: none;">Name is required</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-outline">
+                                                                <label class="form-label"
+                                                                    for="form11Example2">Phone</label>
+                                                                <input type="number" id="phoneNumber-edit"
+                                                                    class="form-control" name="phoneNumber"
+                                                                    value="<%= e.phoneNumber %>" />
+                                                                <label for="" id="phoneNumber-alert-edit"
+                                                                    style="display: none;">Phone number is
+                                                                    required</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form11Example3">House / Building
+                                                            name</label>
+                                                        <input type="text" id="houseName-edit" class="form-control"
+                                                            name="houseName" value="<%= e.houseName %>" />
+                                                        <label for="" id="houseName-alert-edit"
+                                                            style="display: none;">House
+                                                            / Building name is required</label>
+                                                    </div>
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form11Example4">Street</label>
+                                                        <input type="text" id="street-edit" class="form-control"
+                                                            name="street" value="<%= e.street %>" />
+                                                        <label for="" id="street-alert-edit"
+                                                            style="display: none;">Street is
+                                                            required</label>
+                                                    </div>
 
-                            <% }); %>
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form11Example5">District</label>
+                                                        <input type="text" id="district-edit" class="form-control"
+                                                            name="district" value="<%= e.district %>" />
+                                                        <label for="" id="district-alert-edit"
+                                                            style="display: none">District
+                                                            is required</label>
+                                                    </div>
+
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form11Example6">State</label>
+                                                        <input type="text" id="state-edit" class="form-control"
+                                                            name="state" value="<%= e.state %>" />
+                                                        <label for="" id="state-alert-edit" style="display: none">State
+                                                            is
+                                                            required</label>
+                                                    </div>
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form11Example6">Pincode</label>
+                                                        <input type="number" id="pincode-edit" class="form-control"
+                                                            name="pincode" value="<%= e.pincode %>" />
+                                                        <label for="" id="pincode-alert-edit"
+                                                            style="display: none">Pincode
+                                                            is required</label>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit"
+                                                            class="btn btn-primary float-right">Save</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
                         </div>
                     </div>
                 </div>
@@ -43,43 +140,57 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title font-weight-bold" id="exampleModalLabel" >Add address</h5>
+                        <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Add address</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/add-address" method="post">
+                        <form id="add-address">
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Name</label>
-                                <input type="text" class="form-control" name="name" id="name">
+                                <input form="add-address" type="text" class="form-control" name="name" id="name-add">
+                                <label for="" id="name-alert-add" style="display: none;">Name is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Phone</label>
-                                <input type="number" class="form-control" name="phoneNumber" id="phoneNumber">
+                                <input form="add-address" type="number" class="form-control" name="phoneNumber"
+                                    id="phoneNumber-add">
+                                <label for="" id="phoneNumber-alert-add" style="display: none">Phone number is
+                                    required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">House name</label>
-                                <input type="text" class="form-control" name="houseName" id="houseName">
+                                <input form="add-address" type="text" class="form-control" name="houseName"
+                                    id="houseName-add">
+                                <label for="" id="houseName-alert-add" style="display: none">House name is
+                                    required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Street</label>
-                                <input type="text" class="form-control" name="street" id="street">
+                                <input form="add-address" type="text" class="form-control" name="street"
+                                    id="street-add">
+                                <label for="" id="street-alert-add" style="display: none">Street is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">District</label>
-                                <input type="text" class="form-control" name="district" id="district">
+                                <input form="add-address" type="text" class="form-control" name="district"
+                                    id="district-add">
+                                <label for="" id="district-alert-add" style="display: none">District is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">State</label>
-                                <input type="text" class="form-control" name="state" id="state">
+                                <input form="add-address" type="text" class="form-control" name="state" id="state-add">
+                                <label for="" id="state-alert-add" style="display: none">State is required</label>
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label">Pincode</label>
-                                <input type="number" class="form-control" name="pincode" id="pincode">
+                                <input form="add-address" type="number" class="form-control" name="pincode"
+                                    id="pincode-add">
+                                <label for="" id="pincode-alert-add" style="display: none">Pincode is required</label>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button form="add-address" type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </form>
                     </div>
@@ -87,5 +198,102 @@
             </div>
         </div>
     </section>
+
+
+
+    <script>
+
+        // add address form validation
+
+        const form = $('#add-address');
+
+        form.submit(function (event) {
+
+            event.preventDefault();
+
+            // Get the input fields
+            const name = $('#name-add');
+            const phoneNumber = $('#phoneNumber-add');
+            const houseName = $('#houseName-add');
+            const street = $('#street-add');
+            const district = $('#district-add');
+            const state = $('#state-add');
+            const pincode = $('#pincode-add');
+
+            // Validate the input fields
+            if (name.val().trim() === '') {
+                $('#name-alert-add').attr({ style: 'display: block; color:red' })
+                setTimeout(() => {
+                    $('#name-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+
+            if (phoneNumber.val().trim() === '') {
+                $('#phoneNumber-alert-add').attr({ style: 'display: block; color: red' })
+                setTimeout(() => {
+                    $('#phoneNumber-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+            if (houseName.val().trim() === '') {
+                $('#houseName-alert-add').attr({ style: 'display: block; color: red' })
+                setTimeout(() => {
+                    $('#houseName-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+            if (street.val().trim() === '') {
+                $('#street-alert-add').attr({ style: 'display: block; color: red' })
+                setTimeout(() => {
+                    $('#street-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+            if (district.val().trim() === '') {
+                $('#district-alert-add').attr({ style: 'display: block; color: red' })
+                setTimeout(() => {
+                    $('#district-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+            if (state.val().trim() === '') {
+                $('#state-alert-add').attr({ style: 'display: block; color: red' })
+                setTimeout(() => {
+                    $('#state-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+            if (pincode.val().trim() === '') {
+                $('#pincode-alert-add').attr({ style: 'display: block; color: red' })
+                setTimeout(() => {
+                    $('#pincode-alert-add').hide()
+                }, 2000)
+                return false;
+            }
+            // Submit the form if all fields are valid
+            $.ajax({
+                url: '/add-address',
+                method: 'post',
+                data: $('#add-address').serialize(),
+                success: (response) => {
+                    $('#exampleModal').on('hidden.bs.modal', function () {
+                        console.log('Modal hidden');
+                        $(this).find('from').trigger('reset');
+                    });
+                    $('#exampleModal').modal('hide');
+                    console.log('Modal closed');
+                    setTimeout(() => {
+                        location.reload()
+                    }, 1)
+                }
+            })
+
+        });
+
+    </script>
+
+
+
 
     <%- include("../layout/user/user_footer.ejs") %>

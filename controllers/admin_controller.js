@@ -294,16 +294,7 @@ const getAllOrder = async (req, res, next) => {
     try {
         
         const orderData = await Orders.find({}).populate('product.productId').sort({ date: -1 })
-        res.render("vieworders", { orderData: orderData })
-
-
-        const today = new Date();
-        const threeDaysFromToday = new Date(today.setDate(today.getDate() + 3));
-        console.log(threeDaysFromToday);
-
-
-
-
+        res.render("vieworders", { orderData: orderData,moment: moment })
 
     } catch (error) {
         console.log(error.messge);

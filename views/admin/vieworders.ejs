@@ -2,6 +2,7 @@
     <%- include("../layout/admin/navbar.ejs") %>
         <%- include("../layout/admin/sidebar.ejs") %>
             <link href="/admin_assets/vendor/simple-datatables/style.css" rel="stylesheet">
+            <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> -->
 
             <main id="main" class="main">
                 <div class="pagetitle">
@@ -153,7 +154,8 @@
                                             <div class="modal-dialog modal-lg" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+                                                        <h5 class="modal-title" id="exampleModalLabel">Order Details
+                                                        </h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                             aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
@@ -168,7 +170,8 @@
                                                                             <p class="mb-0">OrderID</p>
                                                                         </div>
                                                                         <div class="col-sm-9">
-                                                                            <p class="text-muted mb-0"><%= order.orderId %>
+                                                                            <p class="text-muted mb-0">
+                                                                                <%= order.orderId %>
                                                                             </p>
                                                                         </div>
                                                                     </div>
@@ -179,12 +182,40 @@
                                                                         </div>
                                                                         <div class="col-sm-9">
                                                                             <% order.product.forEach(element=> { %>
-                                                                                <img src="/product_images/<%= element.productId.images[0] %>" alt="" style="width:80px; height:80px">
+                                                                                <img src="/product_images/<%= element.productId.images[0] %>"
+                                                                                    alt=""
+                                                                                    style="width:80px; height:80px">
                                                                                 <p class="text-muted mb-0">
-                                                                                    <%= element.productId.product_name %>&nbsp: x<%= element.quantity %>&nbsp; ₹<%= element.productTotal %><br>
+                                                                                    <%= element.productId.product_name
+                                                                                        %>&nbsp: x<%= element.quantity
+                                                                                            %>&nbsp; ₹<%=
+                                                                                                element.productTotal %>
+                                                                                                <br>
 
                                                                                 </p>
-                                                                                    <% }); %>
+                                                                                <% }); %>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Order Date</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0">
+                                                                                <%= order.date %>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <p class="mb-0">Delivery Date</p>
+                                                                        </div>
+                                                                        <div class="col-sm-9">
+                                                                            <p class="text-muted mb-0">
+                                                                                <%= order.deliveryDate %>
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                     <hr>

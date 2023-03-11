@@ -18,7 +18,7 @@ app.use(session({
     cookie: { maxAge: 6000000 }
 }))
 
-// app.use(logger('dev'))
+app.use(logger('dev'))
 
 app.use(express.static(path.join(__dirname, 'public')));
 

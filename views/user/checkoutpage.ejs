@@ -309,7 +309,7 @@
                 "key": "rzp_test_kuaoQ12xYod2xn", // Enter the Key ID generated from the Dashboard
                 "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 "currency": "INR",
-                "name": "Acme Corp", //your business name
+                "name": "Gamezone", //your business name
                 "description": "Test Transaction",
                 "image": "https://example.com/your_logo",
                 "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
@@ -329,6 +329,19 @@
                 },
                 "theme": {
                     "color": "#3399cc"
+                },
+                "modal":{
+                    escape: false,
+                    ondismiss: ()=>{
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'warning',
+                            title: 'Unexpectly closed the payment gateway. Please try again',
+                            showConfirmButton: false,
+                            timer: 2000,
+                        })
+                        location.href = "/gotocheckoutpage"
+                    }
                 }
             };
             var rzp1 = new Razorpay(options);

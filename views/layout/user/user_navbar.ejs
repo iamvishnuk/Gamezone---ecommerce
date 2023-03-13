@@ -54,12 +54,20 @@
                 <!-- Icon header -->
                 <div class="wrap-icon-header flex-w flex-r-m h-full">
                     <div class="flex-c-m h-full p-r-25 bor6">
+                        <% if(typeof user !== 'undefined'){ %>
                         <div class="icon-header-item cl0 hov-cl1 trans-04 p-lr-11 icon-header-noti"
-                            data-notify="2">
+                            data-notify="<%= user.cart.length %>">
                             <a href="/cart">
                                 <i class="zmdi zmdi-shopping-cart"></i>
                             </a>  
                         </div>
+                        <% }else{ %>
+                            <div class="icon-header-item cl0 hov-cl1 trans-04 p-lr-11" data-notify="">
+                                <a href="/cart">
+                                    <i class="zmdi zmdi-shopping-cart"></i>
+                                </a>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </nav>

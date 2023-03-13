@@ -6,7 +6,7 @@ const isLogin = async (req, res, next) => {
             console.log("user logged in");
         }
         else {
-            res.redirect('/')
+            res.redirect('/userlogin')
         }
         next()
     } catch (error) {

@@ -37,8 +37,8 @@
                                                 </button>
                                             </div>
                                             <div class="p-1">
-                                                <button class="btn btn-success wish-add-cart">
-                                                    <a href="/addtocart/<%= element._id %>" style="color: white;">Add to cart</a>
+                                                <button class="btn btn-success wish-add-cart" onclick="addtocart('<%= element._id %>','<%= element.stock %>')">
+                                                    Add to cart
                                                 </button>
                                             </div>
                                         </td>
@@ -62,6 +62,39 @@
             </div>
         </div>
     </section>
+    <script>
 
+        function addtocart(proId, stock) {
+            if (stock == 0) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'Out of stock',
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+            } else {
+                $.ajax({
+                    url: '/addtocart/' + proId,
+                    method: 'get',
+                    success: (response) => {
+                        console.log(response)
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Added to cart successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        location.href = '/cart'
+
+
+                    },
+                })
+            }
+
+        }
+
+    </script>
 
     <%- include("../layout/user/user_footer.ejs") %>

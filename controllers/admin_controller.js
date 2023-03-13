@@ -104,7 +104,7 @@ const adminHome = async (req, res, next) => {
             },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$deliveryDate" } },
                     sales: { $sum: "$total" },
                 }
             },

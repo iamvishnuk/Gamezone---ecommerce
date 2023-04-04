@@ -13,6 +13,15 @@
                         </div>
                         <div class="wrap-table-shopping-cart">
                             <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Order Date</th>
+                                        <th>Product Name</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     <% orderData.forEach(order=> { %>
                                         <tr class="table_row">
@@ -22,6 +31,8 @@
                                                         style="height: 100px; width: 100px;" class="p-2"> <br>
                                                     <% }) %>
                                             </td>
+                                            <% const date = orderData.date %>
+                                            <td><%= moment(date).format("MMM Do YY") %></td>
                                             <td class="column-1">
                                                 <% order.product.forEach(element=>{ %>
                                                     <%= element.productId.product_name %> <br><br><br><br><br>
@@ -114,7 +125,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, cancel it!'
+                confirmButtonText: 'Yes, return it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

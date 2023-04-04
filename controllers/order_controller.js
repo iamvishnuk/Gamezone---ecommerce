@@ -21,6 +21,9 @@ const getChekoutPage = async (req, res, next) => {
         const userId = req.session.userId
         const user = await User.findOne({ _id: userId })
         const address = user.addresses
+        const currentDate = new Date()
+        const couponData = await Coupon.find({ expiryDate: { $gt: currentDate } })
+        console.log(couponData)
 
         if (user.cart.length == 0) {
 
@@ -29,7 +32,7 @@ const getChekoutPage = async (req, res, next) => {
         } else {
 
             const cartItem = await User.findOne({ _id: userId }).populate('cart.productId')
-            res.render("checkoutpage", { address: address, user: user, cartItem: cartItem })
+            res.render("checkoutpage", { address: address, user: user, cartItem: cartItem, couponData: couponData })
 
         }
 
@@ -256,9 +259,11 @@ const orderConfirmationPage = async (req, res, next) => {
             await Product.updateOne({ _id: proId }, { $inc: { stock: -quantity } })
         }
 
-        await User.updateOne({_id:userId},{$set:{
-            cart: []
-        }})
+        await User.updateOne({ _id: userId }, {
+            $set: {
+                cart: []
+            }
+        })
 
         res.render("orderconfirmpage", { user: user, orderDatas: lastOrderDetails, moment: moment })
 
@@ -276,7 +281,7 @@ const viewOrder = async (req, res, next) => {
         const user = await User.findOne({ _id: userId })
         const orderData = await Order.find({ userId: userId }).populate('product.productId').sort({ date: -1 })
 
-        res.render("orders", { user: user, orderData: orderData })
+        res.render("orders", { user: user, orderData: orderData, moment: moment })
 
     } catch (error) {
         console.log(error.message)

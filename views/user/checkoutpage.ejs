@@ -33,7 +33,14 @@
                                     <li class="list-group-item d-flex justify-content-between bg-light">
                                         <div class="text-success">
                                             <h6 class="my-0">Promo code</h6>
-                                            <small>EXAMPLECODE</small>
+                                            <% if(typeof couponData !== "undefined"){ %>
+                                                <small style="color: blue">Coupon available</small><br>
+                                                <% couponData.forEach(element => { %>
+                                                    <small><%= element.code %></small><br>
+                                                <% }) %>
+                                            <% }else{ %>
+                                                <small>No active coupone</small>
+                                            <% } %>
                                         </div>
                                         <span id="coupon" class="text-success"></span>
                                         <input id="discount-amount" name="discountAmount" type="text" class="d-none"
